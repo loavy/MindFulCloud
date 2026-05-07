@@ -163,28 +163,140 @@ input:checked + .slider:before {
   border-top: 1px solid rgba(255,255,255,0.06);
 }
 
-/* clickable row */
-.clickable-row {
-  border-radius: 6px;
+.color-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.color-box {
+.color-row {
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.color-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.color-row {
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.color-row.color-toggle {
+  cursor: pointer;
+}
+
+.color-preview {
   width: 18px;
   height: 18px;
   border-radius: 50%;
   border: 2px solid rgba(255,255,255,0.2);
+  background: #4cafef;
 }
 
-/* picker */
-.color-picker {
-  display: none;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 6px;
-  margin-top: 10px;
-  padding: 10px;
-  background: #0f131a;
-  border-radius: 8px;
+.color-palette {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px 0 0;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height 0.22s ease, opacity 0.22s ease, padding 0.22s ease;
+}
+
+.color-palette.open {
+  max-height: 180px;
+  opacity: 1;
+  padding-top: 8px;
+}
+
+.palette-swatch {
+  width: 28px;
+  height: 28px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: transparent;
+  cursor: pointer;
+  transition: transform 0.18s ease, border-color 0.18s ease;
+}
+
+.palette-swatch:hover,
+.palette-swatch:focus {
+  transform: translateY(-1px);
+  border-color: rgba(255,255,255,0.35);
+}
+
+.hex-input {
+  width: 70px;
+  background: #11151c;
+  color: #e6edf3;
   border: 1px solid #1c212b;
+  border-radius: 6px;
+  padding: 6px 8px;
+  font-size: 13px;
+  text-transform: lowercase;
+}
+
+.row select {
+  min-width: 120px;
+  background: #11151c;
+  color: #e6edf3;
+  border: 1px solid #1c212b;
+  border-radius: 8px;
+  padding: 8px 10px;
+}
+
+.buttons-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.button {
+  border: none;
+  outline: none;
+  cursor: pointer;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  transition: transform 0.18s ease, background 0.18s ease;
+}
+
+.button:hover {
+  transform: translateY(-1px);
+}
+
+.button.secondary {
+  background: #1f2937;
+  color: #d0d7de;
+  border: 1px solid #2a3345;
+}
+
+.button.danger {
+  background: #d64545;
+  color: #ffffff;
+}
+
+.button.accent {
+  background: #d4a373;
+  color: #111111;
+}
+
+.status-message {
+  color: #8da2be;
+  font-size: 12px;
+  margin-top: 8px;
+  min-height: 18px;
+}
+
+/* ===== 7. MICRO DETAILS ===== */
+.section + .section {
+  margin-top: 8px;
 }
 
 /* color items */

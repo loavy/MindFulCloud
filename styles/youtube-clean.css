@@ -2,35 +2,53 @@
 VARIABLES
 ======================= */
 
-:root {
-  --bg: #161514;
-  --panel: #1c1b1a;
-  --text: #f0e4d6;
-  --muted: #a89f94;
-  --accent: #d4a373;
-  --yt-progress-color: #4cafef; 
+html.mindful-youtube {
+  --yt-progress-color: #4cafef;
   --yt-scrubber-color: #4cafef;
   --mf-gap: 6px;
   --mf-radius: 12px;
   --mf-header-height: 52px;
+  --mf-accent: #d4a373;
+
+  --mf-surface: rgba(255, 255, 255, 0.88);
+  --mf-surface-strong: rgba(255, 255, 255, 0.96);
+  --mf-border: rgba(0, 0, 0, 0.12);
+  --mf-chip: rgba(0, 0, 0, 0.06);
+  --mf-chip-hover: rgba(0, 0, 0, 0.12);
+  --mf-text: #111;
+  --mf-muted: #575757;
+
+  color-scheme: light dark;
+}
+
+html.mindful-youtube.dark,
+html.mindful-youtube[data-theme="dark"],
+html.mindful-youtube[theme="dark"],
+html.mindful-youtube[dark] {
+  --mf-surface: rgba(22, 21, 20, 0.85);
+  --mf-surface-strong: rgba(22, 21, 20, 0.95);
+  --mf-border: rgba(255, 255, 255, 0.05);
+  --mf-chip: rgba(255, 255, 255, 0.06);
+  --mf-chip-hover: rgba(255, 255, 255, 0.12);
+  --mf-text: #f0e4d6;
+  --mf-muted: #a89f94;
 }
 
 /* =======================
 GLOBAL RESET
 ======================= */
 
-html,
-body,
-ytd-app {
+html.mindful-youtube,
+html.mindful-youtube body,
+html.mindful-youtube ytd-app {
   border-radius: 0 !important;
 }
 
-html {
-  background: var(--bg) !important;
-  color: var(--text) !important;
+html.mindful-youtube {
+  color: var(--mf-text) !important;
 }
 
-body {
+html.mindful-youtube body {
   overflow-x: hidden;
 }
 
@@ -39,15 +57,15 @@ WATCH PAGE
 ======================= */
 
 /* main channel header wrapper */
-ytd-browse[page-subtype="channels"] #header,
-ytd-browse[page-subtype="channels"] #tabs-container,
-ytd-browse[page-subtype="channels"] yt-tab-group-shape {
+html.mindful-youtube ytd-browse[page-subtype="channels"] #header,
+html.mindful-youtube ytd-browse[page-subtype="channels"] #tabs-container,
+html.mindful-youtube ytd-browse[page-subtype="channels"] yt-tab-group-shape {
   position: static !important;
   top: auto !important;
 }
 
 /* remove 2-column layout constraint */
-ytd-two-column-browse-results-renderer[page-subtype="channels"] {
+html.mindful-youtube ytd-two-column-browse-results-renderer[page-subtype="channels"] {
   max-width: 100% !important;
   width: 100% !important;
   margin: 0 !important;
@@ -55,7 +73,7 @@ ytd-two-column-browse-results-renderer[page-subtype="channels"] {
 }
 
 /* make primary fill everything */
-ytd-browse[page-subtype="channels"] #primary {
+html.mindful-youtube ytd-browse[page-subtype="channels"] #primary {
   width: 100% !important;
   max-width: 100% !important;
   margin: 0 !important;
@@ -63,42 +81,42 @@ ytd-browse[page-subtype="channels"] #primary {
 }
 
 /* sometimes YouTube uses this */
-ytd-browse[page-subtype="channels"] #page-header {
+html.mindful-youtube ytd-browse[page-subtype="channels"] #page-header {
   position: static !important;
 }
 
 /* extra safety (new layouts) */
-ytd-page-header-renderer,
-ytd-c4-tabbed-header-renderer {
+html.mindful-youtube ytd-page-header-renderer,
+html.mindful-youtube ytd-c4-tabbed-header-renderer {
   position: static !important;
   top: auto !important;
 }
 
-ytd-browse[page-subtype="channels"] #contentContainer {
+html.mindful-youtube ytd-browse[page-subtype="channels"] #contentContainer {
   padding-top: 0 !important;
 }
 
-ytd-browse[page-subtype="channels"] ytd-rich-grid-renderer,
-ytd-browse[page-subtype="channels"] {
+html.mindful-youtube ytd-browse[page-subtype="channels"] ytd-rich-grid-renderer,
+html.mindful-youtube ytd-browse[page-subtype="channels"] {
   padding-top: 0 !important;
   margin-top: 0 !important;
 }
 
-.ytSpecButtonViewModelHost.you-chat-entrypoint-button,
-#flexible-item-buttons yt-button-view-model:nth-child(1),
-yt-tab-group-shape yt-tab-shape:nth-child(3) {
+html.mindful-youtube .ytSpecButtonViewModelHost.you-chat-entrypoint-button,
+html.mindful-youtube #flexible-item-buttons yt-button-view-model:nth-child(1),
+html.mindful-youtube yt-tab-group-shape yt-tab-shape:nth-child(3) {
   display: none !important;
 }
 
-ytd-watch-flexy {
+html.mindful-youtube ytd-watch-flexy {
   margin-top: 70px !important;
 }
 
-ytd-watch-flexy[fullscreen] {
+html.mindful-youtube ytd-watch-flexy[fullscreen] {
   margin-top: 0px !important;
 }
 
-ytd-watch-flexy[flexy] #primary {
+html.mindful-youtube ytd-watch-flexy[flexy] #primary {
   max-width: 1000px;
   margin: 0 auto;
 }
@@ -107,33 +125,31 @@ ytd-watch-flexy[flexy] #primary {
 LAYOUT CLEANUP
 ======================= */
 
-#i1 {
-  background: rgba(22, 21, 20, 0.85) !important;
+html.mindful-youtube #i1 {
+  background: var(--mf-surface) !important;
   backdrop-filter: blur(12px) !important;
-  border: 1px solid rgba(255,255,255,0.05) !important;
+  border: 1px solid var(--mf-border) !important;
   border-radius: 12px !important;
 }
 
-ytd-popup-container tp-yt-paper-dialog,
-ytd-notification-renderer,
-ytd-multi-page-menu-renderer,
-tp-yt-paper-listbox {
-  background: rgba(22, 21, 20, 0.85) !important;
+html.mindful-youtube ytd-popup-container tp-yt-paper-dialog,
+html.mindful-youtube ytd-notification-renderer,
+html.mindful-youtube ytd-multi-page-menu-renderer,
+html.mindful-youtube tp-yt-paper-listbox {
+  background: var(--mf-surface) !important;
   backdrop-filter: blur(12px) !important;
-
-  border: 1px solid rgba(255,255,255,0.05) !important;
+  border: 1px solid var(--mf-border) !important;
   border-radius: 12px !important;
-
   box-shadow: none !important;
 }
 
-#flexible > ytd-menu-renderer:first-child {
+html.mindful-youtube #flexible > ytd-menu-renderer:first-child {
   display: none !important;
 }
 
-.ytd-app,
-#content,
-.ytd-browse {
+html.mindful-youtube .ytd-app,
+html.mindful-youtube #content,
+html.mindful-youtube .ytd-browse {
   margin: 0 !important;
   max-width: none !important;
 }
@@ -143,110 +159,97 @@ tp-yt-paper-listbox {
 SIDEBAR (FINAL CLEAN VERSION)
 ======================= */
 
-html:not(.yt-float-menu) #contentContainer {
+html.mindful-youtube:not(.yt-float-menu) #contentContainer {
   max-height: none !important;
 }
 
-html:not(.yt-float-menu) tp-yt-app-drawer {
+html.mindful-youtube:not(.yt-float-menu) tp-yt-app-drawer {
   opacity: 0 !important;
   pointer-events: none !important;
   transform: translateX(-100%) !important;
 }
 
-#guide-content #sections ytd-guide-section-renderer:nth-child(1),
-#guide-content #footer,
-#scrim.visible.tp-yt-app-drawer,
-#guide-content #header {
+html.mindful-youtube #guide-content #sections ytd-guide-section-renderer:nth-child(1),
+html.mindful-youtube #guide-content #footer,
+html.mindful-youtube #scrim.visible.tp-yt-app-drawer,
+html.mindful-youtube #guide-content #header {
   display: none !important;
   opacity: 0 !important;
 }
 
-#guide-button,
-.ytd-mini-guide-renderer {
+html.mindful-youtube #guide-button,
+html.mindful-youtube .ytd-mini-guide-renderer {
   display: none !important;
 }
 
-html.yt-float-menu #guide-button {
+html.mindful-youtube.yt-float-menu #guide-button {
   display: block !important;
 }
 
 /* =======================
 DRAWER (POSITION + ANIMATION)
 ======================= */
-html.yt-float-menu tp-yt-app-drawer {
+html.mindful-youtube.yt-float-menu tp-yt-app-drawer {
   position: fixed !important;
   display: block !important;
-
   top: calc(var(--mf-gap) + var(--mf-header-height) + var(--mf-gap) + 15px) !important;
   left: var(--mf-gap) !important;
-
   width: 240px !important;
   height: auto !important;
-
   z-index: 10000 !important;
-
   background: transparent !important;
-
-  /* animation */
   transform: scale(0.96);
   opacity: 0;
   transform-origin: top left;
-
   pointer-events: none;
-
   transition:
-  transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
-  opacity 0.15s ease;
+    transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.15s ease;
 }
 
 /* OPEN STATE */
-html.yt-float-menu tp-yt-app-drawer[opened] {
+html.mindful-youtube.yt-float-menu tp-yt-app-drawer[opened] {
   transform: scale(1);
   opacity: 1;
   pointer-events: auto;
 }
 
-html.yt-float-menu tp-yt-app-drawer #contentContainer {
+html.mindful-youtube.yt-float-menu tp-yt-app-drawer #contentContainer {
   width: 100% !important;
   max-height: calc(100vh - 100px) !important;
-
-  /* same as header */
-  background: rgba(22, 21, 20, 0.85) !important;
+  background: var(--mf-surface) !important;
   backdrop-filter: blur(12px) !important;
-
-  border: 1px solid rgba(255,255,255,0.05) !important;
+  border: 1px solid var(--mf-border) !important;
   border-radius: var(--mf-radius) !important;
-
   padding: 8px 0 0 10px !important;
-
   box-shadow: none !important;
 }
 
-html.yt-float-menu #guide-content,
-html.yt-float-menu ytd-guide-renderer {
+html.mindful-youtube.yt-float-menu #guide-content,
+html.mindful-youtube.yt-float-menu ytd-guide-renderer {
   background: transparent !important;
 }
 
 /* sections spacing */
-html.yt-float-menu ytd-guide-section-renderer {
+html.mindful-youtube.yt-float-menu ytd-guide-section-renderer {
   margin: 6px 0 !important;
   padding: 0 6px !important;
 }
 
 /* items */
-html.yt-float-menu ytd-guide-entry-renderer {
+html.mindful-youtube.yt-float-menu ytd-guide-entry-renderer {
   border-radius: 6px !important;
   margin: 2px 6px !important;
 }
 
-html.yt-float-menu ytd-guide-entry-renderer:hover {
-  background: rgba(255,255,255,0.06) !important;
+html.mindful-youtube.yt-float-menu ytd-guide-entry-renderer:hover {
+  background: var(--mf-chip-hover) !important;
 }
 
 /* section titles */
-html.yt-float-menu #header.ytd-guide-section-renderer {
+html.mindful-youtube.yt-float-menu #header.ytd-guide-section-renderer {
   font-size: 12px !important;
-  color: rgba(255,255,255,0.6) !important;
+  color: rgba(255, 255, 255, 0.6) !important;
   padding: 6px 12px !important;
 }
 
@@ -254,33 +257,28 @@ html.yt-float-menu #header.ytd-guide-section-renderer {
 HEADER (FLOATING BAR)
 ======================= */
 
-#masthead-container,
-#masthead-container #container,
-#masthead-container #background,
-ytd-masthead {
+html.mindful-youtube #masthead-container,
+html.mindful-youtube #masthead-container #container,
+html.mindful-youtube #masthead-container #background,
+html.mindful-youtube ytd-masthead {
   background: transparent !important;
   box-shadow: none !important;
 }
 
-#masthead-container {
+html.mindful-youtube #masthead-container {
   position: fixed !important;
-
   top: var(--mf-gap) !important;
   left: var(--mf-gap) !important;
   width: calc(100% - (var(--mf-gap) * 2)) !important;
-
   min-height: 48px !important;
-
-  background: rgba(22, 21, 20, 0.85) !important;
+  background: var(--mf-surface) !important;
   backdrop-filter: blur(12px) !important;
-
-  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid var(--mf-border) !important;
   border-radius: var(--mf-radius) !important;
-
   z-index: 10000 !important;
 }
 
-#center {
+html.mindful-youtube #center {
   display: flex !important;
   justify-content: center !important;
 }
@@ -289,13 +287,13 @@ ytd-masthead {
 GRID
 ====================== */
 
-ytd-rich-grid-renderer {
+html.mindful-youtube ytd-rich-grid-renderer {
   max-width: 100% !important;
   margin: 0 auto !important;
   padding: 16px 24px !important;
 }
 
-#contents.ytd-rich-grid-renderer {
+html.mindful-youtube #contents.ytd-rich-grid-renderer {
   display: grid !important;
   gap: 24px !important;
   width: 100% !important;
@@ -303,39 +301,39 @@ ytd-rich-grid-renderer {
 
 /* default → 3 columns */
 @media (min-width: 0px) {
-  #contents.ytd-rich-grid-renderer {
+  html.mindful-youtube #contents.ytd-rich-grid-renderer {
     grid-template-columns: repeat(3, 1fr) !important;
   }
 }
 
 /* medium → 4 columns */
 @media (min-width: 1100px) {
-  #contents.ytd-rich-grid-renderer {
+  html.mindful-youtube #contents.ytd-rich-grid-renderer {
     grid-template-columns: repeat(4, 1fr) !important;
   }
 }
 
 /* large → 5 columns */
 @media (min-width: 1600px) {
-  #contents.ytd-rich-grid-renderer {
+  html.mindful-youtube #contents.ytd-rich-grid-renderer {
     grid-template-columns: repeat(5, 1fr) !important;
   }
 }
 
-ytd-rich-item-renderer {
+html.mindful-youtube ytd-rich-item-renderer {
   width: 100% !important;
   min-width: 0 !important;
 }
 
 /* arrows / chip overflow cleanup */
-ytd-rich-grid-renderer #right-arrow,
-ytd-rich-grid-renderer #left-arrow {
+html.mindful-youtube ytd-rich-grid-renderer #right-arrow,
+html.mindful-youtube ytd-rich-grid-renderer #left-arrow {
   display: none !important;
 }
 
-.yt-chip-cloud-renderer-next,
-.yt-chip-cloud-renderer-prev,
-.with-chipbar.style-scope.ytd-app {
+html.mindful-youtube .yt-chip-cloud-renderer-next,
+html.mindful-youtube .yt-chip-cloud-renderer-prev,
+html.mindful-youtube .with-chipbar.style-scope.ytd-app {
   display: none !important;
 }
 
@@ -343,10 +341,10 @@ ytd-rich-grid-renderer #left-arrow {
 SHORTS REMOVAL
 ======================= */
 
-ytd-rich-section-renderer:has(ytd-reel-shelf-renderer),
-ytd-rich-section-renderer:has(a[href*="/shorts/"]),
-ytd-reel-shelf-renderer,
-ytd-rich-item-renderer:has(a[href*="/shorts/"]) {
+html.mindful-youtube.yt-hide-shorts ytd-rich-section-renderer:has(ytd-reel-shelf-renderer),
+html.mindful-youtube.yt-hide-shorts ytd-rich-section-renderer:has(a[href*="/shorts/"]),
+html.mindful-youtube.yt-hide-shorts ytd-reel-shelf-renderer,
+html.mindful-youtube.yt-hide-shorts ytd-rich-item-renderer:has(a[href*="/shorts/"]) {
   display: none !important;
 }
 
@@ -354,7 +352,7 @@ ytd-rich-item-renderer:has(a[href*="/shorts/"]) {
 CONTENT CLEANUP
 ================== */
 
-.ytd-merch-shelf-renderer {
+html.mindful-youtube .ytd-merch-shelf-renderer {
   display: none !important;
 }
 
@@ -362,8 +360,8 @@ CONTENT CLEANUP
 THUMBNAILS
 ======================= */
 
-.ytd-thumbnail,
-#thumbnail {
+html.mindful-youtube .ytd-thumbnail,
+html.mindful-youtube #thumbnail {
   overflow: hidden !important;
 }
 
@@ -371,7 +369,7 @@ THUMBNAILS
 SEARCH
 ======================= */
 
-.ytd-searchbox {
+html.mindful-youtube .ytd-searchbox {
   max-width: 600px !important;
   width: 100% !important;
 }
@@ -380,25 +378,25 @@ SEARCH
 CHIPS
 ======================= */
 
-.ytd-feed-filter-chip-bar-renderer {
+html.mindful-youtube .ytd-feed-filter-chip-bar-renderer {
   display: none;
 }
 
-.yt-chip-cloud-chip-renderer {
-  background: rgba(255, 255, 255, 0.06) !important;
-  color: var(--muted) !important;
+html.mindful-youtube .yt-chip-cloud-chip-renderer {
+  background: var(--mf-chip) !important;
+  color: var(--mf-muted) !important;
   border-radius: 6px !important;
   margin-right: 8px !important;
   transition: 0.2s !important;
 }
 
-.yt-chip-cloud-chip-renderer:hover {
-  background: rgba(255, 255, 255, 0.12) !important;
-  color: var(--text) !important;
+html.mindful-youtube .yt-chip-cloud-chip-renderer:hover {
+  background: var(--mf-chip-hover) !important;
+  color: var(--mf-text) !important;
 }
 
-.yt-chip-cloud-chip-renderer[aria-selected="true"] {
-  background: var(--accent) !important;
+html.mindful-youtube .yt-chip-cloud-chip-renderer[aria-selected="true"] {
+  background: var(--mf-accent) !important;
   color: #000 !important;
 }
 
@@ -406,29 +404,28 @@ CHIPS
 TYPOGRAPHY
 ======================= */
 
-.yt-formatted-string,
-h1,
-h2,
-h3 {
+html.mindful-youtube .yt-formatted-string,
+html.mindful-youtube h1,
+html.mindful-youtube h2,
+html.mindful-youtube h3 {
   font-weight: 400 !important;
-  color: var(--text) !important;
+  color: var(--mf-text) !important;
 }
 
-a:hover .yt-formatted-string {
-  color: var(--accent) !important;
+html.mindful-youtube a:hover .yt-formatted-string {
+  color: var(--mf-accent) !important;
 }
 
 /* =======================
 PLAYER
 ======================= */
 
-/* controls fade */
-.ytp-chrome-controls {
+html.mindful-youtube .ytp-chrome-controls {
   opacity: 0;
   transition: opacity 0.2s;
 }
 
-.html5-video-player:hover .ytp-chrome-controls {
+html.mindful-youtube .html5-video-player:hover .ytp-chrome-controls {
   opacity: 1;
 }
 
@@ -436,69 +433,68 @@ PLAYER
 COMMENTS
 ======================= */
 
-.ytd-comments {
+html.mindful-youtube .ytd-comments {
   display: block !important;
   max-width: 900px !important;
   margin: 24px auto !important;
   padding: 0 16px !important;
 }
 
-.ytd-comment-thread-renderer {
+html.mindful-youtube .ytd-comment-thread-renderer {
   background: transparent !important;
   border: none !important;
 }
 
-.ytd-comment-renderer {
-  color: var(--text) !important;
+html.mindful-youtube .ytd-comment-renderer {
+  color: var(--mf-text) !important;
 }
 
-#author-text {
-  color: var(--muted) !important;
+html.mindful-youtube #author-text {
+  color: var(--mf-muted) !important;
 }
 
-.ytd-comment-action-buttons-renderer {
+html.mindful-youtube .ytd-comment-action-buttons-renderer {
   opacity: 0.7;
 }
 
-.ytd-comment-action-buttons-renderer:hover {
+html.mindful-youtube .ytd-comment-action-buttons-renderer:hover {
   opacity: 1;
 }
-
 
 /* =======================
 AD
 ======================= */
 
-ytd-rich-section-renderer,
-ytd-in-feed-ad-layout-renderer,
-ytd-ad-slot-renderer,
-ytd-display-ad-renderer,
-ytd-promoted-sparkles-web-renderer {
+html.mindful-youtube ytd-rich-section-renderer,
+html.mindful-youtube ytd-in-feed-ad-layout-renderer,
+html.mindful-youtube ytd-ad-slot-renderer,
+html.mindful-youtube ytd-display-ad-renderer,
+html.mindful-youtube ytd-promoted-sparkles-web-renderer {
   display: none !important;
 }
 
-ytp-ad-module,
-ytp-ad-player-overlay { 
-  display: none !important; 
-  opacity: 0 !important; 
-  visibility: hidden !important; 
+html.mindful-youtube ytp-ad-module,
+html.mindful-youtube ytp-ad-player-overlay {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
 }
 
-ytd-engagement-panel-section-list-renderer[target-id="engagement-panel-ads"],
-#panels.ytd-watch-flexy,
-ytd-player-legacy-desktop-watch-ads-renderer {
+html.mindful-youtube ytd-engagement-panel-section-list-renderer[target-id="engagement-panel-ads"],
+html.mindful-youtube #panels.ytd-watch-flexy,
+html.mindful-youtube ytd-player-legacy-desktop-watch-ads-renderer {
   display: none !important;
 }
 
 /* OTHERS */
 
-.ytp-play-progress.ytp-swatch-background-color,
-.ytp-play-progress {
+html.mindful-youtube .ytp-play-progress.ytp-swatch-background-color,
+html.mindful-youtube .ytp-play-progress {
   background: var(--yt-progress-color) !important;
 }
 
-.ytp-scrubber-button.ytp-swatch-background-color,
-.ytp-scrubber-button {
+html.mindful-youtube .ytp-scrubber-button.ytp-swatch-background-color,
+html.mindful-youtube .ytp-scrubber-button {
   background: var(--yt-scrubber-color) !important;
   box-shadow: 0 0 5px var(--yt-scrubber-color) !important;
 }

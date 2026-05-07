@@ -10,15 +10,107 @@ const runtime =
     ? browser.runtime
     : chrome.runtime;
 
-let current = {};
+const DEFAULT_SETTINGS = {
+  enabled: true,
+  preset: "custom",
+  youtube: {
+    enabled: true,
+    mode: "custom",
+    hideRecommendations: false,
+    hideComments: false,
+    hideShorts: false,
+    floatingSidebar: false,
+    progressColor: "#4cafef",
+    scrubberColor: "#4cafef"
+  },
+  reddit: {
+    enabled: true,
+    mode: "minimal"
+  },
+  twitter: {
+    enabled: true,
+    mode: "focus"
+  },
+  pinterest: {
+    enabled: true,
+    mode: "dark"
+  },
+  pausedSites: {}
+};
 
-/* =========================
-   APPLY STATE
-========================= */
+function normalizeSettings(data = {}) {
+  const settings = JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
+
+  if (typeof data.enabled === "boolean") {
+    settings.enabled = data.enabled;
+  }
+
+  if (typeof data.preset === "string") {
+    settings.preset = data.preset;
+  }
+
+  if (data.pausedSites && typeof data.pausedSites === "object") {
+    settings.pausedSites = { ...settings.pausedSites, ...data.pausedSites };
+  }
+
+  if (data.youtube && typeof data.youtube === "object") {
+    settings.youtube = { ...settings.youtube, ...data.youtube };
+  }
+
+  if (data.reddit && typeof data.reddit === "object") {
+    settings.reddit = { ...settings.reddit, ...data.reddit };
+  }
+
+  if (data.twitter && typeof data.twitter === "object") {
+    settings.twitter = { ...settings.twitter, ...data.twitter };
+  }
+
+  if (data.pinterest && typeof data.pinterest === "object") {
+    settings.pinterest = { ...settings.pinterest, ...data.pinterest };
+  }
+
+  if (typeof data.ytHideRec === "boolean") {
+    settings.youtube.hideRecommendations = data.ytHideRec;
+  }
+
+  if (typeof data.ytHideComments === "boolean") {
+    settings.youtube.hideComments = data.ytHideComments;
+  }
+
+  if (typeof data.ytHideShorts === "boolean") {
+    settings.youtube.hideShorts = data.ytHideShorts;
+  }
+
+  if (typeof data.ytHamburger === "boolean") {
+    settings.youtube.floatingSidebar = data.ytHamburger;
+  }
+
+  if (typeof data.ytProgressColor === "string") {
+    settings.youtube.progressColor = data.ytProgressColor;
+  }
+
+  if (typeof data.ytScrubberColor === "string") {
+    settings.youtube.scrubberColor = data.ytScrubberColor;
+  }
+
+  if (typeof data.rdMinimal === "boolean") {
+    settings.reddit.mode = data.rdMinimal ? "minimal" : "custom";
+  }
+
+  if (typeof data.twFocus === "boolean") {
+    settings.twitter.mode = data.twFocus ? "focus" : "custom";
+  }
+
+  if (typeof data.ptDark === "boolean") {
+    settings.pinterest.mode = data.ptDark ? "dark" : "custom";
+  }
+
+  return settings;
+}
+
 function applyYouTubeColors(settings = {}) {
-  const progress = settings.ytProgressColor || "#4cafef";
-  const scrubber = settings.ytScrubberColor || "#ffffff";
-
+  const progress = settings.progressColor || "#4cafef";
+  const scrubber = settings.scrubberColor || "#ffffff";
   const root = document.documentElement;
 
   root.style.setProperty("--yt-progress-color", progress);
@@ -26,83 +118,79 @@ function applyYouTubeColors(settings = {}) {
 }
 
 function apply(settings = {}) {
-  current = settings;
+  const normalized = normalizeSettings(settings);
 
   html.classList.remove(
     "mindful-youtube",
-    "mindful-pinterest",
-    "mindful-reddit",
-    "mindful-twitter",
     "yt-hide-rec",
-    "yt-float-menu",
     "yt-hide-comments",
-    "pt-dark",
+    "yt-hide-shorts",
+    "yt-float-menu",
+    "mindful-reddit",
     "rd-minimal",
-    "tw-focus"
+    "mindful-twitter",
+    "tw-focus",
+    "mindful-pinterest",
+    "pt-dark"
   );
 
   const host = location.hostname;
+  const paused = normalized.pausedSites?.[host];
 
-  if (host.includes("youtube.com")) {
+  if (!normalized.enabled || paused) {
+    return;
+  }
+
+  if (host.includes("youtube.com") && normalized.youtube.enabled) {
     html.classList.add("mindful-youtube");
 
-    if (settings.ytHideRec) html.classList.add("yt-hide-rec");
-    if (settings.ytHamburger) html.classList.add("yt-float-menu");
-    if (settings.ytHideComments) html.classList.add("yt-hide-comments");
+    if (normalized.youtube.hideRecommendations) html.classList.add("yt-hide-rec");
+    if (normalized.youtube.hideComments) html.classList.add("yt-hide-comments");
+    if (normalized.youtube.hideShorts) html.classList.add("yt-hide-shorts");
+    if (normalized.youtube.floatingSidebar) html.classList.add("yt-float-menu");
 
-    applyYouTubeColors(settings);
+    applyYouTubeColors(normalized.youtube);
   }
 
-  if (host.includes("pinterest.com") && settings.ptDark) {
-    html.classList.add("pt-dark");
+  if (host.includes("reddit.com") && normalized.reddit.enabled) {
+    html.classList.add("mindful-reddit");
+    if (normalized.reddit.mode === "minimal") html.classList.add("rd-minimal");
   }
 
-  if (host.includes("reddit.com") && settings.rdMinimal) {
-    html.classList.add("rd-minimal");
+  if ((host.includes("x.com") || host.includes("twitter.com")) && normalized.twitter.enabled) {
+    html.classList.add("mindful-twitter");
+    if (normalized.twitter.mode === "focus") html.classList.add("tw-focus");
   }
 
-  if ((host.includes("x.com") || host.includes("twitter.com")) && settings.twFocus) {
-    html.classList.add("tw-focus");
+  if (host.includes("pinterest.com") && normalized.pinterest.enabled) {
+    html.classList.add("mindful-pinterest");
+    if (normalized.pinterest.mode === "dark") html.classList.add("pt-dark");
   }
 }
 
-/* =========================
-   SAFE FIREFOX STORAGE LOAD
-========================= */
 async function loadSettings() {
   try {
     const data = await storage.get();
-    return data || {};
+    return normalizeSettings(data);
   } catch (e) {
     console.error("Storage error:", e);
-    return {};
+    return normalizeSettings({});
   }
 }
 
-/* =========================
-   INIT (IMPORTANT FIX)
-========================= */
 async function init() {
   const settings = await loadSettings();
-
-  // small delay fixes Firefox race condition on reload
   requestAnimationFrame(() => {
     apply(settings);
   });
 }
 
-/* =========================
-   LISTEN POPUP CHANGES
-========================= */
 runtime.onMessage.addListener((msg) => {
   if (msg?.type === "UPDATE_SETTINGS") {
     apply(msg.settings || {});
   }
 });
 
-/* =========================
-   FIX: FIREFOX SPA NAVIGATION
-========================= */
 function watchUrl() {
   let last = location.href;
 
@@ -119,9 +207,6 @@ function watchUrl() {
   });
 }
 
-/* =========================
-   FIREFOX SAFE INIT DELAY
-========================= */
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", init);
 } else {

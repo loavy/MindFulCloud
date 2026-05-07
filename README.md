@@ -11,10 +11,11 @@
 ## ✨ Features
 
 ### 🎥 YouTube
-- Hide recommendations
-- Hide comments
-- Custom progress bar color
-- Custom scrubber (seek handle) color
+- Hide recommendations, comments, and Shorts
+- Custom progress bar color (22 presets)
+- Custom scrubber (seek handle) color (22 presets)
+- Floating sidebar option
+- Preset modes: Calm, Focus, Deep Focus
 
 ### 🧵 Reddit
 - Minimal mode
@@ -31,6 +32,13 @@
 - Dark theme
 - Reduced visual noise
 - Cleaner browsing experience
+
+### ⚙️ Global Controls
+- Master enable/disable toggle
+- Per-site pause functionality
+- Import/export settings
+- Reset to defaults
+- Cross-browser support (Chrome, Firefox)
 
 ---
 
@@ -126,8 +134,11 @@ git clone https://github.com/PinkMath/MindFulCloud.git
 ---
 
 ## 💡 Roadmap
- - Master enable/disable toggle
- - Per-site settings sync
- - Better YouTube live updates (no repaint hacks)
- - MutationObserver (remove polling)
- - UI redesign for popup (premium feel)
+- ✅ Master enable/disable toggle
+- ✅ Per-site pause functionality
+- ✅ Preset modes for YouTube
+- ✅ Import/export/reset settings
+- ✅ Compact color palettes (22 presets each)
+- 🔄 Better YouTube live updates (MutationObserver)
+- 🔄 Enhanced cross-platform compatibility
+- 🔄 Settings backup/sync across devices

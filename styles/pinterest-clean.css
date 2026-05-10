@@ -1,52 +1,38 @@
 /* =======================
-THEME TOKENS
+MINDFULCLOUD - PINTEREST
+Minimal Dark Theme
 ======================= */
 
 html.mindful-pinterest.pt-dark {
-  /* base */
-  --bg: #161514;
-  --surface: #1c1b1a;
-  --surface-2: #22211f;
-
-  /* text */
-  --text: #f0e4d6;
-  --muted: #a89f94;
-
-  /* ui */
-  --border: rgba(255,255,255,0.05);
-  --hover: rgba(255,255,255,0.06);
-  --active: rgba(255,255,255,0.12);
-
-  /* radius */
-  --r-sm: 8px;
-  --r-md: 12px;
-  --r-lg: 14px;
-
-  /* glass */
-  --glass-bg: rgba(22,21,20,0.65);
-  --glass-surface: rgba(28,27,26,0.6);
-  --glass-strong: rgba(28,27,26,0.8);
-  --glass-border: rgba(255,255,255,0.06);
+  --bg: #0a0a0a;
+  --surface: #161616;
+  --surface-hover: #1f1f1f;
+  --text-primary: #f5f5f5;
+  --text-secondary: #b3b3b3;
+  --border: rgba(255,255,255,0.06);
+  --shadow: 0 2px 8px rgba(0,0,0,0.4);
+  --radius: 8px;
+  --tr: 0.2s ease;
 }
 
 
 /* =======================
-GLOBAL
+GLOBAL RESET
 ======================= */
 
 html.mindful-pinterest.pt-dark,
 html.mindful-pinterest.pt-dark body,
 html.mindful-pinterest.pt-dark main {
   background: var(--bg) !important;
-  color: var(--text) !important;
+  color: var(--text-primary) !important;
 }
 
-/* remove white leaks */
 html.mindful-pinterest.pt-dark * {
   box-shadow: none !important;
+  -webkit-font-smoothing: antialiased;
 }
 
-html.mindful-pinterest.pt-dark div,
+html.mindful-pinterest.pt-dark div:not(header *):not([role="dialog"] *),
 html.mindful-pinterest.pt-dark section,
 html.mindful-pinterest.pt-dark article {
   background-color: transparent !important;
@@ -54,71 +40,74 @@ html.mindful-pinterest.pt-dark article {
 
 
 /* =======================
-HEADER
+HEADER & NAVIGATION
 ======================= */
 
 html.mindful-pinterest.pt-dark header {
   position: sticky !important;
   top: 0;
-
-  background: rgba(22,21,20,0.85) !important;
-  backdrop-filter: blur(12px);
-
+  background: rgba(10,10,10,0.95) !important;
+  backdrop-filter: blur(8px);
   border-bottom: 1px solid var(--border);
   z-index: 999;
 }
 
+html.mindful-pinterest.pt-dark nav {
+  background: transparent !important;
+}
+
 
 /* =======================
-SEARCH
+SEARCH INPUT
 ======================= */
 
-html.mindful-pinterest.pt-dark header input,
-html.mindful-pinterest.pt-dark header textarea,
-html.mindful-pinterest.pt-dark header [contenteditable="true"] {
+html.mindful-pinterest.pt-dark header input[type="search"],
+html.mindful-pinterest.pt-dark header input[placeholder*="search" i],
+html.mindful-pinterest.pt-dark header input[placeholder*="Search" i],
+html.mindful-pinterest.pt-dark header input {
   background: var(--surface) !important;
-  color: var(--text) !important;
-
+  color: var(--text-primary) !important;
   border: 1px solid var(--border) !important;
-  border-radius: 999px;
-
-  padding: 10px 14px;
-
-  transition: all 0.2s ease;
+  border-radius: 24px;
+  padding: 8px 16px;
+  font-size: 14px;
+  transition: all var(--tr);
 }
 
 html.mindful-pinterest.pt-dark header input::placeholder {
-  color: var(--muted);
+  color: var(--text-secondary);
+}
+
+html.mindful-pinterest.pt-dark header input:hover {
+  background: var(--surface-hover) !important;
+  border-color: rgba(255,255,255,0.1) !important;
 }
 
 html.mindful-pinterest.pt-dark header input:focus {
-  background: var(--surface-2) !important;
-  border-color: var(--active);
+  background: var(--surface-hover) !important;
+  border-color: rgba(255,255,255,0.15) !important;
 }
 
 
 /* =======================
-PINS (CARDS)
+PINS / CARDS
 ======================= */
 
-html.mindful-pinterest.pt-dark div[data-test-id="pin"] {
+html.mindful-pinterest.pt-dark div[data-test-id="pin"],
+html.mindful-pinterest.pt-dark [data-test-id="pin"] {
   background: var(--surface) !important;
-
-  border-radius: var(--r-md);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
   overflow: hidden;
-
-  transition: transform 0.15s ease, background 0.2s ease;
+  transition: all var(--tr);
 }
 
-html.mindful-pinterest.pt-dark div[data-test-id="pin"]:hover {
-  background: var(--surface-2) !important;
+html.mindful-pinterest.pt-dark div[data-test-id="pin"]:hover,
+html.mindful-pinterest.pt-dark [data-test-id="pin"]:hover {
+  background: var(--surface-hover) !important;
+  border-color: rgba(255,255,255,0.1);
   transform: translateY(-2px);
 }
-
-
-/* =======================
-REMOVE PIN HOVER OVERLAY (FIXED)
-======================= */
 
 html.mindful-pinterest.pt-dark div[data-test-id="pin"] * {
   background-image: none !important;
@@ -133,26 +122,36 @@ html.mindful-pinterest.pt-dark div[data-test-id="pin"]::after {
   display: none !important;
 }
 
-/* stop dim effect */
 html.mindful-pinterest.pt-dark div[data-test-id="pin"]:hover * {
   opacity: 1 !important;
 }
 
 
 /* =======================
-TEXT
+TEXT & TYPOGRAPHY
 ======================= */
 
 html.mindful-pinterest.pt-dark h1,
 html.mindful-pinterest.pt-dark h2,
 html.mindful-pinterest.pt-dark h3,
-html.mindful-pinterest.pt-dark span,
-html.mindful-pinterest.pt-dark a {
-  color: var(--text) !important;
+html.mindful-pinterest.pt-dark h4,
+html.mindful-pinterest.pt-dark h5,
+html.mindful-pinterest.pt-dark h6 {
+  color: var(--text-primary) !important;
 }
 
-html.mindful-pinterest.pt-dark p {
-  color: var(--muted) !important;
+html.mindful-pinterest.pt-dark p,
+html.mindful-pinterest.pt-dark span,
+html.mindful-pinterest.pt-dark a {
+  color: var(--text-primary) !important;
+}
+
+html.mindful-pinterest.pt-dark a {
+  text-decoration: none;
+}
+
+html.mindful-pinterest.pt-dark a:hover {
+  color: var(--text-secondary) !important;
 }
 
 
@@ -163,76 +162,52 @@ BUTTONS
 html.mindful-pinterest.pt-dark button,
 html.mindful-pinterest.pt-dark [role="button"] {
   background: var(--surface) !important;
-  color: var(--text) !important;
-
-  border: 1px solid var(--border);
-  border-radius: var(--r-sm);
-
-  transition: all 0.2s ease;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius);
+  padding: 8px 16px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all var(--tr);
 }
 
-html.mindful-pinterest.pt-dark button:hover {
-  background: var(--hover);
+html.mindful-pinterest.pt-dark button:hover,
+html.mindful-pinterest.pt-dark [role="button"]:hover {
+  background: var(--surface-hover) !important;
+  border-color: rgba(255,255,255,0.1) !important;
 }
 
-html.mindful-pinterest.pt-dark button:active {
-  background: var(--active);
-}
-
-
-/* =======================
-ICONS (FORCE VISIBILITY)
-======================= */
-
-html.mindful-pinterest.pt-dark svg {
-  fill: #fff !important;
-  color: #fff !important;
-}
-
-html.mindful-pinterest.pt-dark i,
-html.mindful-pinterest.pt-dark span[role="img"] {
-  color: #fff !important;
-}
-
-/* keep images normal */
-html.mindful-pinterest.pt-dark img {
-  filter: none !important;
+html.mindful-pinterest.pt-dark button:active,
+html.mindful-pinterest.pt-dark [role="button"]:active {
+  transform: scale(0.98);
 }
 
 
 /* =======================
-INPUTS
-======================= */
-
-html.mindful-pinterest.pt-dark input,
-html.mindful-pinterest.pt-dark textarea {
-  background: var(--surface) !important;
-  color: var(--text) !important;
-
-  border: 1px solid var(--border);
-}
-
-
-/* =======================
-MODALS
+MODALS & DIALOGS
 ======================= */
 
 html.mindful-pinterest.pt-dark [role="dialog"],
 html.mindful-pinterest.pt-dark .ReactModal__Content {
-  background: rgba(28,27,26,0.9) !important;
-  backdrop-filter: blur(16px);
-
+  background: var(--surface) !important;
   border: 1px solid var(--border);
-  border-radius: var(--r-md);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(8px);
 }
 
 
 /* =======================
-NAV
+ICONS & IMAGES
 ======================= */
 
-html.mindful-pinterest.pt-dark nav {
-  background: var(--bg) !important;
+html.mindful-pinterest.pt-dark svg {
+  color: var(--text-primary) !important;
+  fill: currentColor !important;
+}
+
+html.mindful-pinterest.pt-dark img {
+  filter: none !important;
 }
 
 
@@ -244,71 +219,36 @@ html.mindful-pinterest.pt-dark ::-webkit-scrollbar {
   width: 8px;
 }
 
+html.mindful-pinterest.pt-dark ::-webkit-scrollbar-track {
+  background: transparent;
+}
+
 html.mindful-pinterest.pt-dark ::-webkit-scrollbar-thumb {
-  background: var(--surface-2);
-  border-radius: 8px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 4px;
+}
+
+html.mindful-pinterest.pt-dark ::-webkit-scrollbar-thumb:hover {
+  background: rgba(255,255,255,0.15);
 }
 
 
 /* =======================
-GLASS MODE
+GLASS MODE (Optional)
 ======================= */
 
 html.mindful-pinterest.pt-dark.pt-glass {
-  backdrop-filter: blur(10px);
+  --surface: rgba(22,22,22,0.7);
+  --surface-hover: rgba(31,31,31,0.75);
 }
 
-/* header */
 html.mindful-pinterest.pt-dark.pt-glass header {
-  background: var(--glass-bg) !important;
-  backdrop-filter: blur(18px) saturate(140%);
-
-  border-bottom: 1px solid var(--glass-border);
-}
-
-/* search */
-html.mindful-pinterest.pt-dark.pt-glass header input {
-  background: var(--glass-surface) !important;
-  backdrop-filter: blur(12px);
-
-  border: 1px solid var(--glass-border);
-}
-
-/* pins */
-html.mindful-pinterest.pt-dark.pt-glass div[data-test-id="pin"] {
-  background: var(--glass-surface) !important;
-
-  border: 1px solid var(--glass-border);
+  background: rgba(10,10,10,0.8) !important;
   backdrop-filter: blur(12px);
 }
 
-html.mindful-pinterest.pt-dark.pt-glass div[data-test-id="pin"]:hover {
-  background: var(--glass-strong) !important;
-
-  border-color: rgba(255,255,255,0.12);
-  transform: translateY(-3px) scale(1.01);
-}
-
-/* buttons */
-html.mindful-pinterest.pt-dark.pt-glass button {
-  background: var(--glass-surface) !important;
-  backdrop-filter: blur(10px);
-
-  border: 1px solid var(--glass-border);
-}
-
-/* modals */
-html.mindful-pinterest.pt-dark.pt-glass [role="dialog"] {
-  background: var(--glass-strong) !important;
-  backdrop-filter: blur(20px);
-}
-
-/* scrollbar */
-html.mindful-pinterest.pt-dark.pt-glass ::-webkit-scrollbar-thumb {
-  background: rgba(255,255,255,0.1);
-}
-
-/* smooth everything */
-html.mindful-pinterest.pt-dark.pt-glass * {
-  transition: background 0.2s ease, border 0.2s ease, transform 0.15s ease;
+html.mindful-pinterest.pt-dark.pt-glass [role="dialog"],
+html.mindful-pinterest.pt-dark.pt-glass .ReactModal__Content {
+  background: rgba(22,22,22,0.8) !important;
+  backdrop-filter: blur(12px);
 }

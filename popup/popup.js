@@ -19,11 +19,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     ytHideShorts: document.getElementById("ytHideShorts"),
     ytHamburger: document.getElementById("ytHamburger"),
     rdMode: document.getElementById("rdMode"),
-    rdMinimal: document.getElementById("rdMinimal"),
     twMode: document.getElementById("twMode"),
-    twFocus: document.getElementById("twFocus"),
     ptMode: document.getElementById("ptMode"),
-    ptDark: document.getElementById("ptDark"),
     exportSettings: document.getElementById("exportSettings"),
     importSettings: document.getElementById("importSettings"),
     resetSettings: document.getElementById("resetSettings")
@@ -81,7 +78,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     },
     pinterest: {
       enabled: true,
-      mode: "dark"
+      mode: "minimal"
     },
     pausedSites: {}
   };
@@ -188,18 +185,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       settings.youtube.scrubberColor = data.ytScrubberColor;
     }
 
-    if (typeof data.rdMinimal === "boolean") {
-      settings.reddit.mode = data.rdMinimal ? "minimal" : "custom";
-    }
-
-    if (typeof data.twFocus === "boolean") {
-      settings.twitter.mode = data.twFocus ? "focus" : "custom";
-    }
-
-    if (typeof data.ptDark === "boolean") {
-      settings.pinterest.mode = data.ptDark ? "dark" : "custom";
-    }
-
     return settings;
   }
 
@@ -258,19 +243,16 @@ document.addEventListener("DOMContentLoaded", async () => {
   function applyRedditMode(mode) {
     if (!elements.rdMode) return;
     elements.rdMode.value = mode;
-    elements.rdMinimal.checked = mode === "minimal";
   }
 
   function applyTwitterMode(mode) {
     if (!elements.twMode) return;
     elements.twMode.value = mode;
-    elements.twFocus.checked = mode === "focus";
   }
 
   function applyPinterestMode(mode) {
     if (!elements.ptMode) return;
     elements.ptMode.value = mode;
-    elements.ptDark.checked = mode === "dark";
   }
 
   async function cleanLegacyKeys() {
@@ -301,7 +283,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       },
       pinterest: {
         enabled: true,
-        mode: elements.ptMode?.value || "dark"
+        mode: elements.ptMode?.value || "minimal"
       },
       pausedSites: { ...(currentSettings.pausedSites || {}) }
     };
@@ -360,22 +342,22 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (name === "calm") {
       applyYouTubeMode("calm");
       applyRedditMode("minimal");
-      applyTwitterMode("focus");
-      applyPinterestMode("dark");
+      applyTwitterMode("zen");
+      applyPinterestMode("minimal");
     }
 
     if (name === "focus") {
       applyYouTubeMode("focus");
-      applyRedditMode("minimal");
+      applyRedditMode("compact");
       applyTwitterMode("focus");
       applyPinterestMode("dark");
     }
 
     if (name === "deep-focus") {
       applyYouTubeMode("deep-focus");
-      applyRedditMode("minimal");
-      applyTwitterMode("focus");
-      applyPinterestMode("dark");
+      applyRedditMode("focus");
+      applyTwitterMode("zen");
+      applyPinterestMode("glass");
     }
 
     if (name === "custom") {
@@ -413,13 +395,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (elements.ytHamburger) elements.ytHamburger.checked = currentSettings.youtube.floatingSidebar;
 
     if (elements.rdMode) elements.rdMode.value = currentSettings.reddit.mode;
-    if (elements.rdMinimal) elements.rdMinimal.checked = currentSettings.reddit.mode === "minimal";
 
     if (elements.twMode) elements.twMode.value = currentSettings.twitter.mode;
-    if (elements.twFocus) elements.twFocus.checked = currentSettings.twitter.mode === "focus";
 
     if (elements.ptMode) elements.ptMode.value = currentSettings.pinterest.mode;
-    if (elements.ptDark) elements.ptDark.checked = currentSettings.pinterest.mode === "dark";
 
     ytProgressColor = currentSettings.youtube.progressColor || ytProgressColor;
     ytScrubberColor = currentSettings.youtube.scrubberColor || ytScrubberColor;
@@ -457,22 +436,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     elements.ytHideRec,
     elements.ytHideComments,
     elements.ytHideShorts,
-    elements.ytHamburger,
-    elements.rdMinimal,
-    elements.twFocus,
-    elements.ptDark
+    elements.ytHamburger
+  ];
+
+  const selectMap = [
+    elements.ytMode,
+    elements.ytMode,
+    elements.ytMode,
+    elements.ytMode
   ];
 
   toggles.forEach((toggle, index) => {
-    const selectMap = [
-      elements.ytMode,
-      elements.ytMode,
-      elements.ytMode,
-      elements.ytMode,
-      elements.rdMode,
-      elements.twMode,
-      elements.ptMode
-    ];
     wireToggle(toggle, selectMap[index]);
   });
 

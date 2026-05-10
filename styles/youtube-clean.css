@@ -338,14 +338,116 @@ html.mindful-youtube .with-chipbar.style-scope.ytd-app {
 }
 
 /* =======================
-SHORTS REMOVAL
+SHORTS REMOVAL - COMPREHENSIVE
 ======================= */
 
-html.mindful-youtube.yt-hide-shorts ytd-rich-section-renderer:has(ytd-reel-shelf-renderer),
-html.mindful-youtube.yt-hide-shorts ytd-rich-section-renderer:has(a[href*="/shorts/"]),
-html.mindful-youtube.yt-hide-shorts ytd-reel-shelf-renderer,
-html.mindful-youtube.yt-hide-shorts ytd-rich-item-renderer:has(a[href*="/shorts/"]) {
+/* Hide the Shorts tab and any navigation items */
+html.mindful-youtube.yt-hide-shorts ytd-toggle-item-renderer[aria-label*="Short"],
+html.mindful-youtube.yt-hide-shorts ytd-toggle-item-renderer[title*="Short"],
+html.mindful-youtube.yt-hide-shorts a[aria-label*="Short"],
+html.mindful-youtube.yt-hide-shorts a[title*="Short"],
+html.mindful-youtube.yt-hide-shorts ytd-chip-cloud-chip-renderer[aria-label*="Short"],
+html.mindful-youtube.yt-hide-shorts ytd-chip-cloud-chip-renderer[title*="Short"] {
   display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  overflow: hidden !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Hide reel shelf (main shorts container) */
+html.mindful-youtube.yt-hide-shorts ytd-reel-shelf-renderer,
+html.mindful-youtube.yt-hide-shorts ytd-rich-section-renderer:has(ytd-reel-shelf-renderer),
+html.mindful-youtube.yt-hide-shorts ytd-rich-section-renderer:has(a[href*="/shorts/"]) {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  overflow: hidden !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Hide any video item/card linking to shorts */
+html.mindful-youtube.yt-hide-shorts ytd-rich-item-renderer:has(a[href*="/shorts/"], a[href*="youtube.com/shorts/"]),
+html.mindful-youtube.yt-hide-shorts ytd-video-renderer:has(a[href*="/shorts/"], a[href*="youtube.com/shorts/"]),
+html.mindful-youtube.yt-hide-shorts ytd-compact-video-renderer:has(a[href*="/shorts/"], a[href*="youtube.com/shorts/"]),
+html.mindful-youtube.yt-hide-shorts ytd-rich-grid-media:has(a[href*="/shorts/"]) {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  overflow: hidden !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Hide shorts in search results by aria-label */
+html.mindful-youtube.yt-hide-shorts ytd-rich-item-renderer[aria-label*="Short"],
+html.mindful-youtube.yt-hide-shorts ytd-video-renderer[aria-label*="Short"] {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  overflow: hidden !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Hide reel containers in different positions */
+html.mindful-youtube.yt-hide-shorts .ytd-reel-shelf-renderer,
+html.mindful-youtube.yt-hide-shorts [data-test-id*="reel"],
+html.mindful-youtube.yt-hide-shorts [data-test-id*="shorts"],
+html.mindful-youtube.yt-hide-shorts ytd-reels-player-header-renderer {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  overflow: hidden !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Hide whole Shorts section/shelf renderers */
+html.mindful-youtube.yt-hide-shorts ytd-rich-shelf-renderer:has(a[href*="/shorts/"], a[href*="youtube.com/shorts/"]),
+html.mindful-youtube.yt-hide-shorts ytd-shelf-renderer:has(a[href*="/shorts/"], a[href*="youtube.com/shorts/"]),
+html.mindful-youtube.yt-hide-shorts ytd-rich-section-renderer:has(ytd-rich-shelf-renderer:has(a[href*="/shorts/"], a[href*="youtube.com/shorts/"])),
+html.mindful-youtube.yt-hide-shorts ytd-rich-section-renderer:has(ytd-shelf-renderer:has(a[href*="/shorts/"], a[href*="youtube.com/shorts/"])),
+html.mindful-youtube.yt-hide-shorts ytd-item-section-renderer:has(a[href*="/shorts/"], a[href*="youtube.com/shorts/"]),
+html.mindful-youtube.yt-hide-shorts ytd-item-section-renderer:has(grid-shelf-view-model),
+html.mindful-youtube.yt-hide-shorts ytd-rich-grid-renderer:has(a[href*="/shorts/"])
+{
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  overflow: hidden !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Hide by class if YouTube uses it */
+html.mindful-youtube.yt-hide-shorts [class*="shorts"],
+html.mindful-youtube.yt-hide-shorts [class*="Shorts"],
+html.mindful-youtube.yt-hide-shorts [class*="reel"],
+html.mindful-youtube.yt-hide-shorts [class*="Reel"],
+html.mindful-youtube.yt-hide-shorts .ytGridShelfViewModelHost,
+html.mindful-youtube.yt-hide-shorts .ytGridShelfViewModelHostHasBottomButton,
+html.mindful-youtube.yt-hide-shorts grid-shelf-view-model {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  overflow: hidden !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Emergency fallback: hide all links containing /shorts/ anywhere */
+html.mindful-youtube.yt-hide-shorts [href*="/shorts"],
+html.mindful-youtube.yt-hide-shorts [data-href*="/shorts"],
+html.mindful-youtube.yt-hide-shorts [onclick*="/shorts"] {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  overflow: hidden !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 /* =======================

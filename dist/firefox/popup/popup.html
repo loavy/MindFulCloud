@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>MindfulCloud</title>
+    <link rel="stylesheet" href="popup.css">
+  </head>
+  <body>
+
+    <div class="container">
+      <h1>☁️ MindfulCloud</h1>
+
+      <div class="section">
+        <div class="section-header">Global Settings</div>
+        <div class="section-content">
+          <label class="row" for="masterEnabled">
+            <span>Master Enable</span>
+            <div class="switch">
+              <input type="checkbox" id="masterEnabled">
+              <span class="slider"></span>
+            </div>
+          </label>
+
+          <div class="row">
+            <span>Preset Mode</span>
+            <select id="globalPreset">
+              <option value="custom">Custom</option>
+              <option value="calm">Calm</option>
+              <option value="focus">Focus</option>
+              <option value="deep-focus">Deep Focus</option>
+            </select>
+          </div>
+
+          <label class="row" for="sitePaused">
+            <span id="pauseTitle">Pause this site</span>
+            <div class="switch">
+              <input type="checkbox" id="sitePaused">
+              <span class="slider"></span>
+            </div>
+          </label>
+
+          <div class="row buttons-row">
+            <button id="exportSettings" class="button secondary">Export</button>
+            <button id="importSettings" class="button secondary">Import</button>
+            <button id="resetSettings" class="button danger">Reset</button>
+          </div>
+
+          <div class="status-message" id="statusMessage"></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-header">YouTube</div>
+        <div class="section-content">
+          <div class="row">
+            <span>YouTube Mode</span>
+            <select id="ytMode">
+              <option value="custom">Custom</option>
+              <option value="calm">Calm</option>
+              <option value="focus">Focus</option>
+              <option value="deep-focus">Deep Focus</option>
+            </select>
+          </div>
+
+          <label class="row" for="ytHamburger">
+            <span>Floating Sidebar</span>
+            <div class="switch">
+              <input type="checkbox" id="ytHamburger">
+              <span class="slider"></span>
+            </div>
+          </label>
+
+          <label class="row" for="ytHideRec">
+            <span>Hide Recommendations</span>
+            <div class="switch">
+              <input type="checkbox" id="ytHideRec">
+              <span class="slider"></span>
+            </div>
+          </label>
+
+          <label class="row" for="ytHideComments">
+            <span>Hide Comments</span>
+            <div class="switch">
+              <input type="checkbox" id="ytHideComments">
+              <span class="slider"></span>
+            </div>
+          </label>
+
+          <label class="row" for="ytHideShorts">
+            <span>Hide Shorts</span>
+            <div class="switch">
+              <input type="checkbox" id="ytHideShorts">
+              <span class="slider"></span>
+            </div>
+          </label>
+
+          <div class="color-section">
+            <div class="row color-row color-toggle" data-palette="progressPalette">
+              <span>Progress Bar</span>
+              <div class="color-control">
+                <div class="color-preview" id="ytProgressPreview" aria-hidden="true"></div>
+                <input id="ytProgressHex" class="hex-input" type="text" maxlength="7" placeholder="#ff0000">
+              </div>
+            </div>
+            <div class="color-palette" id="progressPalette">
+              <button type="button" class="palette-swatch" data-color="#ff0000" aria-label="Red"></button>
+              <button type="button" class="palette-swatch" data-color="#ef4444" aria-label="Soft Red"></button>
+              <button type="button" class="palette-swatch" data-color="#f97316" aria-label="Orange"></button>
+              <button type="button" class="palette-swatch" data-color="#f59e0b" aria-label="Amber"></button>
+              <button type="button" class="palette-swatch" data-color="#eab308" aria-label="Yellow"></button>
+              <button type="button" class="palette-swatch" data-color="#84cc16" aria-label="Lime"></button>
+              <button type="button" class="palette-swatch" data-color="#22c55e" aria-label="Green"></button>
+              <button type="button" class="palette-swatch" data-color="#10b981" aria-label="Emerald"></button>
+              <button type="button" class="palette-swatch" data-color="#14b8a6" aria-label="Teal"></button>
+              <button type="button" class="palette-swatch" data-color="#06b6d4" aria-label="Cyan"></button>
+              <button type="button" class="palette-swatch" data-color="#4cafef" aria-label="Blue"></button>
+              <button type="button" class="palette-swatch" data-color="#3b82f6" aria-label="Strong Blue"></button>
+              <button type="button" class="palette-swatch" data-color="#6366f1" aria-label="Indigo"></button>
+              <button type="button" class="palette-swatch" data-color="#8b5cf6" aria-label="Purple"></button>
+              <button type="button" class="palette-swatch" data-color="#a855f7" aria-label="Violet"></button>
+              <button type="button" class="palette-swatch" data-color="#d946ef" aria-label="Fuchsia"></button>
+              <button type="button" class="palette-swatch" data-color="#ec4899" aria-label="Pink"></button>
+              <button type="button" class="palette-swatch" data-color="#f43f5e" aria-label="Rose"></button>
+              <button type="button" class="palette-swatch" data-color="#ffffff" aria-label="White"></button>
+              <button type="button" class="palette-swatch" data-color="#d1d5db" aria-label="Gray"></button>
+              <button type="button" class="palette-swatch" data-color="#6b7280" aria-label="Dark Gray"></button>
+              <button type="button" class="palette-swatch" data-color="#111111" aria-label="Black"></button>
+            </div>
+
+            <div class="row color-row color-toggle" data-palette="scrubberPalette">
+              <span>Scrubber (Circle)</span>
+              <div class="color-control">
+                <div class="color-preview" id="ytScrubberPreview" aria-hidden="true"></div>
+                <input id="ytScrubberHex" class="hex-input" type="text" maxlength="7" placeholder="#ffffff">
+              </div>
+            </div>
+            <div class="color-palette" id="scrubberPalette">
+              <button type="button" class="palette-swatch" data-color="#ff0000" aria-label="Red"></button>
+              <button type="button" class="palette-swatch" data-color="#ef4444" aria-label="Soft Red"></button>
+              <button type="button" class="palette-swatch" data-color="#f97316" aria-label="Orange"></button>
+              <button type="button" class="palette-swatch" data-color="#f59e0b" aria-label="Amber"></button>
+              <button type="button" class="palette-swatch" data-color="#eab308" aria-label="Yellow"></button>
+              <button type="button" class="palette-swatch" data-color="#84cc16" aria-label="Lime"></button>
+              <button type="button" class="palette-swatch" data-color="#22c55e" aria-label="Green"></button>
+              <button type="button" class="palette-swatch" data-color="#10b981" aria-label="Emerald"></button>
+              <button type="button" class="palette-swatch" data-color="#14b8a6" aria-label="Teal"></button>
+              <button type="button" class="palette-swatch" data-color="#06b6d4" aria-label="Cyan"></button>
+              <button type="button" class="palette-swatch" data-color="#4cafef" aria-label="Blue"></button>
+              <button type="button" class="palette-swatch" data-color="#3b82f6" aria-label="Strong Blue"></button>
+              <button type="button" class="palette-swatch" data-color="#6366f1" aria-label="Indigo"></button>
+              <button type="button" class="palette-swatch" data-color="#8b5cf6" aria-label="Purple"></button>
+              <button type="button" class="palette-swatch" data-color="#a855f7" aria-label="Violet"></button>
+              <button type="button" class="palette-swatch" data-color="#d946ef" aria-label="Fuchsia"></button>
+              <button type="button" class="palette-swatch" data-color="#ec4899" aria-label="Pink"></button>
+              <button type="button" class="palette-swatch" data-color="#f43f5e" aria-label="Rose"></button>
+              <button type="button" class="palette-swatch" data-color="#ffffff" aria-label="White"></button>
+              <button type="button" class="palette-swatch" data-color="#d1d5db" aria-label="Gray"></button>
+              <button type="button" class="palette-swatch" data-color="#6b7280" aria-label="Dark Gray"></button>
+              <button type="button" class="palette-swatch" data-color="#111111" aria-label="Black"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-header">Reddit</div>
+        <div class="section-content">
+          <div class="row">
+            <span>Reddit Style</span>
+            <select id="rdMode">
+              <option value="custom">Custom</option>
+              <option value="minimal">Minimal</option>
+              <option value="compact">Compact</option>
+              <option value="focus">Focus</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-header">Twitter / X</div>
+        <div class="section-content">
+          <div class="row">
+            <span>X Style</span>
+            <select id="twMode">
+              <option value="custom">Custom</option>
+              <option value="focus">Focus</option>
+              <option value="minimal">Minimal</option>
+              <option value="zen">Zen</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-header">Pinterest</div>
+        <div class="section-content">
+          <div class="row">
+            <span>Pinterest Style</span>
+            <select id="ptMode">
+              <option value="custom">Custom</option>
+              <option value="minimal">Minimal</option>
+              <option value="dark">Dark</option>
+              <option value="glass">Glass</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <script src="popup.js"></script>
+  </body>
+</html>

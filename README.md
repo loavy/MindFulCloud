@@ -1,4 +1,4 @@
-# MindFulCloud
+# MindFulCloud 🪴
 
 > A calmer cloud for loud websites.
 

@@ -1,0 +1,16 @@
+html.mindful-twitter.tw-zen body {
+  background: var(--bg) !important;
+}
+
+html.mindful-twitter.tw-zen main {
+  max-width: 560px !important;
+  margin: auto !important;
+}
+
+html.mindful-twitter.tw-zen aside,
+html.mindful-twitter.tw-zen nav[aria-label="Primary"],
+html.mindful-twitter.tw-zen [aria-label="Timeline: Trending now"],
+html.mindful-twitter.tw-zen [aria-label="Who to follow"],
+html.mindful-twitter.tw-zen [data-testid="sidebarColumn"] {
+  display: none !important;
+}

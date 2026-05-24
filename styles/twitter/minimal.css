@@ -1,0 +1,5 @@
+html.mindful-twitter.tw-minimal aside,
+html.mindful-twitter.tw-minimal [aria-label="Timeline: Trending now"],
+html.mindful-twitter.tw-minimal [aria-label="Who to follow"] {
+  display: none !important;
+}

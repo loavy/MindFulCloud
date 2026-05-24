@@ -9,9 +9,24 @@ $root = Resolve-Path (Join-Path $PSScriptRoot "..")
 $dist = Join-Path $root "dist"
 $distRoot = [System.IO.Path]::GetFullPath($dist)
 $targets = if ($Target -eq "all") { @("chrome", "firefox") } else { @($Target) }
-$items = @("content.js", "preload.js", "README.md", "icons", "popup", "styles")
+$items = @("content.js", "icons", "popup", "shared", "styles")
 
 New-Item -ItemType Directory -Force -Path $dist | Out-Null
+
+if ($Target -eq "all") {
+  foreach ($oldTarget in @("chrome", "firefox")) {
+    $oldStage = Join-Path $dist $oldTarget
+    $oldZip = Join-Path $dist "MindFulCloud-$oldTarget.zip"
+
+    if (Test-Path $oldStage) {
+      Remove-Item -LiteralPath $oldStage -Recurse -Force
+    }
+
+    if (Test-Path $oldZip) {
+      Remove-Item -LiteralPath $oldZip -Force
+    }
+  }
+}
 
 foreach ($currentTarget in $targets) {
   $stage = Join-Path $dist $currentTarget

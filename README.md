@@ -1,87 +1,113 @@
 # MindFulCloud
 
-MindFulCloud is a lightweight browser extension that makes noisy feeds feel easier to use. It applies calmer layouts and distraction-reducing styles to YouTube, Reddit, Twitter/X, and Pinterest while keeping you in control of every site.
+> A calmer cloud for loud websites.
 
-It is not a hard blocker. It is a set of gentle defaults, quick toggles, and per-site modes for people who still want to use the web, just with less visual clutter.
+[MindFulCloud](https://github.com/loavy/MindFulCloud) is a lightweight browser extension that makes YouTube, Reddit, Twitter/X, and Pinterest feel quieter, cleaner, and easier to use.
+
+It does not block the web. It softens it: fewer distractions, calmer layouts, local settings, and simple controls that stay out of your way.
+
+<p>
+  <img alt="Chrome" src="https://img.shields.io/badge/Chrome-ready-4285F4?style=for-the-badge&logo=googlechrome&logoColor=white">
+  <img alt="Firefox" src="https://img.shields.io/badge/Firefox-ready-FF7139?style=for-the-badge&logo=firefoxbrowser&logoColor=white">
+  <img alt="Vanilla JS" src="https://img.shields.io/badge/Vanilla_JS-lightweight-F7DF1E?style=for-the-badge&logo=javascript&logoColor=111">
+  <img alt="Privacy" src="https://img.shields.io/badge/Privacy-local_only-18A058?style=for-the-badge">
+</p>
 
 ## Install
 
-| Browser | Link |
-| --- | --- |
+| Browser                                          | Link                                                                                                                                       |
+| ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------ |
 | Chrome, Brave, Edge, and other Chromium browsers | [Install from the Chrome Web Store](https://chromewebstore.google.com/detail/glcdileonafegdigonahhcffifkoggkp/preview?hl=pt-BR&authuser=0) |
-| Firefox | [Install from Firefox Add-ons](https://addons.mozilla.org/en-GB/firefox/addon/mindfulcloud/) |
+| Firefox                                          | [Install from Firefox Add-ons](https://addons.mozilla.org/en-GB/firefox/addon/mindfulcloud/)                                               |
 
 ## What It Does
 
-- Adds a global on/off switch for the whole extension.
-- Lets you pause MindFulCloud for the current supported site.
-- Includes ready-made presets: Calm, Focus, and Deep Focus.
-- Keeps detailed per-site controls for YouTube, Reddit, Twitter/X, and Pinterest.
-- Supports import, export, and reset for settings.
-- Stores settings locally in your browser.
-- Ships browser-specific manifests for clean Chrome Web Store and Firefox Add-ons packages.
-- Uses plain JavaScript and CSS, with no build framework required for day-to-day development.
+MindFulCloud adds site-specific calm modes to websites that are usually built to keep pulling your attention around.
+
+- YouTube gets cleaner watching controls, less recommendation pressure, optional comment hiding, Shorts hiding, and focus mode.
+- Reddit gets Minimal, Compact, and Focus modes.
+- Twitter/X gets Minimal, Focus, and Zen modes.
+- Pinterest gets Minimal and Dark modes with separated theme CSS.
+- A Focus Timer can temporarily apply stronger calm settings for 15, 30, or 60 minutes.
+- Settings are saved locally in your browser.
 
 ## Supported Sites
 
-### YouTube
+| Site      | Modes / Controls                                                                                         |
+| --------- | -------------------------------------------------------------------------------------------------------- |
+| YouTube   | Hide recommendations, hide comments, hide Shorts, focus mode, floating sidebar, progress/scrubber colors |
+| Reddit    | Minimal, Compact, Focus                                                                                  |
+| Twitter/X | Minimal, Focus, Zen                                                                                      |
+| Pinterest | Minimal, Dark                                                                                            |
 
-MindFulCloud can make YouTube less recommendation-heavy and easier to watch intentionally.
+Host permissions are limited to these supported sites only.
 
-- Hide recommendations.
-- Hide comments.
-- Hide Shorts.
-- Use a floating sidebar.
-- Customize the video progress bar color.
-- Customize the scrubber color.
-- Apply YouTube-specific Calm, Focus, and Deep Focus modes.
+## Highlights
 
-### Reddit
-
-Reddit modes focus on calmer reading and faster scanning.
-
-- Minimal mode reduces surrounding page noise.
-- Compact mode tightens post spacing.
-- Focus mode centers the main feed and hides common distractions.
-
-### Twitter / X
-
-Twitter/X modes are designed around keeping the timeline readable without surrounding attention traps.
-
-- Focus mode cleans up the main experience.
-- Minimal mode hides common side content.
-- Zen mode narrows the timeline and removes more navigation clutter.
-
-### Pinterest
-
-Pinterest modes help reduce visual intensity while preserving browsing.
-
-- Minimal mode hides selected promotional and suggestion surfaces.
-- Dark mode gives Pinterest a darker, quieter interface.
-- Glass mode layers additional translucent styling on top of dark mode.
+- Global on/off switch.
+- Pause control for the current site.
+- Current-site highlighting in the popup.
+- Calm, Focus, and Deep Focus presets.
+- Optional Hide promoted/ad content toggle.
+- Focus Timer with automatic restore.
+- Import, export, and reset settings.
+- Separate Chrome and Firefox manifests.
+- Clean release folders in `dist/chrome/` and `dist/firefox/`.
+- No React, no Vite, no analytics, no remote code.
 
 ## Presets
 
-| Preset | YouTube | Reddit | Twitter / X | Pinterest |
-| --- | --- | --- | --- | --- |
-| Calm | Hide recommendations and Shorts | Minimal | Zen | Minimal |
-| Focus | Hide recommendations, comments, and Shorts | Compact | Focus | Dark |
-| Deep Focus | Focus mode plus floating sidebar | Focus | Zen | Glass |
-| Custom | Your own settings | Your own settings | Your own settings | Your own settings |
+| Preset     | YouTube                                                            | Reddit            | Twitter/X         | Pinterest         |
+| ---------- | ------------------------------------------------------------------ | ----------------- | ----------------- | ----------------- |
+| Calm       | Hide recommendations and Shorts, keep comments visible             | Minimal           | Zen               | Minimal           |
+| Focus      | Hide recommendations, comments, and Shorts                         | Compact           | Focus             | Dark              |
+| Deep Focus | Focus mode, floating sidebar, hide recommendations/comments/Shorts | Focus             | Zen               | Dark              |
+| Custom     | Your own settings                                                  | Your own settings | Your own settings | Your own settings |
 
-Changing an individual site option automatically moves the extension back to Custom, so presets never trap you in a configuration.
+Changing any individual setting automatically returns the preset to `custom`.
+
+## Focus Timer
+
+The popup includes a small focus session tool:
+
+- Start a 15, 30, or 60 minute session.
+- MindFulCloud temporarily applies stronger calm settings.
+- The popup shows the remaining time.
+- You can cancel the session anytime.
+- When the timer ends, your previous settings are restored.
+- Timer state is stored in `chrome.storage.local` / `browser.storage.local`, so it survives closing the popup.
+
+During a focus session:
+
+| Site      | Temporary Focus Behavior                                                           |
+| --------- | ---------------------------------------------------------------------------------- |
+| YouTube   | Hide recommendations, comments, Shorts, enable focus mode, enable floating sidebar |
+| Reddit    | Focus mode                                                                         |
+| Twitter/X | Zen mode                                                                           |
+| Pinterest | Dark mode                                                                          |
 
 ## Privacy
 
-MindFulCloud is intentionally small and local-first.
+MindFulCloud is intentionally local-first.
 
 - No analytics.
-- No remote tracking.
-- No external service calls.
-- No account required.
-- Settings are saved with `storage.local` in your browser.
-- The `tabs` permission is used so the popup can detect the active tab and offer the pause-this-site toggle.
-- Host permissions are limited to supported sites: YouTube, Reddit, Twitter/X, and Pinterest.
+- No tracking.
+- No remote code.
+- No external APIs.
+- No account.
+- No background data collection.
+- Settings are stored locally in your browser.
+- Host permissions are limited to YouTube, Reddit, Twitter/X, and Pinterest.
+
+## Permissions
+
+| Permission         | Why It Is Used                                                                  |
+| ------------------ | ------------------------------------------------------------------------------- |
+| `storage`          | Saves settings, pause state, import/export data, and Focus Timer state locally. |
+| `activeTab`        | Lets the popup detect and message the current tab after you open the extension. |
+| `host_permissions` | Allows content scripts and CSS to run only on the supported sites.              |
+
+MindFulCloud does not use the broader `tabs` permission.
 
 ## Project Structure
 
@@ -94,69 +120,73 @@ MindFulCloud/
 |   `-- popup.css
 |-- scripts/
 |   `-- build-extension.ps1
+|-- shared/
+|   `-- settings.js
 |-- styles/
-|   |-- pinterest-clean.css
-|   |-- reddit-clean.css
-|   |-- twitter-clean.css
-|   `-- youtube-clean.css
+|   |-- pinterest/
+|   |   |-- base.css
+|   |   |-- minimal.css
+|   |   |-- dark.css
+|   |   `-- promoted-content.css
+|   |-- reddit/
+|   |   |-- base.css
+|   |   |-- minimal.css
+|   |   |-- compact.css
+|   |   |-- focus.css
+|   |   `-- promoted-content.css
+|   |-- twitter/
+|   |   |-- base.css
+|   |   |-- minimal.css
+|   |   |-- focus.css
+|   |   |-- zen.css
+|   |   `-- promoted-content.css
+|   `-- youtube/
+|       `-- youtube-clean.css
 |-- content.js
 |-- manifest.json
 |-- manifest.chrome.json
 |-- manifest.firefox.json
-|-- preload.js
 `-- README.md
 ```
 
-## Develop Locally
+## Local Development
 
 Clone the repository:
 
 ```bash
-git clone https://github.com/PinkMath/MindFulCloud.git
+git clone https://github.com/loavy/MindFulCloud.git
 cd MindFulCloud
 ```
 
-There are no npm dependencies to install. The extension is built from static browser-extension files.
+Install dependencies:
 
-### Load in Chrome, Brave, or Edge
-
-Build the Chromium package:
-
-```powershell
-.\scripts\build-extension.ps1 chrome
+```bash
+npm install
 ```
 
-Then:
+Format and check the project:
 
-1. Open `chrome://extensions/`.
-2. Enable Developer Mode.
-3. Click **Load unpacked**.
-4. Select `dist/chrome`.
-
-### Load in Firefox
-
-Build the Firefox package:
-
-```powershell
-.\scripts\build-extension.ps1 firefox
+```bash
+npm run format
+npm run check
 ```
-
-Then:
-
-1. Open `about:debugging`.
-2. Click **This Firefox**.
-3. Click **Load Temporary Add-on**.
-4. Select `dist/firefox/manifest.json`.
 
 ## Build Release Packages
 
-Build both browser packages from PowerShell:
+Build both browser packages:
 
 ```powershell
 .\scripts\build-extension.ps1 all
 ```
 
-The build script creates:
+Build one target:
+
+```powershell
+.\scripts\build-extension.ps1 chrome
+.\scripts\build-extension.ps1 firefox
+```
+
+The build creates:
 
 ```text
 dist/chrome/
@@ -165,54 +195,87 @@ dist/MindFulCloud-chrome.zip
 dist/MindFulCloud-firefox.zip
 ```
 
-The `dist/` directory is generated output and should be rebuilt locally when testing or preparing a store upload.
+Only extension files are copied into release folders: icons, popup files, shared settings, content scripts, site styles, and the target manifest.
+
+## Install From Source
+
+Chrome / Chromium:
+
+1. Run `.\scripts\build-extension.ps1 chrome`.
+2. Open `chrome://extensions/`.
+3. Enable Developer Mode.
+4. Click **Load unpacked**.
+5. Select `dist/chrome`.
+
+Firefox:
+
+1. Run `.\scripts\build-extension.ps1 firefox`.
+2. Open `about:debugging`.
+3. Click **This Firefox**.
+4. Click **Load Temporary Add-on**.
+5. Select `dist/firefox/manifest.json`.
 
 ## Manifest Strategy
 
-MindFulCloud keeps separate manifests so each browser gets the metadata it expects.
+- `manifest.chrome.json` is used for Chrome Web Store and Chromium builds.
+- `manifest.firefox.json` includes `browser_specific_settings.gecko.id` for Firefox Add-ons.
+- `manifest.json` is the local default manifest.
+- The build script copies the target manifest to `dist/<target>/manifest.json`.
 
-- `manifest.json` is the default local development manifest.
-- `manifest.chrome.json` is copied into `dist/chrome/manifest.json`.
-- `manifest.firefox.json` is copied into `dist/firefox/manifest.json` and includes Firefox-specific Gecko metadata.
+## Store Publishing Checklist
 
-Current extension version: `4.7.0`.
+- Run `npm run check`.
+- Run `.\scripts\build-extension.ps1 all`.
+- Load `dist/chrome` as an unpacked extension in Chrome/Chromium.
+- Load `dist/firefox/manifest.json` as a temporary add-on in Firefox.
+- Confirm the popup opens and detects supported sites.
+- Test global enable/disable.
+- Test pause for the current site.
+- Test every site mode.
+- Test Calm, Focus, and Deep Focus presets.
+- Test the Focus Timer.
+- Test import/export/reset.
+- Upload `dist/MindFulCloud-chrome.zip` to the Chrome Web Store.
+- Upload `dist/MindFulCloud-firefox.zip` to Firefox Add-ons.
 
-## Settings Model
+## Manual Test Checklist
 
-The popup and content script share a normalized settings object. Defaults are applied when a setting is missing, and legacy setting keys are still read so older installs can migrate cleanly.
+Chrome:
 
-Main setting groups:
+- Load `dist/chrome` in `chrome://extensions`.
+- Open YouTube, Reddit, X/Twitter, and Pinterest.
+- Toggle global on/off.
+- Toggle pause for the current site.
+- Change every site mode.
+- Test presets.
+- Test Hide promoted/ad content.
+- Start and cancel the Focus Timer.
+- Let a short Focus Timer expire and confirm settings restore.
+- Export settings, reset settings, then import the exported JSON.
 
-- `enabled`: global extension state.
-- `preset`: `custom`, `calm`, `focus`, or `deep-focus`.
-- `youtube`: YouTube mode, visibility toggles, and player colors.
-- `reddit`: Reddit mode.
-- `twitter`: Twitter/X mode.
-- `pinterest`: Pinterest mode.
-- `pausedSites`: host-specific pause map.
+Firefox:
 
-## Maintenance Notes
+- Load `dist/firefox/manifest.json` from `about:debugging`.
+- Repeat the Chrome checklist.
 
-MindFulCloud works by applying CSS classes to supported pages and letting site-specific styles do the cleanup. Large platforms change their markup often, so selectors may need maintenance over time.
+## Theme Maintenance
 
-When updating a site:
+MindFulCloud works by applying CSS classes to supported pages. Large platforms change their markup often, so selectors may need maintenance.
+
+When updating a site theme:
 
 1. Reproduce the issue on the live site.
-2. Update only the relevant file in `styles/`.
-3. Keep selectors as narrow as practical.
-4. Rebuild the affected browser package.
-5. Test with the popup toggles and presets before publishing.
+2. Edit only the relevant file in `styles/<site>/`.
+3. Keep selectors narrow.
+4. Avoid hiding main content containers.
+5. Rebuild the target package.
+6. Retest the popup toggles and presets.
 
-## Contributing
+Pinterest dark mode lives in `styles/pinterest/dark.css` and is scoped to:
 
-Small, focused changes are easiest to review. Good contributions include:
-
-- Fixing broken selectors after supported sites change.
-- Improving popup accessibility or keyboard behavior.
-- Adding tests or manual QA notes for browser-specific behavior.
-- Tightening documentation when behavior changes.
-
-Please avoid broad rewrites unless they solve a specific maintenance problem.
+```css
+html.mindful-pinterest.pt-dark
+```
 
 ## License
 

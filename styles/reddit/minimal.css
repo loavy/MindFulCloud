@@ -1,0 +1,41 @@
+html.mindful-reddit.rd-minimal {
+  background: var(--bg) !important;
+}
+
+/* Main background */
+html.mindful-reddit.rd-minimal body {
+  background: var(--bg) !important;
+  color: var(--text) !important;
+}
+
+/* Posts */
+html.mindful-reddit.rd-minimal div[data-testid="post-container"] {
+  background: var(--panel) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 12px !important;
+  margin-bottom: 12px !important;
+}
+
+/* Hide distractions */
+html.mindful-reddit.rd-minimal aside,
+html.mindful-reddit.rd-minimal nav,
+html.mindful-reddit.rd-minimal [data-testid="right-sidebar"] {
+  display: none !important;
+}
+
+/* Center feed */
+html.mindful-reddit.rd-minimal main {
+  max-width: 700px !important;
+  margin: auto !important;
+}
+
+/* Text tone */
+html.mindful-reddit.rd-minimal h1,
+html.mindful-reddit.rd-minimal h2,
+html.mindful-reddit.rd-minimal h3 {
+  color: var(--text) !important;
+}
+
+html.mindful-reddit.rd-minimal p {
+  color: var(--muted) !important;
+}

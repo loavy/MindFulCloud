@@ -1,0 +1,12 @@
+/* Compact mode keeps Reddit familiar, but reduces spacing for scanning. */
+html.mindful-reddit.rd-compact shreddit-post,
+html.mindful-reddit.rd-compact div[data-testid="post-container"] {
+  margin-bottom: 6px !important;
+  padding-top: 8px !important;
+  padding-bottom: 8px !important;
+}
+
+html.mindful-reddit.rd-compact aside,
+html.mindful-reddit.rd-compact [data-testid="right-sidebar"] {
+  display: none !important;
+}

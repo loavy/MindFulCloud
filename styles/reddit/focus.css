@@ -1,0 +1,10 @@
+html.mindful-reddit.rd-focus main {
+  max-width: 760px !important;
+  margin: 0 auto !important;
+}
+
+html.mindful-reddit.rd-focus aside,
+html.mindful-reddit.rd-focus nav,
+html.mindful-reddit.rd-focus [data-testid="right-sidebar"] {
+  display: none !important;
+}

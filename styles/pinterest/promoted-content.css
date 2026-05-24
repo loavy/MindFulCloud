@@ -1,0 +1,10 @@
+/* =========================
+   Promoted Content Toggle
+   ========================= */
+
+html.mindful-pinterest.hide-promoted-content [aria-label*="promoted" i],
+html.mindful-pinterest.hide-promoted-content [data-test-id*="promoted" i],
+html.mindful-pinterest.hide-promoted-content [href*="ads.pinterest"],
+html.mindful-pinterest.hide-promoted-content [href*="/advertiser/"] {
+  display: none !important;
+}

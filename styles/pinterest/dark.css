@@ -1,0 +1,143 @@
+/* =========================
+   MindFulCloud - Pinterest Dark
+ ========================= */
+
+html.mindful-pinterest.pt-dark {
+  --pdt-d1: black;
+  --pdt-d2: rgb(20, 20, 20);
+  --pdt-d3: rgb(30, 30, 30);
+  --pdt-l1: white;
+  --pdt-l2: rgb(160, 160, 160);
+  --pdt-l3: rgb(120, 120, 120);
+  background-color: var(--pdt-d1);
+}
+
+html.mindful-pinterest.pt-dark body {
+  background-color: var(--pdt-d1) !important;
+  z-index: 0;
+  color: var(--pdt-l1);
+
+  /* Backgrounds */
+  --color-background-box-default: var(--pdt-d1);
+  --color-background-tabs-default-base: var(--pdt-d1);
+  --color-background-tabs-default-active: var(--pdt-d4);
+  --color-background-popover-primary: var(--pdt-d2);
+  --color-background-box-secondary: var(--pdt-d3);
+  --color-background-overlay: var(--pdt-d3);
+  --color-background-box-darkwash: var(--pdt-d4);
+  --color-background-button-white-default: var(--pdt-d3);
+  --color-background-formfield-primary: var(--pdt-d3);
+  --color-background-tag-primary-default: var(--pdt-d2);
+  --color-background-box-warning-weak: var(--pdt-d2);
+  --color-background-box-lightwash: var(--pdt-d3);
+  --color-background-box-light: var(--pdt-d3);
+  --color-background-switch-default-selected: var(--pdt-l1);
+  --color-background-switch-default-unselected: var(--pdt-d2);
+  --color-background-selected-base: var(--pdt-l1);
+  --color-background-box-selected: var(--pdt-d4);
+  --color-background-secondary-base: var(--pdt-d2);
+  --color-background-datepicker-container: var(--pdt-d1);
+  --color-background-formfield-primary: var(--pdt-d2);
+  --color-background-mask-wash: rgb(from var(--pdt-l1) r g b / 4%);
+  --color-background-button-disabled-default: var(--pdt-d3);
+  --sema-color-background-subtle: var(--pdt-d2);
+  --sema-color-background-disabled: var(--pdt-d3);
+  --sema-color-background-elevation: var(--pdt-d3);
+  --sema-color-background-default: var(--pdt-d1);
+  --sema-color-background-secondary: var(--pdt-d3);
+  --sema-color-background-wash-light: var(--pdt-d1);
+  --color-background-combobox-item-hover: var(--pdt-d4);
+  --color-background-button-tertiary-hover: var(--pdt-d2);
+  --color-background-button-white-hover: var(--pdt-d4);
+  --color-background-tabs-default-hover: var(--pdt-d3);
+  --sema-color-hover-background-default: var(--pdt-d2);
+  --sema-color-hover-background-secondary: var(--pdt-d4);
+  --sema-color-hover-background-elevation: var(--pdt-d4);
+
+  /* Icons */
+  --color-icon-subtle: var(--pdt-l2);
+  --color-icon-dark: var(--pdt-l1);
+  --sema-color-icon-dark: var(--pdt-l1);
+  --sema-color-icon-default: var(--pdt-l1);
+  --sema-color-icon-subtle: var(--pdt-l1);
+
+  /* Texts */
+  --color-text-formfield-default: var(--pdt-l1);
+  --color-text-dark: var(--pdt-l1);
+  --color-text-inverse: white;
+  --sema-color-text-neutral: var(--pdt-l1);
+  --sema-color-text-default: var(--pdt-l1);
+  --sema-color-text-subtle: var(--pdt-l2);
+  --sema-color-text-dark: var(--pdt-l1);
+
+  /* Borders */
+  --color-border-popover-primary: var(--pdt-d1);
+  --color-border-container: var(--pdt-d3);
+  --sema-color-border-decorative: var(--pdt-d3);
+
+  /* Buttons */
+  --comp-button-color-background-secondary-default: var(--pdt-d3);
+  --comp-button-color-background-tertiary-default: var(--pdt-d2);
+  --comp-button-color-hover-background-secondary-default: var(--pdt-d4);
+  --comp-button-color-hover-background-tertiary-default: var(--pdt-d4);
+
+  --elevation-datepicker: 0 0 8px rgb(from var(--pdt-l1) r g b / 10%);
+  --elevation-floating: 0 0 8px rgb(from var(--pdt-l2) r g b / 10%);
+  --base-color-grayscale-100: var(--pdt-d3);
+}
+
+html.mindful-pinterest.pt-dark ::-webkit-scrollbar {
+  width: 13px;
+}
+
+html.mindful-pinterest.pt-dark ::-webkit-scrollbar-track {
+  background: var(--pdt-d3);
+}
+
+html.mindful-pinterest.pt-dark ::-webkit-scrollbar-thumb {
+  background: var(--pdt-d4);
+}
+
+html.mindful-pinterest.pt-dark ::-moz-scrollbar {
+  width: 13px;
+}
+
+html.mindful-pinterest.pt-dark ::-moz-scrollbar-track {
+  background: var(--pdt-d3);
+}
+
+html.mindful-pinterest.pt-dark ::-moz-scrollbar-thumb {
+  background: var(--pdt-d4);
+}
+
+html.mindful-pinterest.pt-dark ::-ms-scrollbar {
+  width: 13px;
+}
+
+html.mindful-pinterest.pt-dark ::-ms-scrollbar-track {
+  background: var(--pdt-d3);
+}
+
+html.mindful-pinterest.pt-dark ::-ms-scrollbar-thumb {
+  background: var(--pdt-d4);
+}
+
+html.mindful-pinterest.pt-dark .TJZ {
+  background-color: var(--pdt-d2) !important;
+}
+
+html.mindful-pinterest.pt-dark div[data-test-id="comment-heading-divider"],
+html.mindful-pinterest.pt-dark div[data-test-id="closeup-metadata-details-divider"],
+html.mindful-pinterest.pt-dark div[data-test-id="comment-body-scrolling-divider"],
+html.mindful-pinterest.pt-dark .ADXRXN.ecEhnF.n62I2n {
+  border-color: var(--pdt-d3) !important;
+}
+
+html.mindful-pinterest.pt-dark #dweb-comment-editor-container,
+html.mindful-pinterest.pt-dark #messageDraft {
+  color: var(--pdt-l1) !important;
+}
+
+html.mindful-pinterest.pt-dark div.ADXRXN.BVzdUh._xSIdT.gEQpi5 {
+  background-color: var(--pdt-d2);
+}

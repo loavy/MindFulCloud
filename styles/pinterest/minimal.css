@@ -1,0 +1,24 @@
+/* =========================
+   Minimal Mode
+   ========================= */
+
+html.mindful-pinterest.pt-minimal body,
+html.mindful-pinterest.pt-minimal main,
+html.mindful-pinterest.pt-minimal [role="main"] {
+  background-color: #fafafa !important;
+}
+
+html.mindful-pinterest.pt-minimal
+  :where([data-test-id="pin"], [data-test-id="pinWrapper"]) {
+  border-radius: var(--mfc-pt-radius) !important;
+  overflow: hidden !important;
+}
+
+html.mindful-pinterest.pt-minimal
+  :where(
+    [data-test-id="one-bar"],
+    [data-test-id="more-ideas"],
+    [aria-label*="more ideas" i]
+  ) {
+  display: none !important;
+}

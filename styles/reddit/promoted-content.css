@@ -1,0 +1,4 @@
+html.mindful-reddit.hide-promoted-content [aria-label*="advertise" i],
+html.mindful-reddit.hide-promoted-content [data-testid*="promoted" i] {
+  display: none !important;
+}

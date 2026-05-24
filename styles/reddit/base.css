@@ -1,0 +1,12 @@
+/* =======================
+REDDIT SHARED
+======================= */
+
+html.mindful-reddit {
+  --bg: #0f1115;
+  --panel: #171a21;
+  --panel-soft: #1e232d;
+  --text: #eef2f7;
+  --muted: #a8b0bd;
+  --border: rgba(255, 255, 255, 0.08);
+}

@@ -1,0 +1,22 @@
+/* =========================
+   MindFulCloud - Pinterest
+   Modes: minimal, dark
+   ========================= */
+
+html.mindful-pinterest {
+  --mfc-pt-bg: #ffffff;
+  --mfc-pt-surface: #ffffff;
+  --mfc-pt-surface-2: #f6f7f9;
+  --mfc-pt-hover: #eef0f4;
+  --mfc-pt-text: #111111;
+  --mfc-pt-muted: #666666;
+  --mfc-pt-border: rgba(0, 0, 0, 0.12);
+  --mfc-pt-radius: 16px;
+  color-scheme: light;
+}
+
+html.mindful-pinterest *,
+html.mindful-pinterest *::before,
+html.mindful-pinterest *::after {
+  box-sizing: border-box;
+}

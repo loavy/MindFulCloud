@@ -1,0 +1,5 @@
+html.mindful-twitter.hide-promoted-content [data-testid="placementTracking"],
+html.mindful-twitter.hide-promoted-content [aria-label*="promoted" i],
+html.mindful-twitter.hide-promoted-content [data-testid*="promoted" i] {
+  display: none !important;
+}

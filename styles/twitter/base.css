@@ -1,0 +1,12 @@
+/* =======================
+TWITTER SHARED
+======================= */
+
+html.mindful-twitter {
+  --bg: #050505;
+  --panel: #101214;
+  --text: #f2f5f8;
+  --muted: #9aa4af;
+  --border: rgba(255, 255, 255, 0.1);
+  --accent: #7dd3fc;
+}

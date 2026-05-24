@@ -1,27 +1,72 @@
 document.addEventListener("DOMContentLoaded", async () => {
-
   const api =
-    typeof browser !== "undefined" ? browser :
-    typeof chrome !== "undefined" ? chrome :
-    null;
+    typeof browser !== "undefined"
+      ? browser
+      : typeof chrome !== "undefined"
+        ? chrome
+        : null;
 
-  if (!api) return;
-
-  console.log("POPUP READY");
+  const settingsHelper = globalThis.MindFulCloudSettings;
+  if (!api || !settingsHelper) return;
 
   const usingPromiseApi = typeof browser !== "undefined" && api === browser;
+  const elements = {
+    cancelTimer: document.getElementById("cancelTimer"),
+    currentSiteHint: document.getElementById("currentSiteHint"),
+    currentSiteName: document.getElementById("currentSiteName"),
+    currentSitePanel: document.getElementById("currentSitePanel"),
+    exportSettings: document.getElementById("exportSettings"),
+    globalPreset: document.getElementById("globalPreset"),
+    hidePromotedContent: document.getElementById("hidePromotedContent"),
+    importFile: document.getElementById("importFile"),
+    importSettings: document.getElementById("importSettings"),
+    masterEnabled: document.getElementById("masterEnabled"),
+    ptMode: document.getElementById("ptMode"),
+    rdMode: document.getElementById("rdMode"),
+    resetSettings: document.getElementById("resetSettings"),
+    siteLabel: document.getElementById("siteLabel"),
+    sitePaused: document.getElementById("sitePaused"),
+    statusMessage: document.getElementById("statusMessage"),
+    timerRemaining: document.getElementById("timerRemaining"),
+    twMode: document.getElementById("twMode"),
+    ytHideComments: document.getElementById("ytHideComments"),
+    ytHideRec: document.getElementById("ytHideRec"),
+    ytHideShorts: document.getElementById("ytHideShorts"),
+    ytHamburger: document.getElementById("ytHamburger"),
+    ytMode: document.getElementById("ytMode"),
+    ytProgressColor: document.getElementById("ytProgressColor"),
+    ytProgressHex: document.getElementById("ytProgressHex"),
+    ytScrubberColor: document.getElementById("ytScrubberColor"),
+    ytScrubberHex: document.getElementById("ytScrubberHex"),
+  };
+
+  const settingControls = [
+    elements.globalPreset,
+    elements.hidePromotedContent,
+    elements.masterEnabled,
+    elements.ptMode,
+    elements.rdMode,
+    elements.sitePaused,
+    elements.twMode,
+    elements.ytHideComments,
+    elements.ytHideRec,
+    elements.ytHideShorts,
+    elements.ytHamburger,
+    elements.ytMode,
+    elements.ytProgressColor,
+    elements.ytProgressHex,
+    elements.ytScrubberColor,
+    elements.ytScrubberHex,
+  ];
+
+  let currentHost = null;
+  let currentSite = null;
+  let currentSettings = settingsHelper.getDefaultSettings();
+  let timerTick = null;
 
   function callApi(method, args = []) {
     if (usingPromiseApi) {
-      try {
-        const result = method(...args);
-        if (result && typeof result.then === "function") {
-          return result;
-        }
-        return Promise.resolve(result);
-      } catch (error) {
-        return Promise.reject(error);
-      }
+      return Promise.resolve(method(...args));
     }
 
     return new Promise((resolve, reject) => {
@@ -36,233 +81,87 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
-  const elements = {
-    masterEnabled: document.getElementById("masterEnabled"),
-    globalPreset: document.getElementById("globalPreset"),
-    sitePaused: document.getElementById("sitePaused"),
-    ytMode: document.getElementById("ytMode"),
-    ytHideRec: document.getElementById("ytHideRec"),
-    ytHideComments: document.getElementById("ytHideComments"),
-    ytHideShorts: document.getElementById("ytHideShorts"),
-    ytHamburger: document.getElementById("ytHamburger"),
-    rdMode: document.getElementById("rdMode"),
-    twMode: document.getElementById("twMode"),
-    ptMode: document.getElementById("ptMode"),
-    exportSettings: document.getElementById("exportSettings"),
-    importSettings: document.getElementById("importSettings"),
-    resetSettings: document.getElementById("resetSettings")
-  };
-
-  const ytProgressHex = document.getElementById("ytProgressHex");
-  const ytProgressPreview = document.getElementById("ytProgressPreview");
-  const progressPalette = document.getElementById("progressPalette");
-  const ytScrubberHex = document.getElementById("ytScrubberHex");
-  const ytScrubberPreview = document.getElementById("ytScrubberPreview");
-  const scrubberPalette = document.getElementById("scrubberPalette");
-  const statusMessage = document.getElementById("statusMessage");
-  const pauseTitle = document.getElementById("pauseTitle");
-
-  let ytProgressColor = "#4cafef";
-  let ytScrubberColor = "#ffffff";
-  let currentSettings = {};
-  let currentHost = null;
-
   const storage = {
     get: () =>
-      callApi(api.storage.local.get.bind(api.storage.local), [null])
-        .then(data => data || {}),
-    set: (data) =>
-      callApi(api.storage.local.set.bind(api.storage.local), [data]),
-    remove: (keys) =>
-      callApi(api.storage.local.remove.bind(api.storage.local), [keys])
+      callApi(api.storage.local.get.bind(api.storage.local), [null]).then(
+        (data) => data || {},
+      ),
+    remove: (keys) => callApi(api.storage.local.remove.bind(api.storage.local), [keys]),
+    set: (data) => callApi(api.storage.local.set.bind(api.storage.local), [data]),
   };
-
-  const DEFAULT_SETTINGS = {
-    enabled: true,
-    preset: "custom",
-    youtube: {
-      enabled: true,
-      mode: "custom",
-      hideRecommendations: false,
-      hideComments: false,
-      hideShorts: false,
-      floatingSidebar: false,
-      progressColor: "#4cafef",
-      scrubberColor: "#4cafef"
-    },
-    reddit: {
-      enabled: true,
-      mode: "minimal"
-    },
-    twitter: {
-      enabled: true,
-      mode: "focus"
-    },
-    pinterest: {
-      enabled: true,
-      mode: "dark"
-    },
-    pausedSites: {}
-  };
-
-  const LEGACY_KEYS = [
-    "ytHideRec",
-    "ytHideComments",
-    "ytHideShorts",
-    "ytHamburger",
-    "ytProgressColor",
-    "ytScrubberColor",
-    "rdMinimal",
-    "twFocus",
-    "ptDark"
-  ];
-
-  const COLOR_PRESETS = [
-    "#ff0000", // red
-    "#ef4444", // soft red
-    "#f97316", // orange
-    "#f59e0b", // amber
-    "#eab308", // yellow
-    "#84cc16", // lime
-    "#22c55e", // green
-    "#10b981", // emerald
-    "#14b8a6", // teal
-    "#06b6d4", // cyan
-    "#4cafef", // blue
-    "#3b82f6", // strong blue
-    "#6366f1", // indigo
-    "#8b5cf6", // purple
-    "#a855f7", // violet
-    "#d946ef", // fuchsia
-    "#ec4899", // pink
-    "#f43f5e", // rose
-    "#ffffff", // white
-    "#d1d5db", // gray
-    "#6b7280", // dark gray
-    "#111111"  // black
-  ];
-
-  function isSupportedHost(host) {
-    return (
-      host?.includes("youtube.com") ||
-      host?.includes("reddit.com") ||
-      host?.includes("twitter.com") ||
-      host?.includes("x.com") ||
-      host?.includes("pinterest.com")
-    );
-  }
-
-  function normalizeSettings(data) {
-    const settings = JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
-
-    if (typeof data.enabled === "boolean") {
-      settings.enabled = data.enabled;
-    }
-
-    if (typeof data.preset === "string") {
-      settings.preset = data.preset;
-    }
-
-    if (data.pausedSites && typeof data.pausedSites === "object") {
-      settings.pausedSites = { ...settings.pausedSites, ...data.pausedSites };
-    }
-
-    if (data.youtube && typeof data.youtube === "object") {
-      settings.youtube = { ...settings.youtube, ...data.youtube };
-    }
-
-    if (data.reddit && typeof data.reddit === "object") {
-      settings.reddit = { ...settings.reddit, ...data.reddit };
-    }
-
-    if (data.twitter && typeof data.twitter === "object") {
-      settings.twitter = { ...settings.twitter, ...data.twitter };
-    }
-
-    if (data.pinterest && typeof data.pinterest === "object") {
-      settings.pinterest = { ...settings.pinterest, ...data.pinterest };
-    }
-
-    if (typeof data.ytHideRec === "boolean") {
-      settings.youtube.hideRecommendations = data.ytHideRec;
-    }
-
-    if (typeof data.ytHideComments === "boolean") {
-      settings.youtube.hideComments = data.ytHideComments;
-    }
-
-    if (typeof data.ytHideShorts === "boolean") {
-      settings.youtube.hideShorts = data.ytHideShorts;
-    }
-
-    if (typeof data.ytHamburger === "boolean") {
-      settings.youtube.floatingSidebar = data.ytHamburger;
-    }
-
-    if (typeof data.ytProgressColor === "string") {
-      settings.youtube.progressColor = data.ytProgressColor;
-    }
-
-    if (typeof data.ytScrubberColor === "string") {
-      settings.youtube.scrubberColor = data.ytScrubberColor;
-    }
-
-    if (typeof data.rdMinimal === "boolean") {
-      settings.reddit.mode = data.rdMinimal ? "minimal" : "custom";
-    }
-
-    if (typeof data.twFocus === "boolean") {
-      settings.twitter.mode = data.twFocus ? "focus" : "custom";
-    }
-
-    if (typeof data.ptDark === "boolean") {
-      settings.pinterest.mode = data.ptDark ? "dark" : "custom";
-    }
-
-    return settings;
-  }
 
   function showStatus(text) {
-    if (!statusMessage) return;
-    statusMessage.textContent = text;
+    elements.statusMessage.textContent = text;
     clearTimeout(showStatus.timeout);
     showStatus.timeout = setTimeout(() => {
-      statusMessage.textContent = "";
-    }, 2500);
+      elements.statusMessage.textContent = "";
+    }, 2600);
   }
 
-  function getCurrentHost() {
-    return callApi(api.tabs.query.bind(api.tabs), [{ active: true, currentWindow: true }])
-      .then((tabs) => {
-        const url = tabs?.[0]?.url;
-        if (!url) return null;
-        try {
-          return new URL(url).hostname;
-        } catch {
-          return null;
-        }
-      })
-      .catch(() => null);
+  async function getCurrentHost() {
+    try {
+      const tabs = await callApi(api.tabs.query.bind(api.tabs), [
+        { active: true, currentWindow: true },
+      ]);
+      const url = tabs?.[0]?.url;
+      return url ? new URL(url).hostname : null;
+    } catch {
+      return null;
+    }
   }
 
   async function sendSettingsToActiveTab(settings) {
     try {
-      const tabs = await callApi(api.tabs.query.bind(api.tabs), [{ active: true, currentWindow: true }]);
+      const tabs = await callApi(api.tabs.query.bind(api.tabs), [
+        { active: true, currentWindow: true },
+      ]);
       if (!tabs?.[0]?.id) return;
       await callApi(api.tabs.sendMessage.bind(api.tabs), [
         tabs[0].id,
-        {
-          type: "UPDATE_SETTINGS",
-          settings
-        }
+        { type: "UPDATE_SETTINGS", settings },
       ]);
     } catch {
-      // The active tab may be a browser page or an unsupported site.
+      // Browser pages and unsupported sites may not have a content script.
     }
   }
 
+  async function persistSettings(settings, message = "Settings saved") {
+    currentSettings = settingsHelper.normalizeSettings(settings);
+    await storage.set(currentSettings);
+    await storage.remove(settingsHelper.LEGACY_KEYS);
+    updateUI(currentSettings);
+    await sendSettingsToActiveTab(currentSettings);
+    showStatus(message);
+  }
+
+  function updateCurrentSiteUi() {
+    document
+      .querySelectorAll(".site-card")
+      .forEach((card) =>
+        card.classList.toggle("active", card.dataset.site === currentSite),
+      );
+
+    if (!currentSite) {
+      elements.currentSitePanel.classList.add("unsupported");
+      elements.currentSiteName.textContent = "Unsupported page";
+      elements.currentSiteHint.textContent =
+        "Open YouTube, Reddit, Twitter/X, or Pinterest to use site controls.";
+      elements.siteLabel.textContent = "No supported site";
+      elements.sitePaused.checked = false;
+      elements.sitePaused.disabled = true;
+      return;
+    }
+
+    elements.currentSitePanel.classList.remove("unsupported");
+    elements.currentSiteName.textContent = currentHost;
+    elements.currentSiteHint.textContent =
+      "Pause only this site without changing defaults.";
+    elements.siteLabel.textContent = `${currentSite} active`;
+    elements.sitePaused.disabled = false;
+    elements.sitePaused.checked = !!currentSettings.pausedSites?.[currentHost];
+  }
+
   function applyYouTubeMode(mode) {
-    if (!elements.ytMode) return;
     elements.ytMode.value = mode;
 
     if (mode === "calm") {
@@ -286,393 +185,331 @@ document.addEventListener("DOMContentLoaded", async () => {
       elements.ytHideComments.checked = true;
       elements.ytHideShorts.checked = true;
       elements.ytHamburger.checked = true;
-      return;
     }
-  }
-
-  function applyRedditMode(mode) {
-    if (!elements.rdMode) return;
-    elements.rdMode.value = mode;
-  }
-
-  function applyTwitterMode(mode) {
-    if (!elements.twMode) return;
-    elements.twMode.value = mode;
-  }
-
-  function applyPinterestMode(mode) {
-    if (!elements.ptMode) return;
-    elements.ptMode.value = mode;
-  }
-
-  async function cleanLegacyKeys() {
-    await storage.remove(LEGACY_KEYS);
-  }
-
-  function buildSettings() {
-    return {
-      enabled: elements.masterEnabled?.checked ?? true,
-      preset: elements.globalPreset?.value || "custom",
-      youtube: {
-        enabled: true,
-        mode: elements.ytMode?.value || "custom",
-        hideRecommendations: elements.ytHideRec?.checked ?? false,
-        hideComments: elements.ytHideComments?.checked ?? false,
-        hideShorts: elements.ytHideShorts?.checked ?? false,
-        floatingSidebar: elements.ytHamburger?.checked ?? false,
-        progressColor: ytProgressColor,
-        scrubberColor: ytScrubberColor
-      },
-      reddit: {
-        enabled: true,
-        mode: elements.rdMode?.value || "minimal"
-      },
-      twitter: {
-        enabled: true,
-        mode: elements.twMode?.value || "focus"
-      },
-      pinterest: {
-        enabled: true,
-        mode: elements.ptMode?.value || "dark"
-      },
-      pausedSites: { ...(currentSettings.pausedSites || {}) }
-    };
-  }
-
-  async function saveSettings() {
-    const settings = buildSettings();
-    currentSettings = normalizeSettings(settings);
-
-    await storage.set(currentSettings);
-    await cleanLegacyKeys();
-    showStatus("Settings saved");
-
-    await sendSettingsToActiveTab(currentSettings);
-  }
-
-  function refreshPresetState() {
-    if (!elements.globalPreset) return;
-    if (elements.globalPreset.value !== "custom") {
-      elements.globalPreset.value = "custom";
-    }
-  }
-
-  function wireModeChange(select, handler) {
-    select?.addEventListener("change", () => {
-      if (!select.value) return;
-      handler(select.value);
-      if (elements.globalPreset) {
-        elements.globalPreset.value = "custom";
-      }
-      saveSettings();
-    });
-  }
-
-  function wireToggleToCustom(toggle, modeElement) {
-    toggle?.addEventListener("change", () => {
-      if (!modeElement) return;
-      modeElement.value = "custom";
-      if (elements.globalPreset) {
-        elements.globalPreset.value = "custom";
-      }
-      saveSettings();
-    });
   }
 
   function applyPreset(name) {
-    if (!elements.globalPreset) return;
     elements.globalPreset.value = name;
 
     if (name === "calm") {
       applyYouTubeMode("calm");
-      applyRedditMode("minimal");
-      applyTwitterMode("zen");
-      applyPinterestMode("minimal");
+      elements.rdMode.value = "minimal";
+      elements.twMode.value = "zen";
+      elements.ptMode.value = "minimal";
     }
 
     if (name === "focus") {
       applyYouTubeMode("focus");
-      applyRedditMode("compact");
-      applyTwitterMode("focus");
-      applyPinterestMode("dark");
+      elements.rdMode.value = "compact";
+      elements.twMode.value = "focus";
+      elements.ptMode.value = "dark";
     }
 
     if (name === "deep-focus") {
       applyYouTubeMode("deep-focus");
-      applyRedditMode("focus");
-      applyTwitterMode("zen");
-      applyPinterestMode("glass");
+      elements.rdMode.value = "focus";
+      elements.twMode.value = "zen";
+      elements.ptMode.value = "dark";
     }
-
-    if (name === "custom") {
-      // Keep the current custom configuration.
-    }
-
-    saveSettings();
   }
 
-  function updatePauseControl(host) {
-    if (!elements.sitePaused || !pauseTitle) return;
-    if (!host || !isSupportedHost(host)) {
-      elements.sitePaused.disabled = true;
-      elements.sitePaused.checked = false;
-      pauseTitle.textContent = "Pause this site";
-      return;
-    }
-
-    elements.sitePaused.disabled = false;
-    elements.sitePaused.checked = !!currentSettings.pausedSites[host];
-    pauseTitle.textContent = `Pause ${host}`;
+  function setCustomPreset() {
+    elements.globalPreset.value = "custom";
   }
 
-  function updateUI(settings) {
-    currentSettings = normalizeSettings(settings);
-    const host = currentHost;
-
-    if (elements.masterEnabled) elements.masterEnabled.checked = currentSettings.enabled;
-    if (elements.globalPreset) elements.globalPreset.value = currentSettings.preset;
-
-    if (elements.ytMode) elements.ytMode.value = currentSettings.youtube.mode;
-    if (elements.ytHideRec) elements.ytHideRec.checked = currentSettings.youtube.hideRecommendations;
-    if (elements.ytHideComments) elements.ytHideComments.checked = currentSettings.youtube.hideComments;
-    if (elements.ytHideShorts) elements.ytHideShorts.checked = currentSettings.youtube.hideShorts;
-    if (elements.ytHamburger) elements.ytHamburger.checked = currentSettings.youtube.floatingSidebar;
-
-    if (elements.rdMode) elements.rdMode.value = currentSettings.reddit.mode;
-
-    if (elements.twMode) elements.twMode.value = currentSettings.twitter.mode;
-
-    if (elements.ptMode) elements.ptMode.value = currentSettings.pinterest.mode;
-
-    ytProgressColor = currentSettings.youtube.progressColor || ytProgressColor;
-    ytScrubberColor = currentSettings.youtube.scrubberColor || ytScrubberColor;
-
-    if (ytProgressPreview) ytProgressPreview.style.background = ytProgressColor;
-    if (ytProgressHex) ytProgressHex.value = ytProgressColor;
-    if (ytScrubberPreview) ytScrubberPreview.style.background = ytScrubberColor;
-    if (ytScrubberHex) ytScrubberHex.value = ytScrubberColor;
-
-    updatePauseControl(host);
-  }
-
-  async function loadSettings() {
-    const data = await storage.get();
-    const settings = normalizeSettings(data);
-    currentSettings = settings;
-    updateUI(settings);
-    showStatus("Loaded settings");
-  }
-
-  function wireToggle(toggle, modeSelect) {
-    if (!toggle) return;
-    toggle.addEventListener("change", () => {
-      if (modeSelect) {
-        modeSelect.value = "custom";
-      }
-      if (elements.globalPreset) {
-        elements.globalPreset.value = "custom";
-      }
-      saveSettings();
+  function buildSettings() {
+    return settingsHelper.normalizeSettings({
+      enabled: elements.masterEnabled.checked,
+      preset: elements.globalPreset.value,
+      hidePromotedContent: elements.hidePromotedContent.checked,
+      youtube: {
+        enabled: true,
+        mode: elements.ytMode.value,
+        hideRecommendations: elements.ytHideRec.checked,
+        hideComments: elements.ytHideComments.checked,
+        hideShorts: elements.ytHideShorts.checked,
+        floatingSidebar: elements.ytHamburger.checked,
+        progressColor: elements.ytProgressHex.value,
+        scrubberColor: elements.ytScrubberHex.value,
+      },
+      reddit: {
+        enabled: true,
+        mode: elements.rdMode.value,
+      },
+      twitter: {
+        enabled: true,
+        mode: elements.twMode.value,
+      },
+      pinterest: {
+        enabled: true,
+        mode: elements.ptMode.value,
+      },
+      pausedSites: { ...(currentSettings.pausedSites || {}) },
+      focusTimer: currentSettings.focusTimer,
     });
   }
 
-  const toggles = [
-    elements.ytHideRec,
-    elements.ytHideComments,
-    elements.ytHideShorts,
-    elements.ytHamburger
-  ];
-
-  const selectMap = [
-    elements.ytMode,
-    elements.ytMode,
-    elements.ytMode,
-    elements.ytMode
-  ];
-
-  toggles.forEach((toggle, index) => {
-    wireToggle(toggle, selectMap[index]);
-  });
-
-  [
-    [elements.ytMode, applyYouTubeMode],
-    [elements.rdMode, applyRedditMode],
-    [elements.twMode, applyTwitterMode],
-    [elements.ptMode, applyPinterestMode]
-  ].forEach(([select, handler]) => {
-    wireModeChange(select, handler);
-  });
-
-  if (elements.globalPreset) {
-    elements.globalPreset.addEventListener("change", () => applyPreset(elements.globalPreset.value));
+  function syncColorPair(colorInput, hexInput, value) {
+    const color = /^#[0-9a-f]{6}$/i.test(value) ? value.toLowerCase() : "#4cafef";
+    colorInput.value = color;
+    hexInput.value = color;
   }
 
-  if (elements.masterEnabled) {
-    elements.masterEnabled.addEventListener("change", () => saveSettings());
+  function updateTimerUi(settings) {
+    const timer = settings.focusTimer;
+    const active = !!timer?.active && Date.now() < timer.endsAt;
+
+    settingControls.forEach((control) => {
+      if (control) control.disabled = active;
+    });
+
+    elements.cancelTimer.disabled = !active;
+
+    if (!active) {
+      elements.timerRemaining.textContent = "Inactive";
+      return;
+    }
+
+    const remainingMs = Math.max(0, timer.endsAt - Date.now());
+    const minutes = Math.floor(remainingMs / 60000);
+    const seconds = Math.floor((remainingMs % 60000) / 1000);
+    elements.timerRemaining.textContent = `${minutes}:${String(seconds).padStart(2, "0")}`;
   }
 
-  if (elements.sitePaused) {
-    elements.sitePaused.addEventListener("change", () => {
+  function updateUI(settings) {
+    currentSettings = settingsHelper.normalizeSettings(settings);
+    const visibleSettings = currentSettings.focusTimer?.active
+      ? settingsHelper.getFocusSettings(currentSettings)
+      : currentSettings;
+
+    elements.masterEnabled.checked = visibleSettings.enabled;
+    elements.globalPreset.value = visibleSettings.preset;
+    elements.hidePromotedContent.checked = visibleSettings.hidePromotedContent;
+    elements.ytMode.value = visibleSettings.youtube.mode;
+    elements.ytHideRec.checked = visibleSettings.youtube.hideRecommendations;
+    elements.ytHideComments.checked = visibleSettings.youtube.hideComments;
+    elements.ytHideShorts.checked = visibleSettings.youtube.hideShorts;
+    elements.ytHamburger.checked = visibleSettings.youtube.floatingSidebar;
+    elements.rdMode.value = visibleSettings.reddit.mode;
+    elements.twMode.value = visibleSettings.twitter.mode;
+    elements.ptMode.value = visibleSettings.pinterest.mode;
+    syncColorPair(
+      elements.ytProgressColor,
+      elements.ytProgressHex,
+      visibleSettings.youtube.progressColor,
+    );
+    syncColorPair(
+      elements.ytScrubberColor,
+      elements.ytScrubberHex,
+      visibleSettings.youtube.scrubberColor,
+    );
+
+    updateCurrentSiteUi();
+    updateTimerUi(currentSettings);
+  }
+
+  async function restoreExpiredTimer(settings) {
+    const normalized = settingsHelper.normalizeSettings(settings);
+    const timer = normalized.focusTimer;
+
+    if (!timer?.active || Date.now() < timer.endsAt) {
+      return normalized;
+    }
+
+    const restored = timer.previousSettings || settingsHelper.getDefaultSettings();
+    restored.focusTimer = null;
+    await storage.set(restored);
+    await sendSettingsToActiveTab(restored);
+    showStatus("Focus timer ended");
+    return restored;
+  }
+
+  async function loadSettings() {
+    const raw = await storage.get();
+    currentSettings = await restoreExpiredTimer(raw);
+    updateUI(currentSettings);
+  }
+
+  async function saveFromUi(message) {
+    if (
+      currentSettings.focusTimer?.active &&
+      Date.now() < currentSettings.focusTimer.endsAt
+    ) {
+      showStatus("Cancel the focus timer before editing settings");
+      return;
+    }
+
+    await persistSettings(buildSettings(), message);
+  }
+
+  async function startFocusTimer(minutes) {
+    const base = settingsHelper.normalizeSettings(buildSettings(), {
+      includeTimer: false,
+    });
+    const timer = {
+      active: true,
+      startedAt: Date.now(),
+      endsAt: Date.now() + minutes * 60000,
+      previousSettings: base,
+    };
+    const focused = settingsHelper.getFocusSettings({ ...base, focusTimer: timer });
+    await persistSettings(focused, `Focus timer started for ${minutes} minutes`);
+    startTimerLoop();
+  }
+
+  async function cancelFocusTimer(message = "Focus timer canceled") {
+    const timer = currentSettings.focusTimer;
+    const restored = timer?.previousSettings || settingsHelper.getDefaultSettings();
+    restored.focusTimer = null;
+    await persistSettings(restored, message);
+    startTimerLoop();
+  }
+
+  function startTimerLoop() {
+    clearInterval(timerTick);
+    timerTick = setInterval(async () => {
+      if (!currentSettings.focusTimer?.active) {
+        updateTimerUi(currentSettings);
+        return;
+      }
+
+      if (Date.now() >= currentSettings.focusTimer.endsAt) {
+        await cancelFocusTimer("Focus timer ended");
+        return;
+      }
+
+      updateTimerUi(currentSettings);
+    }, 1000);
+    updateTimerUi(currentSettings);
+  }
+
+  function downloadSettings() {
+    const source =
+      currentSettings.focusTimer?.active && currentSettings.focusTimer.previousSettings
+        ? currentSettings.focusTimer.previousSettings
+        : currentSettings;
+    const exportData = settingsHelper.normalizeSettings(source);
+    exportData.focusTimer = null;
+    const blob = new Blob([JSON.stringify(exportData, null, 2)], {
+      type: "application/json",
+    });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "mindfulcloud-settings.json";
+    link.click();
+    URL.revokeObjectURL(url);
+    showStatus("Settings exported");
+  }
+
+  async function importSettings(file) {
+    if (!file) return;
+
+    try {
+      const text = await file.text();
+      const data = JSON.parse(text);
+      const imported = settingsHelper.normalizeSettings(data);
+      imported.focusTimer = null;
+      await persistSettings(imported, "Imported successfully");
+    } catch {
+      showStatus("Import failed: choose a valid JSON settings file");
+    } finally {
+      elements.importFile.value = "";
+    }
+  }
+
+  function wireEvents() {
+    elements.globalPreset.addEventListener("change", async () => {
+      applyPreset(elements.globalPreset.value);
+      await saveFromUi("Preset applied");
+    });
+
+    [elements.rdMode, elements.twMode, elements.ptMode].forEach((select) => {
+      select.addEventListener("change", async () => {
+        setCustomPreset();
+        await saveFromUi();
+      });
+    });
+
+    elements.ytMode.addEventListener("change", async () => {
+      applyYouTubeMode(elements.ytMode.value);
+      setCustomPreset();
+      await saveFromUi();
+    });
+
+    [
+      elements.hidePromotedContent,
+      elements.masterEnabled,
+      elements.ytHideComments,
+      elements.ytHideRec,
+      elements.ytHideShorts,
+      elements.ytHamburger,
+    ].forEach((input) => {
+      input.addEventListener("change", async () => {
+        if (input !== elements.masterEnabled && input !== elements.hidePromotedContent) {
+          elements.ytMode.value = "custom";
+        }
+        setCustomPreset();
+        await saveFromUi();
+      });
+    });
+
+    elements.sitePaused.addEventListener("change", async () => {
       if (!currentHost) return;
-      currentSettings.pausedSites = currentSettings.pausedSites || {};
+      currentSettings.pausedSites = { ...(currentSettings.pausedSites || {}) };
       if (elements.sitePaused.checked) {
         currentSettings.pausedSites[currentHost] = true;
       } else {
         delete currentSettings.pausedSites[currentHost];
       }
-      saveSettings();
+      await persistSettings(buildSettings(), "Site pause updated");
     });
-  }
 
-  if (elements.exportSettings) {
-    elements.exportSettings.addEventListener("click", async () => {
-      const text = JSON.stringify(currentSettings, null, 2);
-      try {
-        await navigator.clipboard.writeText(text);
-        showStatus("Settings copied to clipboard");
-      } catch {
-        window.prompt("Copy your settings JSON:", text);
-      }
-    });
-  }
-
-  if (elements.importSettings) {
-    elements.importSettings.addEventListener("click", async () => {
-      const json = window.prompt("Paste settings JSON:");
-      if (!json) return;
-      try {
-        const data = JSON.parse(json);
-        const settings = normalizeSettings(data);
-        currentSettings = settings;
-        await storage.set(settings);
-        await cleanLegacyKeys();
-        updateUI(settings);
-        saveSettings();
-        showStatus("Settings imported");
-      } catch (err) {
-        showStatus("Invalid JSON import");
-      }
-    });
-  }
-
-  if (elements.resetSettings) {
-    elements.resetSettings.addEventListener("click", async () => {
-      if (!confirm("Reset all settings to defaults?")) return;
-      currentSettings = JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
-      await storage.set(currentSettings);
-      await cleanLegacyKeys();
-      updateUI(currentSettings);
-      saveSettings();
-      showStatus("Settings reset");
-    });
-  }
-
-  function closeAllPalettes() {
-    document.querySelectorAll(".color-palette.open").forEach(p => p.classList.remove("open"));
-  }
-
-  function togglePalette(paletteId) {
-    const palette = document.getElementById(paletteId);
-    if (!palette) return;
-    const isOpen = palette.classList.contains("open");
-    closeAllPalettes();
-    if (!isOpen) palette.classList.add("open");
-  }
-
-  function applyProgressColor(color) {
-    ytProgressColor = color;
-    if (ytProgressPreview) ytProgressPreview.style.background = color;
-    if (ytProgressHex) ytProgressHex.value = color;
-    saveSettings();
-  }
-
-  function applyScrubberColor(color) {
-    ytScrubberColor = color;
-    if (ytScrubberPreview) ytScrubberPreview.style.background = color;
-    if (ytScrubberHex) ytScrubberHex.value = color;
-    saveSettings();
-  }
-
-  document.querySelectorAll(".color-row.color-toggle").forEach(row => {
-    row.addEventListener("click", (e) => {
-      if (e.target.closest("input")) return;
-      const paletteId = row.dataset.palette;
-      if (!paletteId) return;
-      togglePalette(paletteId);
-    });
-  });
-
-  document.querySelectorAll(".palette-swatch[data-color]").forEach(button => {
-    const color = button.dataset.color;
-    if (color) button.style.background = color;
-
-    button.addEventListener("click", (e) => {
-      e.stopPropagation();
-      if (!color) return;
-      if (button.closest("#progressPalette")) {
-        applyProgressColor(color);
-      } else if (button.closest("#scrubberPalette")) {
-        applyScrubberColor(color);
-      }
-    });
-  });
-
-  if (ytProgressHex) {
-    ytProgressHex.addEventListener("click", (e) => e.stopPropagation());
-    ytProgressHex.addEventListener("input", (e) => {
-      const color = e.target.value;
-      if (/^#[0-9A-Fa-f]{6}$/.test(color)) {
-        applyProgressColor(color);
-      }
-    });
-  }
-
-  if (ytScrubberHex) {
-    ytScrubberHex.addEventListener("click", (e) => e.stopPropagation());
-    ytScrubberHex.addEventListener("input", (e) => {
-      const color = e.target.value;
-      if (/^#[0-9A-Fa-f]{6}$/.test(color)) {
-        applyScrubberColor(color);
-      }
-    });
-  }
-
-  function setupAccordions() {
-    const sections = document.querySelectorAll(".section, .site-card, [data-section]");
-
-    sections.forEach((section) => {
-      const header =
-        section.querySelector(".section-header") ||
-        section.querySelector(".card-header") ||
-        section.querySelector("[data-section-toggle]");
-
-      const content =
-        section.querySelector(".section-content") ||
-        section.querySelector(".card-content") ||
-        section.querySelector("[data-section-content]");
-
-      if (!header || !content) return;
-
-      header.addEventListener("click", (event) => {
-        if (
-          event.target.closest("input") ||
-          event.target.closest("select") ||
-          event.target.closest("button:not(.section-header):not(.card-header):not([data-section-toggle])") ||
-          event.target.closest("label")
-        ) {
-          return;
-        }
-
-        section.classList.toggle("open");
-        content.hidden = !section.classList.contains("open");
+    [
+      [elements.ytProgressColor, elements.ytProgressHex],
+      [elements.ytScrubberColor, elements.ytScrubberHex],
+    ].forEach(([colorInput, hexInput]) => {
+      colorInput.addEventListener("input", async () => {
+        hexInput.value = colorInput.value;
+        setCustomPreset();
+        await saveFromUi();
       });
 
-      content.hidden = !section.classList.contains("open");
+      hexInput.addEventListener("change", async () => {
+        if (!/^#[0-9a-f]{6}$/i.test(hexInput.value)) {
+          syncColorPair(colorInput, hexInput, colorInput.value);
+          showStatus("Use a color like #4cafef");
+          return;
+        }
+        colorInput.value = hexInput.value.toLowerCase();
+        hexInput.value = hexInput.value.toLowerCase();
+        setCustomPreset();
+        await saveFromUi();
+      });
+    });
+
+    document.querySelectorAll("[data-timer-minutes]").forEach((button) => {
+      button.addEventListener("click", () => {
+        startFocusTimer(Number(button.dataset.timerMinutes));
+      });
+    });
+
+    elements.cancelTimer.addEventListener("click", () => cancelFocusTimer());
+    elements.exportSettings.addEventListener("click", downloadSettings);
+    elements.importSettings.addEventListener("click", () => elements.importFile.click());
+    elements.importFile.addEventListener("change", () =>
+      importSettings(elements.importFile.files?.[0]),
+    );
+
+    elements.resetSettings.addEventListener("click", async () => {
+      if (!confirm("Reset MindFulCloud settings to defaults?")) return;
+      await persistSettings(settingsHelper.getDefaultSettings(), "Settings reset");
     });
   }
 
-  setupAccordions();
-
   currentHost = await getCurrentHost();
+  currentSite = settingsHelper.getCurrentSite(currentHost || "");
+  wireEvents();
   await loadSettings();
+  startTimerLoop();
 });

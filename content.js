@@ -1,236 +1,158 @@
 const html = document.documentElement;
+const settingsHelper = globalThis.MindFulCloudSettings;
 
-const storage =
+const extensionApi =
   typeof browser !== "undefined"
-    ? browser.storage.local
-    : chrome.storage.local;
+    ? browser
+    : typeof chrome !== "undefined"
+      ? chrome
+      : null;
 
-const runtime =
-  typeof browser !== "undefined"
-    ? browser.runtime
-    : chrome.runtime;
+const storage = extensionApi?.storage?.local;
+const runtime = extensionApi?.runtime;
 
-function getStoredSettings() {
+function storageGet(keys = null) {
+  if (!storage) return Promise.resolve({});
+
   try {
-    const result = storage.get(null);
-    if (result && typeof result.then === "function") {
-      return result;
-    }
-  } catch (error) {
-    // Fall back to the callback form below.
+    const result = storage.get(keys);
+    if (result && typeof result.then === "function") return result;
+  } catch {
+    // Chrome uses the callback form.
   }
 
   return new Promise((resolve) => {
-    storage.get(null, (data) => resolve(data || {}));
+    storage.get(keys, (data) => resolve(data || {}));
   });
 }
 
-const DEFAULT_SETTINGS = {
-  enabled: true,
-  preset: "custom",
-  youtube: {
-    enabled: true,
-    mode: "custom",
-    hideRecommendations: false,
-    hideComments: false,
-    hideShorts: false,
-    floatingSidebar: false,
-    progressColor: "#4cafef",
-    scrubberColor: "#4cafef"
-  },
-  reddit: {
-    enabled: true,
-    mode: "minimal"
-  },
-  twitter: {
-    enabled: true,
-    mode: "focus"
-  },
-  pinterest: {
-    enabled: true,
-    mode: "dark"
-  },
-  pausedSites: {}
-};
+function storageSet(data) {
+  if (!storage) return Promise.resolve();
 
-function normalizeSettings(data = {}) {
-  const settings = JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
-
-  if (typeof data.enabled === "boolean") {
-    settings.enabled = data.enabled;
+  try {
+    const result = storage.set(data);
+    if (result && typeof result.then === "function") return result;
+  } catch {
+    // Chrome uses the callback form.
   }
 
-  if (typeof data.preset === "string") {
-    settings.preset = data.preset;
-  }
+  return new Promise((resolve) => {
+    storage.set(data, resolve);
+  });
+}
 
-  if (data.pausedSites && typeof data.pausedSites === "object") {
-    settings.pausedSites = { ...settings.pausedSites, ...data.pausedSites };
-  }
-
-  if (data.youtube && typeof data.youtube === "object") {
-    settings.youtube = { ...settings.youtube, ...data.youtube };
-  }
-
-  if (data.reddit && typeof data.reddit === "object") {
-    settings.reddit = { ...settings.reddit, ...data.reddit };
-  }
-
-  if (data.twitter && typeof data.twitter === "object") {
-    settings.twitter = { ...settings.twitter, ...data.twitter };
-  }
-
-  if (data.pinterest && typeof data.pinterest === "object") {
-    settings.pinterest = { ...settings.pinterest, ...data.pinterest };
-  }
-
-  if (typeof data.ytHideRec === "boolean") {
-    settings.youtube.hideRecommendations = data.ytHideRec;
-  }
-
-  if (typeof data.ytHideComments === "boolean") {
-    settings.youtube.hideComments = data.ytHideComments;
-  }
-
-  if (typeof data.ytHideShorts === "boolean") {
-    settings.youtube.hideShorts = data.ytHideShorts;
-  }
-
-  if (typeof data.ytHamburger === "boolean") {
-    settings.youtube.floatingSidebar = data.ytHamburger;
-  }
-
-  if (typeof data.ytProgressColor === "string") {
-    settings.youtube.progressColor = data.ytProgressColor;
-  }
-
-  if (typeof data.ytScrubberColor === "string") {
-    settings.youtube.scrubberColor = data.ytScrubberColor;
-  }
-
-  if (typeof data.rdMinimal === "boolean") {
-    settings.reddit.mode = data.rdMinimal ? "minimal" : "custom";
-  }
-
-  if (typeof data.twFocus === "boolean") {
-    settings.twitter.mode = data.twFocus ? "focus" : "custom";
-  }
-
-  if (typeof data.ptDark === "boolean") {
-    settings.pinterest.mode = data.ptDark ? "dark" : "custom";
-  }
-
-  return settings;
+function clearSiteClasses() {
+  html.classList.remove(...settingsHelper.SITE_CLASSES);
 }
 
 function applyYouTubeColors(settings = {}) {
-  const progress = settings.progressColor || "#4cafef";
-  const scrubber = settings.scrubberColor || "#ffffff";
-  const root = document.documentElement;
-
-  root.style.setProperty("--yt-progress-color", progress);
-  root.style.setProperty("--yt-scrubber-color", scrubber);
+  html.style.setProperty("--yt-progress-color", settings.progressColor || "#4cafef");
+  html.style.setProperty("--yt-scrubber-color", settings.scrubberColor || "#4cafef");
 }
 
-function apply(settings = {}) {
-  const normalized = normalizeSettings(settings);
+function addClassWhen(condition, className) {
+  if (condition) html.classList.add(className);
+}
 
-  html.classList.remove(
-    "mindful-youtube",
-    "yt-hide-rec",
-    "yt-hide-comments",
-    "yt-hide-shorts",
-    "yt-float-menu",
-    "mindful-reddit",
-    "rd-minimal",
-    "rd-compact",
-    "rd-focus",
-    "mindful-twitter",
-    "tw-focus",
-    "tw-minimal",
-    "tw-zen",
-    "mindful-pinterest",
-    "pt-minimal",
-    "pt-dark",
-    "pt-glass"
-  );
+function applySettings(settings = {}) {
+  const normalized = settingsHelper.normalizeSettings(settings);
+  const site = settingsHelper.getCurrentSite(location.hostname);
+  const paused = normalized.pausedSites?.[location.hostname];
 
-  const host = location.hostname;
-  const paused = normalized.pausedSites?.[host];
+  clearSiteClasses();
 
-  if (!normalized.enabled || paused) {
+  if (!normalized.enabled || !site || paused) {
     return;
   }
 
-  if (host.includes("youtube.com") && normalized.youtube.enabled) {
+  if (normalized.hidePromotedContent) {
+    html.classList.add("hide-promoted-content");
+  }
+
+  if (site === "youtube" && normalized.youtube.enabled) {
     html.classList.add("mindful-youtube");
-
-    if (normalized.youtube.hideRecommendations) html.classList.add("yt-hide-rec");
-    if (normalized.youtube.hideComments) html.classList.add("yt-hide-comments");
-    if (normalized.youtube.hideShorts) html.classList.add("yt-hide-shorts");
-    if (normalized.youtube.floatingSidebar) html.classList.add("yt-float-menu");
-
+    addClassWhen(normalized.youtube.hideRecommendations, "yt-hide-rec");
+    addClassWhen(normalized.youtube.hideComments, "yt-hide-comments");
+    addClassWhen(normalized.youtube.hideShorts, "yt-hide-shorts");
+    addClassWhen(normalized.youtube.floatingSidebar, "yt-float-menu");
     applyYouTubeColors(normalized.youtube);
   }
 
-  if (host.includes("reddit.com") && normalized.reddit.enabled) {
+  if (site === "reddit" && normalized.reddit.enabled) {
     html.classList.add("mindful-reddit");
-    if (normalized.reddit.mode === "minimal") html.classList.add("rd-minimal");
-    if (normalized.reddit.mode === "compact") html.classList.add("rd-compact");
-    if (normalized.reddit.mode === "focus") html.classList.add("rd-focus");
+    addClassWhen(normalized.reddit.mode === "minimal", "rd-minimal");
+    addClassWhen(normalized.reddit.mode === "compact", "rd-compact");
+    addClassWhen(normalized.reddit.mode === "focus", "rd-focus");
   }
 
-  if ((host.includes("x.com") || host.includes("twitter.com")) && normalized.twitter.enabled) {
+  if (site === "twitter" && normalized.twitter.enabled) {
     html.classList.add("mindful-twitter");
-    if (normalized.twitter.mode === "focus") html.classList.add("tw-focus");
-    if (normalized.twitter.mode === "minimal") html.classList.add("tw-minimal");
-    if (normalized.twitter.mode === "zen") html.classList.add("tw-zen");
+    addClassWhen(normalized.twitter.mode === "focus", "tw-focus");
+    addClassWhen(normalized.twitter.mode === "minimal", "tw-minimal");
+    addClassWhen(normalized.twitter.mode === "zen", "tw-zen");
   }
 
-  if (host.includes("pinterest.com") && normalized.pinterest.enabled) {
+  if (site === "pinterest" && normalized.pinterest.enabled) {
     html.classList.add("mindful-pinterest");
-    if (normalized.pinterest.mode === "minimal") html.classList.add("pt-minimal");
-    if (normalized.pinterest.mode === "dark") html.classList.add("pt-dark");
-    if (normalized.pinterest.mode === "glass") html.classList.add("pt-dark", "pt-glass");
+    addClassWhen(normalized.pinterest.mode === "minimal", "pt-minimal");
+    addClassWhen(normalized.pinterest.mode === "dark", "pt-dark");
   }
+}
+
+async function resolveTimerSettings(settings) {
+  const normalized = settingsHelper.normalizeSettings(settings);
+  const timer = normalized.focusTimer;
+
+  if (!timer?.active) {
+    return normalized;
+  }
+
+  if (Date.now() < timer.endsAt) {
+    return settingsHelper.getFocusSettings(normalized);
+  }
+
+  const restored =
+    timer.previousSettings ||
+    settingsHelper.normalizeSettings({ ...normalized, focusTimer: null });
+
+  restored.focusTimer = null;
+  await storageSet(restored);
+  return restored;
 }
 
 async function loadSettings() {
   try {
-    const data = await getStoredSettings();
-    return normalizeSettings(data);
-  } catch (e) {
-    console.error("Storage error:", e);
-    return normalizeSettings({});
+    const data = await storageGet(null);
+    return resolveTimerSettings(data);
+  } catch (error) {
+    console.error("MindFulCloud storage error:", error);
+    return settingsHelper.getDefaultSettings();
   }
 }
 
 async function init() {
   const settings = await loadSettings();
-  requestAnimationFrame(() => {
-    apply(settings);
-  });
+  requestAnimationFrame(() => applySettings(settings));
 }
 
-runtime.onMessage.addListener((msg) => {
+runtime?.onMessage?.addListener((msg) => {
   if (msg?.type === "UPDATE_SETTINGS") {
-    apply(msg.settings || {});
+    resolveTimerSettings(msg.settings || {}).then(applySettings);
   }
 });
 
 function watchUrl() {
   let last = location.href;
 
-  const obs = new MutationObserver(() => {
-    if (location.href !== last) {
-      last = location.href;
-      init();
-    }
+  const observer = new MutationObserver(() => {
+    if (location.href === last) return;
+    last = location.href;
+    init();
   });
 
-  obs.observe(document, {
+  observer.observe(document, {
+    childList: true,
     subtree: true,
-    childList: true
   });
 }
 
@@ -241,5 +163,4 @@ if (document.readyState === "loading") {
 }
 
 window.addEventListener("load", init);
-
 watchUrl();

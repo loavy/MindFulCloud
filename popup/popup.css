@@ -16,7 +16,6 @@ h1 {
   font-size: 17px;
   font-weight: 600;
   margin: 0 0 14px 0;
-  letter-spacing: -0.3px;
   color: #ffffff;
   display: flex;
   align-items: center;
@@ -25,7 +24,7 @@ h1 {
 
 /* ===== 2. GLOBAL ===== */
 * {
-  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  box-sizing: border-box;
 }
 
 /* ===== 3. SECTION (CARD STYLE) ===== */
@@ -60,6 +59,7 @@ h1 {
   font-size: 15px;
   opacity: 0.5;
   transform: rotate(90deg);
+  transition: transform 0.22s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* OPEN STATE */
@@ -137,8 +137,8 @@ h1 {
 
 /* ACTIVE */
 input:checked + .slider {
-  background: #ff0000; /* 🔴 default accent */
-  box-shadow: 0 0 8px rgba(255, 0, 0, 0.35);
+  background: #4cafef;
+  box-shadow: 0 0 8px rgba(76, 175, 239, 0.35);
 }
 
 .slider:before {
@@ -150,6 +150,7 @@ input:checked + .slider {
   bottom: 3px;
   background: white;
   border-radius: 50%;
+  transition: transform 0.22s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 input:checked + .slider:before {
@@ -161,17 +162,6 @@ input:checked + .slider:before {
   margin-top: 10px;
   padding-top: 8px;
   border-top: 1px solid rgba(255,255,255,0.06);
-}
-
-.color-control {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.color-row {
-  flex-wrap: wrap;
-  align-items: center;
 }
 
 .color-control {

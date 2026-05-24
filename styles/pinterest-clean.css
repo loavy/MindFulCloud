@@ -252,3 +252,15 @@ html.mindful-pinterest.pt-dark.pt-glass .ReactModal__Content {
   background: rgba(22,22,22,0.8) !important;
   backdrop-filter: blur(12px);
 }
+
+html.mindful-pinterest.pt-minimal [data-test-id="one-bar"],
+html.mindful-pinterest.pt-minimal [data-test-id="more-ideas"],
+html.mindful-pinterest.pt-minimal [aria-label*="promoted" i] {
+  display: none !important;
+}
+
+html.mindful-pinterest.pt-minimal div[data-test-id="pin"],
+html.mindful-pinterest.pt-minimal [data-test-id="pin"] {
+  border-radius: 8px !important;
+  overflow: hidden !important;
+}

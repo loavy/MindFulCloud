@@ -1,167 +1,126 @@
-# ☁️ MindfulCloud
+# MindFulCloud
 
-> Reclaim your focus. Simplify your feeds.
+MindFulCloud is a lightweight browser extension for reducing visual noise on YouTube, Reddit, Twitter/X, and Pinterest.
 
-### MindfulCloud is a browser extension that removes distractions and applies a calm, minimal UI across platforms like YouTube, Reddit, Twitter/X, and Pinterest.
+It does not try to block the web. It gives busy pages calmer defaults, fewer distractions, and a popup where you can tune each site.
 
-### Designed for people who want less noise, more intention.
+## Features
 
----
+- Global enable/disable toggle
+- Per-site pause toggle for the active tab
+- Presets: Calm, Focus, and Deep Focus
+- Import, export, and reset settings
+- Chrome, Brave, Edge, and Firefox support
+- Browser-specific release manifests for clean store packages
 
-## ✨ Features
+## Site Modes
 
-### 🎥 YouTube
-- Hide recommendations, comments, and Shorts
-- Custom progress bar color (22 presets)
-- Custom scrubber (seek handle) color (22 presets)
-- Floating sidebar option
-- Preset modes: Calm, Focus, Deep Focus
+### YouTube
 
-### 🧵 Reddit
-- Minimal mode
-- Removes sidebar & clutter
-- Centers content for focused reading
+- Hide recommendations
+- Hide comments
+- Hide Shorts
+- Optional floating sidebar
+- Custom progress bar and scrubber colors
 
-### 🐦 Twitter / X
+### Reddit
+
+- Minimal mode for calmer reading
+- Compact mode for faster scanning
+- Focus mode for a centered, low-distraction feed
+
+### Twitter / X
+
 - Focus mode
-- Hides trends and “who to follow”
-- Cleaner timeline experience
+- Minimal mode
+- Zen mode for a narrow, distraction-light timeline
 
+### Pinterest
 
-### 📌 Pinterest
-- Dark theme
-- Reduced visual noise
-- Cleaner browsing experience
+- Minimal mode
+- Dark mode
+- Glass mode
 
-### ⚙️ Global Controls
-- Master enable/disable toggle
-- Per-site pause functionality
-- Import/export settings
-- Reset to defaults
-- Cross-browser support (Chrome, Firefox)
+## Project Structure
 
----
-
-## 🎨 Philosophy
-
-### MindfulCloud is not just a blocker — it’s a UI redesign for focus.
-- No aggressive blocking
-- No breaking layouts
-- Just removing what distracts you
-
-### Built around:
-- calm colors
-- minimal interfaces
-- intentional browsing
-
----
-
-### 🛠️ Tech Stack
-- Manifest V3
-- Vanilla JavaScript
-- CSS overrides (site-specific)
-- chrome.storage / browser.storage
-
----
-
-## 📁 Project Structure
-
-```
-MindfulCloud/
-│
+```text
+MindFulCloud/
+├── icons/
 ├── popup/
 │   ├── popup.html
 │   ├── popup.js
 │   └── popup.css
-│
-├── content/
-│   ├── content.js
-│   └── styles/
-│       ├── youtube.css
-│       ├── reddit.css
-│       ├── twitter.css
-│       └── pinterest.css
-│
+├── scripts/
+│   └── build-extension.ps1
+├── styles/
+│   ├── pinterest-clean.css
+│   ├── reddit-clean.css
+│   ├── twitter-clean.css
+│   └── youtube-clean.css
+├── content.js
 ├── manifest.json
-└── README.md
+├── manifest.chrome.json
+├── manifest.firefox.json
+└── preload.js
 ```
 
----
+## Install From Source
 
-## ⚙️ Installation
+Clone the repo:
 
-1. Click [here](https://addons.mozilla.org/en-US/firefox/addon/mindfulcloud/)
-
-2. Download it and enjoy!
-
-## ⚙️ Installation (Developer)
-
-1. Clone the repo:
 ```bash
 git clone https://github.com/PinkMath/MindFulCloud.git
 ```
 
-2. Open your browser:
-
 ### Chrome / Brave / Edge
-- Go to chrome://extensions/
-- Enable Developer Mode
-- Click Load unpacked
-- Select the project folder
 
+1. Run the Chrome build:
+
+   ```powershell
+   .\scripts\build-extension.ps1 chrome
+   ```
+
+2. Open `chrome://extensions/`.
+3. Enable Developer Mode.
+4. Click **Load unpacked**.
+5. Select `dist/chrome`.
 
 ### Firefox
-- Go to about:debugging
-- Click This Firefox
-- Click Load Temporary Add-on
-- Select manifest.json
 
----
+1. Run the Firefox build:
 
-## Store Packages
+   ```powershell
+   .\scripts\build-extension.ps1 firefox
+   ```
 
-This repo keeps separate store manifests:
+2. Open `about:debugging`.
+3. Click **This Firefox**.
+4. Click **Load Temporary Add-on**.
+5. Select `dist/firefox/manifest.json`.
 
-- `manifest.chrome.json` removes Firefox-only metadata for Chrome Web Store packages.
-- `manifest.firefox.json` keeps the Gecko extension id for Firefox/AMO packages.
-- `manifest.json` remains the default local development manifest.
+## Build Release Packages
 
-Build release zips from PowerShell:
+Build both browser packages from PowerShell:
 
 ```powershell
-.\scripts\build-extension.ps1 chrome
-.\scripts\build-extension.ps1 firefox
 .\scripts\build-extension.ps1 all
 ```
 
-The Chrome package is created at `dist/MindFulCloud-chrome.zip`.
-The Firefox package is created at `dist/MindFulCloud-firefox.zip`.
+The build script creates:
 
-For Chrome local testing with the clean Chrome manifest, load the `dist/chrome` folder from `chrome://extensions/` after running the build script.
+- `dist/chrome`
+- `dist/firefox`
+- `dist/MindFulCloud-chrome.zip`
+- `dist/MindFulCloud-firefox.zip`
 
----
+`dist/` is ignored by git because it is generated output. Rebuild it locally whenever you need to test or upload a package.
 
-## 🚀 Usage
-1. Click the ☁️ MindfulCloud icon
-2. Toggle features per platform
-3. Customize YouTube colors
-4. Refresh (if needed)
+## Manifest Files
 
----
+- `manifest.chrome.json` removes Firefox-only metadata for Chrome Web Store packages.
+- `manifest.firefox.json` keeps the Gecko extension id for Firefox/AMO packages.
+- `manifest.json` is the default local development manifest.
 
-## ⚠️ Notes
-- These platforms update their UI frequently
-- Some selectors may break over time
-- The extension is designed to be lightweight and adaptable
+## Notes
 
----
-
-## 💡 Roadmap
-- ✅ Master enable/disable toggle
-- ✅ Per-site pause functionality
-- ✅ Preset modes for YouTube
-- ✅ Import/export/reset settings
-- ✅ Compact color palettes (22 presets each)
-- 🔄 Better YouTube live updates (MutationObserver)
-- 🔄 Enhanced cross-platform compatibility
-- 🔄 Settings backup/sync across devices
+These sites change often, so selectors may need maintenance over time. The extension is intentionally small and uses plain JavaScript plus site-specific CSS overrides so fixes stay easy to review.

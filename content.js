@@ -143,10 +143,16 @@ function apply(settings = {}) {
     "yt-float-menu",
     "mindful-reddit",
     "rd-minimal",
+    "rd-compact",
+    "rd-focus",
     "mindful-twitter",
     "tw-focus",
+    "tw-minimal",
+    "tw-zen",
     "mindful-pinterest",
-    "pt-dark"
+    "pt-minimal",
+    "pt-dark",
+    "pt-glass"
   );
 
   const host = location.hostname;
@@ -170,16 +176,22 @@ function apply(settings = {}) {
   if (host.includes("reddit.com") && normalized.reddit.enabled) {
     html.classList.add("mindful-reddit");
     if (normalized.reddit.mode === "minimal") html.classList.add("rd-minimal");
+    if (normalized.reddit.mode === "compact") html.classList.add("rd-compact");
+    if (normalized.reddit.mode === "focus") html.classList.add("rd-focus");
   }
 
   if ((host.includes("x.com") || host.includes("twitter.com")) && normalized.twitter.enabled) {
     html.classList.add("mindful-twitter");
     if (normalized.twitter.mode === "focus") html.classList.add("tw-focus");
+    if (normalized.twitter.mode === "minimal") html.classList.add("tw-minimal");
+    if (normalized.twitter.mode === "zen") html.classList.add("tw-zen");
   }
 
   if (host.includes("pinterest.com") && normalized.pinterest.enabled) {
     html.classList.add("mindful-pinterest");
+    if (normalized.pinterest.mode === "minimal") html.classList.add("pt-minimal");
     if (normalized.pinterest.mode === "dark") html.classList.add("pt-dark");
+    if (normalized.pinterest.mode === "glass") html.classList.add("pt-dark", "pt-glass");
   }
 }
 

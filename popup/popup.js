@@ -100,7 +100,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     },
     pinterest: {
       enabled: true,
-      mode: "minimal"
+      mode: "dark"
     },
     pausedSites: {}
   };
@@ -205,6 +205,18 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     if (typeof data.ytScrubberColor === "string") {
       settings.youtube.scrubberColor = data.ytScrubberColor;
+    }
+
+    if (typeof data.rdMinimal === "boolean") {
+      settings.reddit.mode = data.rdMinimal ? "minimal" : "custom";
+    }
+
+    if (typeof data.twFocus === "boolean") {
+      settings.twitter.mode = data.twFocus ? "focus" : "custom";
+    }
+
+    if (typeof data.ptDark === "boolean") {
+      settings.pinterest.mode = data.ptDark ? "dark" : "custom";
     }
 
     return settings;
@@ -321,7 +333,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       },
       pinterest: {
         enabled: true,
-        mode: elements.ptMode?.value || "minimal"
+        mode: elements.ptMode?.value || "dark"
       },
       pausedSites: { ...(currentSettings.pausedSites || {}) }
     };

@@ -11,6 +11,52 @@ $distRoot = [System.IO.Path]::GetFullPath($dist)
 $targets = if ($Target -eq "all") { @("chrome", "firefox") } else { @($Target) }
 $items = @("content.js", "icons", "popup", "shared", "styles")
 
+Add-Type -AssemblyName System.IO.Compression
+Add-Type -AssemblyName System.IO.Compression.FileSystem
+
+function New-PortableZip {
+  param(
+    [Parameter(Mandatory = $true)]
+    [string]$SourceDirectory,
+    [Parameter(Mandatory = $true)]
+    [string]$DestinationPath
+  )
+
+  $sourceFull = [System.IO.Path]::GetFullPath($SourceDirectory).TrimEnd(
+    [System.IO.Path]::DirectorySeparatorChar
+  )
+  $stream = [System.IO.File]::Open(
+    $DestinationPath,
+    [System.IO.FileMode]::Create,
+    [System.IO.FileAccess]::ReadWrite,
+    [System.IO.FileShare]::None
+  )
+
+  try {
+    $archive = New-Object System.IO.Compression.ZipArchive(
+      $stream,
+      [System.IO.Compression.ZipArchiveMode]::Create,
+      $false
+    )
+
+    try {
+      foreach ($file in Get-ChildItem -LiteralPath $sourceFull -File -Recurse) {
+        $entryName = $file.FullName.Substring($sourceFull.Length + 1).Replace("\", "/")
+        [System.IO.Compression.ZipFileExtensions]::CreateEntryFromFile(
+          $archive,
+          $file.FullName,
+          $entryName,
+          [System.IO.Compression.CompressionLevel]::Optimal
+        ) | Out-Null
+      }
+    } finally {
+      $archive.Dispose()
+    }
+  } finally {
+    $stream.Dispose()
+  }
+}
+
 New-Item -ItemType Directory -Force -Path $dist | Out-Null
 
 if ($Target -eq "all") {
@@ -60,6 +106,6 @@ foreach ($currentTarget in $targets) {
     Remove-Item -LiteralPath $zip -Force
   }
 
-  Compress-Archive -Path (Join-Path $stage "*") -DestinationPath $zip -Force
+  New-PortableZip -SourceDirectory $stage -DestinationPath $zip
   Write-Host "Built $zip"
 }

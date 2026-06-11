@@ -15,10 +15,10 @@ It does not block the web. It softens it: fewer distractions, calmer layouts, lo
 
 ## Install
 
-| Browser                                          | Link                                                                                                                                       |
-| ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| Browser                                          | Link                                                                                                                        |
+| ------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------- |
 | Chrome, Brave, Edge, and other Chromium browsers | [Install from the Chrome Web Store](https://chromewebstore.google.com/detail/mindfulcloud/glcdileonafegdigonahhcffifkoggkp) |
-| Firefox                                          | [Install from Firefox Add-ons](https://addons.mozilla.org/en-GB/firefox/addon/mindfulcloud/)                                               |
+| Firefox                                          | [Install from Firefox Add-ons](https://addons.mozilla.org/en-GB/firefox/addon/mindfulcloud/)                                |
 
 ## What It Does
 

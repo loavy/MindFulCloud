@@ -1,0 +1,13 @@
+html.mindful-youtube-music.ytm-focus ytmusic-nav-bar a[href="/explore"],
+html.mindful-youtube-music.ytm-focus ytmusic-nav-bar a[href*="/paid_memberships"],
+html.mindful-youtube-music.ytm-focus ytmusic-nav-bar a[href*="/premium"],
+html.mindful-youtube-music.ytm-focus ytmusic-cast-button,
+html.mindful-youtube-music.ytm-focus ytmusic-mealbar-promo-renderer {
+  display: none !important;
+}
+
+html.mindful-youtube-music.ytm-focus
+  ytmusic-browse-response[page-type="MUSIC_PAGE_TYPE_HOME"]
+  ytmusic-carousel-shelf-renderer:nth-of-type(n + 3) {
+  display: none !important;
+}

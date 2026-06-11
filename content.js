@@ -26,21 +26,6 @@ function storageGet(keys = null) {
   });
 }
 
-function storageSet(data) {
-  if (!storage) return Promise.resolve();
-
-  try {
-    const result = storage.set(data);
-    if (result && typeof result.then === "function") return result;
-  } catch {
-    // Chrome uses the callback form.
-  }
-
-  return new Promise((resolve) => {
-    storage.set(data, resolve);
-  });
-}
-
 function clearSiteClasses() {
   html.classList.remove(...settingsHelper.SITE_CLASSES);
 }
@@ -48,6 +33,12 @@ function clearSiteClasses() {
 function applyYouTubeColors(settings = {}) {
   html.style.setProperty("--yt-progress-color", settings.progressColor || "#4cafef");
   html.style.setProperty("--yt-scrubber-color", settings.scrubberColor || "#4cafef");
+  html.style.setProperty("--yt-videos-per-row", settings.videosPerRow || 4);
+}
+
+function applyYouTubeMusicColors(settings = {}) {
+  html.style.setProperty("--ytm-progress-color", settings.progressColor || "#4cafef");
+  html.style.setProperty("--ytm-scrubber-color", settings.scrubberColor || "#4cafef");
 }
 
 function addClassWhen(condition, className) {
@@ -62,6 +53,7 @@ function applySettings(settings = {}) {
   clearSiteClasses();
 
   if (!normalized.enabled || !site || paused) {
+    html.classList.remove("ytm-menu-open");
     return;
   }
 
@@ -76,6 +68,23 @@ function applySettings(settings = {}) {
     addClassWhen(normalized.youtube.hideShorts, "yt-hide-shorts");
     addClassWhen(normalized.youtube.floatingSidebar, "yt-float-menu");
     applyYouTubeColors(normalized.youtube);
+  }
+
+  if (site === "youtubeMusic" && normalized.youtubeMusic.enabled) {
+    html.classList.add("mindful-youtube-music");
+    addClassWhen(
+      ["minimal", "focus"].includes(normalized.youtubeMusic.mode),
+      "ytm-minimal",
+    );
+    addClassWhen(normalized.youtubeMusic.mode === "focus", "ytm-focus");
+    addClassWhen(normalized.youtubeMusic.floatingSidebar, "ytm-float-menu");
+    addClassWhen(!normalized.youtubeMusic.showPlaylistSongs, "ytm-hide-playlist-songs");
+    html.classList.add("ytm-immersive-player");
+    addClassWhen(normalized.youtubeMusic.mode === "focus", "ytm-compact-queue");
+    if (!normalized.youtubeMusic.floatingSidebar) {
+      html.classList.remove("ytm-menu-open");
+    }
+    applyYouTubeMusicColors(normalized.youtubeMusic);
   }
 
   if (site === "reddit" && normalized.reddit.enabled) {
@@ -99,31 +108,29 @@ function applySettings(settings = {}) {
   }
 }
 
-async function resolveTimerSettings(settings) {
-  const normalized = settingsHelper.normalizeSettings(settings);
-  const timer = normalized.focusTimer;
+function watchYouTubeMusicMenu() {
+  document.addEventListener("click", (event) => {
+    if (
+      location.hostname !== "music.youtube.com" ||
+      !html.classList.contains("ytm-float-menu")
+    ) {
+      return;
+    }
 
-  if (!timer?.active) {
-    return normalized;
-  }
+    const guideButton = event
+      .composedPath()
+      .find((node) => node instanceof Element && node.id === "guide-button");
 
-  if (Date.now() < timer.endsAt) {
-    return settingsHelper.getFocusSettings(normalized);
-  }
-
-  const restored =
-    timer.previousSettings ||
-    settingsHelper.normalizeSettings({ ...normalized, focusTimer: null });
-
-  restored.focusTimer = null;
-  await storageSet(restored);
-  return restored;
+    if (guideButton) {
+      html.classList.toggle("ytm-menu-open");
+    }
+  });
 }
 
 async function loadSettings() {
   try {
     const data = await storageGet(null);
-    return resolveTimerSettings(data);
+    return settingsHelper.normalizeSettings(data);
   } catch (error) {
     console.error("MindFulCloud storage error:", error);
     return settingsHelper.getDefaultSettings();
@@ -137,7 +144,7 @@ async function init() {
 
 runtime?.onMessage?.addListener((msg) => {
   if (msg?.type === "UPDATE_SETTINGS") {
-    resolveTimerSettings(msg.settings || {}).then(applySettings);
+    applySettings(msg.settings || {});
   }
 });
 
@@ -164,3 +171,4 @@ if (document.readyState === "loading") {
 
 window.addEventListener("load", init);
 watchUrl();
+watchYouTubeMusicMenu();

@@ -11,7 +11,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const usingPromiseApi = typeof browser !== "undefined" && api === browser;
   const elements = {
-    cancelTimer: document.getElementById("cancelTimer"),
     currentSiteHint: document.getElementById("currentSiteHint"),
     currentSiteName: document.getElementById("currentSiteName"),
     currentSitePanel: document.getElementById("currentSitePanel"),
@@ -27,7 +26,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     siteLabel: document.getElementById("siteLabel"),
     sitePaused: document.getElementById("sitePaused"),
     statusMessage: document.getElementById("statusMessage"),
-    timerRemaining: document.getElementById("timerRemaining"),
     twMode: document.getElementById("twMode"),
     ytHideComments: document.getElementById("ytHideComments"),
     ytHideRec: document.getElementById("ytHideRec"),
@@ -38,31 +36,19 @@ document.addEventListener("DOMContentLoaded", async () => {
     ytProgressHex: document.getElementById("ytProgressHex"),
     ytScrubberColor: document.getElementById("ytScrubberColor"),
     ytScrubberHex: document.getElementById("ytScrubberHex"),
+    ytVideosPerRow: document.getElementById("ytVideosPerRow"),
+    ytmFloatingSidebar: document.getElementById("ytmFloatingSidebar"),
+    ytmMode: document.getElementById("ytmMode"),
+    ytmProgressColor: document.getElementById("ytmProgressColor"),
+    ytmProgressHex: document.getElementById("ytmProgressHex"),
+    ytmScrubberColor: document.getElementById("ytmScrubberColor"),
+    ytmScrubberHex: document.getElementById("ytmScrubberHex"),
+    ytmShowPlaylistSongs: document.getElementById("ytmShowPlaylistSongs"),
   };
-
-  const settingControls = [
-    elements.globalPreset,
-    elements.hidePromotedContent,
-    elements.masterEnabled,
-    elements.ptMode,
-    elements.rdMode,
-    elements.sitePaused,
-    elements.twMode,
-    elements.ytHideComments,
-    elements.ytHideRec,
-    elements.ytHideShorts,
-    elements.ytHamburger,
-    elements.ytMode,
-    elements.ytProgressColor,
-    elements.ytProgressHex,
-    elements.ytScrubberColor,
-    elements.ytScrubberHex,
-  ];
 
   let currentHost = null;
   let currentSite = null;
   let currentSettings = settingsHelper.getDefaultSettings();
-  let timerTick = null;
 
   function callApi(method, args = []) {
     if (usingPromiseApi) {
@@ -145,7 +131,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       elements.currentSitePanel.classList.add("unsupported");
       elements.currentSiteName.textContent = "Unsupported page";
       elements.currentSiteHint.textContent =
-        "Open YouTube, Reddit, Twitter/X, or Pinterest to use site controls.";
+        "Open YouTube, YouTube Music, Reddit, Twitter/X, or Pinterest to use site controls.";
       elements.siteLabel.textContent = "No supported site";
       elements.sitePaused.checked = false;
       elements.sitePaused.disabled = true;
@@ -156,7 +142,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     elements.currentSiteName.textContent = currentHost;
     elements.currentSiteHint.textContent =
       "Pause only this site without changing defaults.";
-    elements.siteLabel.textContent = `${currentSite} active`;
+    const siteNames = {
+      pinterest: "Pinterest",
+      reddit: "Reddit",
+      twitter: "Twitter / X",
+      youtube: "YouTube",
+      youtubeMusic: "YouTube Music",
+    };
+    elements.siteLabel.textContent = `${siteNames[currentSite]} active`;
     elements.sitePaused.disabled = false;
     elements.sitePaused.checked = !!currentSettings.pausedSites?.[currentHost];
   }
@@ -188,6 +181,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
+  function applyYouTubeMusicMode(mode) {
+    elements.ytmMode.value = mode;
+    elements.ytmShowPlaylistSongs.checked = mode !== "focus";
+  }
+
   function applyPreset(name) {
     elements.globalPreset.value = name;
 
@@ -196,6 +194,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       elements.rdMode.value = "minimal";
       elements.twMode.value = "zen";
       elements.ptMode.value = "minimal";
+      applyYouTubeMusicMode("minimal");
+      elements.ytmFloatingSidebar.checked = false;
     }
 
     if (name === "focus") {
@@ -203,6 +203,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       elements.rdMode.value = "compact";
       elements.twMode.value = "focus";
       elements.ptMode.value = "dark";
+      applyYouTubeMusicMode("focus");
+      elements.ytmFloatingSidebar.checked = false;
     }
 
     if (name === "deep-focus") {
@@ -210,6 +212,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       elements.rdMode.value = "focus";
       elements.twMode.value = "zen";
       elements.ptMode.value = "dark";
+      applyYouTubeMusicMode("focus");
+      elements.ytmFloatingSidebar.checked = true;
     }
   }
 
@@ -229,8 +233,17 @@ document.addEventListener("DOMContentLoaded", async () => {
         hideComments: elements.ytHideComments.checked,
         hideShorts: elements.ytHideShorts.checked,
         floatingSidebar: elements.ytHamburger.checked,
+        videosPerRow: Number(elements.ytVideosPerRow.value),
         progressColor: elements.ytProgressHex.value,
         scrubberColor: elements.ytScrubberHex.value,
+      },
+      youtubeMusic: {
+        enabled: true,
+        mode: elements.ytmMode.value,
+        floatingSidebar: elements.ytmFloatingSidebar.checked,
+        showPlaylistSongs: elements.ytmShowPlaylistSongs.checked,
+        progressColor: elements.ytmProgressHex.value,
+        scrubberColor: elements.ytmScrubberHex.value,
       },
       reddit: {
         enabled: true,
@@ -245,7 +258,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         mode: elements.ptMode.value,
       },
       pausedSites: { ...(currentSettings.pausedSites || {}) },
-      focusTimer: currentSettings.focusTimer,
     });
   }
 
@@ -255,32 +267,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     hexInput.value = color;
   }
 
-  function updateTimerUi(settings) {
-    const timer = settings.focusTimer;
-    const active = !!timer?.active && Date.now() < timer.endsAt;
-
-    settingControls.forEach((control) => {
-      if (control) control.disabled = active;
-    });
-
-    elements.cancelTimer.disabled = !active;
-
-    if (!active) {
-      elements.timerRemaining.textContent = "Inactive";
-      return;
-    }
-
-    const remainingMs = Math.max(0, timer.endsAt - Date.now());
-    const minutes = Math.floor(remainingMs / 60000);
-    const seconds = Math.floor((remainingMs % 60000) / 1000);
-    elements.timerRemaining.textContent = `${minutes}:${String(seconds).padStart(2, "0")}`;
-  }
-
   function updateUI(settings) {
     currentSettings = settingsHelper.normalizeSettings(settings);
-    const visibleSettings = currentSettings.focusTimer?.active
-      ? settingsHelper.getFocusSettings(currentSettings)
-      : currentSettings;
+    const visibleSettings = currentSettings;
 
     elements.masterEnabled.checked = visibleSettings.enabled;
     elements.globalPreset.value = visibleSettings.preset;
@@ -290,6 +279,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     elements.ytHideComments.checked = visibleSettings.youtube.hideComments;
     elements.ytHideShorts.checked = visibleSettings.youtube.hideShorts;
     elements.ytHamburger.checked = visibleSettings.youtube.floatingSidebar;
+    elements.ytVideosPerRow.value = visibleSettings.youtube.videosPerRow;
+    elements.ytmMode.value = visibleSettings.youtubeMusic.mode;
+    elements.ytmFloatingSidebar.checked = visibleSettings.youtubeMusic.floatingSidebar;
+    elements.ytmShowPlaylistSongs.checked =
+      visibleSettings.youtubeMusic.showPlaylistSongs;
     elements.rdMode.value = visibleSettings.reddit.mode;
     elements.twMode.value = visibleSettings.twitter.mode;
     elements.ptMode.value = visibleSettings.pinterest.mode;
@@ -303,93 +297,32 @@ document.addEventListener("DOMContentLoaded", async () => {
       elements.ytScrubberHex,
       visibleSettings.youtube.scrubberColor,
     );
+    syncColorPair(
+      elements.ytmProgressColor,
+      elements.ytmProgressHex,
+      visibleSettings.youtubeMusic.progressColor,
+    );
+    syncColorPair(
+      elements.ytmScrubberColor,
+      elements.ytmScrubberHex,
+      visibleSettings.youtubeMusic.scrubberColor,
+    );
 
     updateCurrentSiteUi();
-    updateTimerUi(currentSettings);
-  }
-
-  async function restoreExpiredTimer(settings) {
-    const normalized = settingsHelper.normalizeSettings(settings);
-    const timer = normalized.focusTimer;
-
-    if (!timer?.active || Date.now() < timer.endsAt) {
-      return normalized;
-    }
-
-    const restored = timer.previousSettings || settingsHelper.getDefaultSettings();
-    restored.focusTimer = null;
-    await storage.set(restored);
-    await sendSettingsToActiveTab(restored);
-    showStatus("Focus timer ended");
-    return restored;
   }
 
   async function loadSettings() {
     const raw = await storage.get();
-    currentSettings = await restoreExpiredTimer(raw);
+    currentSettings = settingsHelper.normalizeSettings(raw);
     updateUI(currentSettings);
   }
 
   async function saveFromUi(message) {
-    if (
-      currentSettings.focusTimer?.active &&
-      Date.now() < currentSettings.focusTimer.endsAt
-    ) {
-      showStatus("Cancel the focus timer before editing settings");
-      return;
-    }
-
     await persistSettings(buildSettings(), message);
   }
 
-  async function startFocusTimer(minutes) {
-    const base = settingsHelper.normalizeSettings(buildSettings(), {
-      includeTimer: false,
-    });
-    const timer = {
-      active: true,
-      startedAt: Date.now(),
-      endsAt: Date.now() + minutes * 60000,
-      previousSettings: base,
-    };
-    const focused = settingsHelper.getFocusSettings({ ...base, focusTimer: timer });
-    await persistSettings(focused, `Focus timer started for ${minutes} minutes`);
-    startTimerLoop();
-  }
-
-  async function cancelFocusTimer(message = "Focus timer canceled") {
-    const timer = currentSettings.focusTimer;
-    const restored = timer?.previousSettings || settingsHelper.getDefaultSettings();
-    restored.focusTimer = null;
-    await persistSettings(restored, message);
-    startTimerLoop();
-  }
-
-  function startTimerLoop() {
-    clearInterval(timerTick);
-    timerTick = setInterval(async () => {
-      if (!currentSettings.focusTimer?.active) {
-        updateTimerUi(currentSettings);
-        return;
-      }
-
-      if (Date.now() >= currentSettings.focusTimer.endsAt) {
-        await cancelFocusTimer("Focus timer ended");
-        return;
-      }
-
-      updateTimerUi(currentSettings);
-    }, 1000);
-    updateTimerUi(currentSettings);
-  }
-
   function downloadSettings() {
-    const source =
-      currentSettings.focusTimer?.active && currentSettings.focusTimer.previousSettings
-        ? currentSettings.focusTimer.previousSettings
-        : currentSettings;
-    const exportData = settingsHelper.normalizeSettings(source);
-    exportData.focusTimer = null;
+    const exportData = settingsHelper.normalizeSettings(currentSettings);
     const blob = new Blob([JSON.stringify(exportData, null, 2)], {
       type: "application/json",
     });
@@ -409,7 +342,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       const text = await file.text();
       const data = JSON.parse(text);
       const imported = settingsHelper.normalizeSettings(data);
-      imported.focusTimer = null;
       await persistSettings(imported, "Imported successfully");
     } catch {
       showStatus("Import failed: choose a valid JSON settings file");
@@ -431,6 +363,12 @@ document.addEventListener("DOMContentLoaded", async () => {
       });
     });
 
+    elements.ytmMode.addEventListener("change", async () => {
+      applyYouTubeMusicMode(elements.ytmMode.value);
+      setCustomPreset();
+      await saveFromUi();
+    });
+
     elements.ytMode.addEventListener("change", async () => {
       applyYouTubeMode(elements.ytMode.value);
       setCustomPreset();
@@ -444,11 +382,19 @@ document.addEventListener("DOMContentLoaded", async () => {
       elements.ytHideRec,
       elements.ytHideShorts,
       elements.ytHamburger,
+      elements.ytVideosPerRow,
     ].forEach((input) => {
       input.addEventListener("change", async () => {
         if (input !== elements.masterEnabled && input !== elements.hidePromotedContent) {
           elements.ytMode.value = "custom";
         }
+        setCustomPreset();
+        await saveFromUi();
+      });
+    });
+
+    [elements.ytmFloatingSidebar, elements.ytmShowPlaylistSongs].forEach((input) => {
+      input.addEventListener("change", async () => {
         setCustomPreset();
         await saveFromUi();
       });
@@ -468,6 +414,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     [
       [elements.ytProgressColor, elements.ytProgressHex],
       [elements.ytScrubberColor, elements.ytScrubberHex],
+      [elements.ytmProgressColor, elements.ytmProgressHex],
+      [elements.ytmScrubberColor, elements.ytmScrubberHex],
     ].forEach(([colorInput, hexInput]) => {
       colorInput.addEventListener("input", async () => {
         hexInput.value = colorInput.value;
@@ -488,13 +436,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       });
     });
 
-    document.querySelectorAll("[data-timer-minutes]").forEach((button) => {
-      button.addEventListener("click", () => {
-        startFocusTimer(Number(button.dataset.timerMinutes));
-      });
-    });
-
-    elements.cancelTimer.addEventListener("click", () => cancelFocusTimer());
     elements.exportSettings.addEventListener("click", downloadSettings);
     elements.importSettings.addEventListener("click", () => elements.importFile.click());
     elements.importFile.addEventListener("change", () =>
@@ -511,5 +452,4 @@ document.addEventListener("DOMContentLoaded", async () => {
   currentSite = settingsHelper.getCurrentSite(currentHost || "");
   wireEvents();
   await loadSettings();
-  startTimerLoop();
 });

@@ -1,0 +1,343 @@
+/* =======================
+VARIABLES
+======================= */
+
+html.mindful-youtube-music {
+  --ytm-progress-color: #4cafef;
+  --ytm-scrubber-color: #4cafef;
+  --mf-ytm-gap: 6px;
+  --mf-ytm-header-height: 64px;
+  --mf-ytm-player-height: 72px;
+  --mf-ytm-radius: 12px;
+  --mf-ytm-surface: rgba(22, 21, 20, 0.82);
+  --mf-ytm-surface-strong: rgba(22, 21, 20, 0.94);
+  --mf-ytm-border: rgba(255, 255, 255, 0.06);
+  --mf-ytm-chip: rgba(255, 255, 255, 0.06);
+  --mf-ytm-chip-hover: rgba(255, 255, 255, 0.12);
+  --mf-ytm-text: #f5f5f5;
+  --mf-ytm-muted: #aaa;
+  --mf-ytm-shadow: 0 18px 48px rgba(0, 0, 0, 0.38);
+  --ytmusic-guide-width: 0px !important;
+  --ytmusic-guide-collapsed-width: 0px !important;
+}
+
+/* =======================
+FLOATING HEADER
+======================= */
+
+html.mindful-youtube-music ytmusic-nav-bar {
+  position: fixed !important;
+  top: var(--mf-ytm-gap) !important;
+  left: var(--mf-ytm-gap) !important;
+  right: var(--mf-ytm-gap) !important;
+  width: auto !important;
+  min-height: var(--mf-ytm-header-height) !important;
+  box-sizing: border-box !important;
+  background: var(--mf-ytm-surface) !important;
+  border: 1px solid var(--mf-ytm-border) !important;
+  border-radius: var(--mf-ytm-radius) !important;
+  backdrop-filter: blur(12px) !important;
+  box-shadow: none !important;
+  z-index: 10000 !important;
+}
+
+html.mindful-youtube-music ytmusic-nav-bar #left-content,
+html.mindful-youtube-music ytmusic-nav-bar #center-content,
+html.mindful-youtube-music ytmusic-nav-bar #right-content {
+  background: transparent !important;
+}
+
+html.mindful-youtube-music ytmusic-nav-bar ytmusic-search-box {
+  max-width: 620px !important;
+}
+
+/* =======================
+CONTENT LAYOUT
+======================= */
+
+html.mindful-youtube-music ytmusic-app-layout > #content,
+html.mindful-youtube-music ytmusic-app-layout #content {
+  left: 0 !important;
+  width: 100% !important;
+  margin-left: 0 !important;
+  padding-left: 0 !important;
+}
+
+html.mindful-youtube-music ytmusic-app,
+html.mindful-youtube-music ytmusic-app-layout {
+  --ytmusic-guide-width: 0px !important;
+  --ytmusic-guide-collapsed-width: 0px !important;
+}
+
+html.mindful-youtube-music ytmusic-browse-response,
+html.mindful-youtube-music ytmusic-search-page,
+html.mindful-youtube-music ytmusic-library-page {
+  width: 100% !important;
+  max-width: 1800px !important;
+  box-sizing: border-box !important;
+  margin-inline: auto !important;
+  padding-inline: 24px !important;
+}
+
+html.mindful-youtube-music ytmusic-carousel-shelf-renderer,
+html.mindful-youtube-music ytmusic-shelf-renderer {
+  margin-bottom: 32px !important;
+}
+
+html.mindful-youtube-music ytmusic-responsive-list-item-renderer,
+html.mindful-youtube-music ytmusic-two-row-item-renderer {
+  border-radius: 8px !important;
+  transition: background-color 0.15s ease !important;
+}
+
+html.mindful-youtube-music ytmusic-responsive-list-item-renderer:hover,
+html.mindful-youtube-music ytmusic-two-row-item-renderer:hover {
+  background: var(--mf-ytm-chip) !important;
+}
+
+/* =======================
+SIDEBAR
+======================= */
+
+html.mindful-youtube-music:not(.ytm-float-menu) ytmusic-guide-renderer,
+html.mindful-youtube-music:not(.ytm-float-menu) #guide-wrapper,
+html.mindful-youtube-music:not(.ytm-float-menu) ytmusic-nav-bar #guide-button,
+html.mindful-youtube-music.ytm-float-menu:not(.ytm-menu-open) ytmusic-guide-renderer,
+html.mindful-youtube-music.ytm-float-menu:not(.ytm-menu-open) #guide-wrapper {
+  display: none !important;
+  width: 0 !important;
+  min-width: 0 !important;
+  max-width: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+html.mindful-youtube-music.ytm-float-menu.ytm-menu-open #guide-wrapper {
+  display: block !important;
+  position: fixed !important;
+  top: calc(
+    var(--mf-ytm-gap) + var(--mf-ytm-header-height) + var(--mf-ytm-gap)
+  ) !important;
+  left: var(--mf-ytm-gap) !important;
+  bottom: auto !important;
+  width: 240px !important;
+  height: auto !important;
+  max-height: calc(100vh - 180px) !important;
+  box-sizing: border-box !important;
+  background: var(--mf-ytm-surface) !important;
+  border: 1px solid var(--mf-ytm-border) !important;
+  border-radius: var(--mf-ytm-radius) !important;
+  backdrop-filter: blur(12px) !important;
+  box-shadow: none !important;
+  overflow: hidden !important;
+  z-index: 9999 !important;
+  animation: mindful-ytm-drawer-in 0.18s ease-out !important;
+}
+
+html.mindful-youtube-music.ytm-float-menu.ytm-menu-open
+  #guide-wrapper
+  ytmusic-guide-renderer {
+  display: block !important;
+  position: static !important;
+  width: 100% !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: calc(100vh - 180px) !important;
+  box-sizing: border-box !important;
+  padding: 8px 6px 8px 10px !important;
+  background: transparent !important;
+  overflow: hidden auto !important;
+}
+
+html.mindful-youtube-music.ytm-float-menu.ytm-menu-open
+  #guide-wrapper
+  ytmusic-guide-section-renderer {
+  margin: 6px 0 !important;
+  padding: 0 6px !important;
+  border-bottom: 0 !important;
+}
+
+html.mindful-youtube-music.ytm-float-menu.ytm-menu-open
+  #guide-wrapper
+  ytmusic-guide-section-renderer:last-child {
+  margin-bottom: 0 !important;
+  border-bottom: 0 !important;
+}
+
+html.mindful-youtube-music.ytm-float-menu.ytm-menu-open
+  #guide-wrapper
+  ytmusic-guide-entry-renderer {
+  min-height: 40px !important;
+  margin: 2px 6px !important;
+  border-radius: 6px !important;
+  overflow: hidden !important;
+}
+
+html.mindful-youtube-music.ytm-float-menu.ytm-menu-open
+  #guide-wrapper
+  ytmusic-guide-entry-renderer:hover,
+html.mindful-youtube-music.ytm-float-menu.ytm-menu-open
+  #guide-wrapper
+  ytmusic-guide-entry-renderer[aria-current="page"] {
+  background: var(--mf-ytm-chip-hover) !important;
+}
+
+html.mindful-youtube-music.ytm-float-menu.ytm-menu-open
+  #guide-wrapper
+  ytmusic-guide-entry-renderer
+  a {
+  padding-inline: 10px !important;
+}
+
+html.mindful-youtube-music.ytm-float-menu #guide-wrapper::-webkit-scrollbar {
+  width: 6px;
+}
+
+html.mindful-youtube-music.ytm-float-menu #guide-wrapper::-webkit-scrollbar-thumb {
+  background: var(--mf-ytm-chip-hover);
+  border-radius: 999px;
+}
+
+html.mindful-youtube-music.ytm-float-menu ytmusic-nav-bar #guide-button {
+  display: grid !important;
+  width: 42px !important;
+  height: 42px !important;
+  margin-right: 10px !important;
+  border-radius: 50% !important;
+  background: var(--mf-ytm-chip) !important;
+  place-items: center !important;
+  transition:
+    background-color 0.15s ease,
+    transform 0.15s ease !important;
+}
+
+html.mindful-youtube-music.ytm-float-menu ytmusic-nav-bar #guide-button:hover {
+  background: var(--mf-ytm-chip-hover) !important;
+  transform: scale(1.04) !important;
+}
+
+html.mindful-youtube-music.ytm-float-menu ytmusic-nav-bar #guide-button:active {
+  transform: scale(0.96) !important;
+}
+
+html.mindful-youtube-music.ytm-hide-playlist-songs ytmusic-player-page #side-panel,
+html.mindful-youtube-music.ytm-hide-playlist-songs ytmusic-player-page #secondary {
+  display: none !important;
+}
+
+html.mindful-youtube-music.ytm-hide-playlist-songs ytmusic-player-page #main-panel {
+  width: 100% !important;
+  max-width: 1100px !important;
+  margin-inline: auto !important;
+}
+
+@keyframes mindful-ytm-drawer-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* =======================
+PLAYER BAR
+======================= */
+
+html.mindful-youtube-music ytmusic-player-bar {
+  left: var(--mf-ytm-gap) !important;
+  right: var(--mf-ytm-gap) !important;
+  bottom: var(--mf-ytm-gap) !important;
+  width: auto !important;
+  min-height: var(--mf-ytm-player-height) !important;
+  box-sizing: border-box !important;
+  background: var(--mf-ytm-surface-strong) !important;
+  border: 1px solid var(--mf-ytm-border) !important;
+  border-radius: var(--mf-ytm-radius) !important;
+  backdrop-filter: blur(12px) !important;
+  box-shadow: none !important;
+}
+
+html.mindful-youtube-music ytmusic-player-bar tp-yt-paper-progress,
+html.mindful-youtube-music ytmusic-player-bar tp-yt-paper-slider {
+  --paper-progress-active-color: var(--ytm-progress-color) !important;
+  --paper-slider-active-color: var(--ytm-progress-color) !important;
+  --paper-slider-knob-color: var(--ytm-scrubber-color) !important;
+}
+
+html.mindful-youtube-music ytmusic-player-bar .slider-knob-inner,
+html.mindful-youtube-music ytmusic-player-bar #sliderKnob .slider-knob-inner {
+  background: var(--ytm-scrubber-color) !important;
+  box-shadow: 0 0 5px var(--ytm-scrubber-color) !important;
+}
+
+/* =======================
+IMMERSIVE PLAYER
+======================= */
+
+html.mindful-youtube-music.ytm-immersive-player ytmusic-player-page #player,
+html.mindful-youtube-music.ytm-immersive-player ytmusic-player-page #main-panel {
+  border-radius: 18px !important;
+  overflow: hidden !important;
+}
+
+html.mindful-youtube-music.ytm-immersive-player ytmusic-player-page #song-image,
+html.mindful-youtube-music.ytm-immersive-player ytmusic-player-page yt-img-shadow,
+html.mindful-youtube-music.ytm-immersive-player ytmusic-player-page img {
+  border-radius: 18px !important;
+}
+
+html.mindful-youtube-music.ytm-immersive-player ytmusic-player-page #song-image {
+  box-shadow: var(--mf-ytm-shadow) !important;
+}
+
+/* =======================
+COMPACT QUEUE
+======================= */
+
+html.mindful-youtube-music.ytm-compact-queue
+  ytmusic-player-queue-item
+  ytmusic-responsive-list-item-renderer,
+html.mindful-youtube-music.ytm-compact-queue
+  ytmusic-player-queue
+  ytmusic-responsive-list-item-renderer {
+  min-height: 48px !important;
+  padding-block: 3px !important;
+}
+
+html.mindful-youtube-music.ytm-compact-queue
+  ytmusic-player-queue
+  ytmusic-responsive-list-item-renderer
+  yt-img-shadow {
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: 7px !important;
+  overflow: hidden !important;
+}
+
+html.mindful-youtube-music.ytm-compact-queue ytmusic-player-queue #contents {
+  scrollbar-width: thin;
+}
+
+/* =======================
+POPUPS AND PROMOTIONS
+======================= */
+
+html.mindful-youtube-music ytmusic-menu-popup-renderer,
+html.mindful-youtube-music tp-yt-paper-dialog,
+html.mindful-youtube-music tp-yt-iron-dropdown {
+  background: var(--mf-ytm-surface-strong) !important;
+  border: 1px solid var(--mf-ytm-border) !important;
+  border-radius: var(--mf-ytm-radius) !important;
+  backdrop-filter: blur(12px) !important;
+  box-shadow: none !important;
+}
+
+html.mindful-youtube-music.hide-promoted-content ytmusic-mealbar-promo-renderer,
+html.mindful-youtube-music.hide-promoted-content ytmusic-statement-banner-renderer,
+html.mindful-youtube-music.hide-promoted-content ytmusic-message-renderer {
+  display: none !important;
+}

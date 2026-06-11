@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "MindFulCloud",
-  "version": "5.0.0",
+  "version": "5.3.0",
   "description": "De-clutter your digital space across multiple platforms.",
   "permissions": ["storage", "activeTab"],
   "host_permissions": [
@@ -33,6 +33,9 @@
       "js": ["shared/settings.js", "content.js"],
       "css": [
         "styles/youtube/youtube-clean.css",
+        "styles/youtube-music/base.css",
+        "styles/youtube-music/minimal.css",
+        "styles/youtube-music/focus.css",
         "styles/reddit/base.css",
         "styles/reddit/minimal.css",
         "styles/reddit/compact.css",

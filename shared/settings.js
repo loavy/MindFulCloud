@@ -10,6 +10,15 @@
       hideComments: false,
       hideShorts: true,
       floatingSidebar: false,
+      videosPerRow: 4,
+      progressColor: "#4cafef",
+      scrubberColor: "#4cafef",
+    },
+    youtubeMusic: {
+      enabled: true,
+      mode: "minimal",
+      floatingSidebar: false,
+      showPlaylistSongs: true,
       progressColor: "#4cafef",
       scrubberColor: "#4cafef",
     },
@@ -26,7 +35,6 @@
       mode: "dark",
     },
     pausedSites: {},
-    focusTimer: null,
   };
 
   const LEGACY_KEYS = [
@@ -36,6 +44,7 @@
     "ytHamburger",
     "ytProgressColor",
     "ytScrubberColor",
+    "focusTimer",
     "rdMinimal",
     "twFocus",
     "ptDark",
@@ -47,6 +56,13 @@
     "yt-hide-comments",
     "yt-hide-shorts",
     "yt-float-menu",
+    "mindful-youtube-music",
+    "ytm-minimal",
+    "ytm-focus",
+    "ytm-float-menu",
+    "ytm-hide-playlist-songs",
+    "ytm-immersive-player",
+    "ytm-compact-queue",
     "mindful-reddit",
     "rd-minimal",
     "rd-compact",
@@ -77,27 +93,7 @@
     return { ...base, ...value };
   }
 
-  function normalizeFocusTimer(value) {
-    if (!value || typeof value !== "object") {
-      return null;
-    }
-
-    const endsAt = Number(value.endsAt);
-    if (!Number.isFinite(endsAt)) {
-      return null;
-    }
-
-    return {
-      active: value.active !== false,
-      startedAt: Number(value.startedAt) || Date.now(),
-      endsAt,
-      previousSettings: value.previousSettings
-        ? normalizeSettings(value.previousSettings, { includeTimer: false })
-        : null,
-    };
-  }
-
-  function normalizeSettings(data = {}, options = {}) {
+  function normalizeSettings(data = {}) {
     const settings = getDefaultSettings();
 
     if (typeof data.enabled === "boolean") settings.enabled = data.enabled;
@@ -108,6 +104,7 @@
 
     settings.pausedSites = mergeObject(settings.pausedSites, data.pausedSites);
     settings.youtube = mergeObject(settings.youtube, data.youtube);
+    settings.youtubeMusic = mergeObject(settings.youtubeMusic, data.youtubeMusic);
     settings.reddit = mergeObject(settings.reddit, data.reddit);
     settings.twitter = mergeObject(settings.twitter, data.twitter);
     settings.pinterest = mergeObject(settings.pinterest, data.pinterest);
@@ -115,6 +112,13 @@
     if (!["minimal", "dark"].includes(settings.pinterest.mode)) {
       settings.pinterest.mode = "dark";
     }
+    if (!["minimal", "focus"].includes(settings.youtubeMusic.mode)) {
+      settings.youtubeMusic.mode = "minimal";
+    }
+    settings.youtube.videosPerRow = Math.min(
+      8,
+      Math.max(2, Number.parseInt(settings.youtube.videosPerRow, 10) || 4),
+    );
 
     if (typeof data.ytHideRec === "boolean") {
       settings.youtube.hideRecommendations = data.ytHideRec;
@@ -144,35 +148,11 @@
       settings.pinterest.mode = data.ptDark ? "dark" : "minimal";
     }
 
-    settings.focusTimer =
-      options.includeTimer === false ? null : normalizeFocusTimer(data.focusTimer);
-
     return settings;
   }
 
-  function getFocusSettings(settings = {}) {
-    const focused = normalizeSettings(settings, { includeTimer: false });
-
-    focused.enabled = true;
-    focused.preset = "custom";
-    focused.youtube.enabled = true;
-    focused.youtube.mode = "deep-focus";
-    focused.youtube.hideRecommendations = true;
-    focused.youtube.hideComments = true;
-    focused.youtube.hideShorts = true;
-    focused.youtube.floatingSidebar = true;
-    focused.reddit.enabled = true;
-    focused.reddit.mode = "focus";
-    focused.twitter.enabled = true;
-    focused.twitter.mode = "zen";
-    focused.pinterest.enabled = true;
-    focused.pinterest.mode = "dark";
-    focused.focusTimer = settings.focusTimer || null;
-
-    return focused;
-  }
-
   function getCurrentSite(hostname = "") {
+    if (hostname === "music.youtube.com") return "youtubeMusic";
     if (hostname.includes("youtube.com")) return "youtube";
     if (hostname.includes("reddit.com")) return "reddit";
     if (hostname.includes("twitter.com") || hostname.includes("x.com")) return "twitter";
@@ -186,7 +166,6 @@
     clone,
     getCurrentSite,
     getDefaultSettings,
-    getFocusSettings,
     normalizeSettings,
   };
 })();

@@ -2,7 +2,7 @@
 
 > A calmer cloud for loud websites.
 
-[MindFulCloud](https://github.com/loavy/MindFulCloud) is a lightweight browser extension that makes YouTube, Reddit, Twitter/X, and Pinterest feel quieter, cleaner, and easier to use.
+[MindFulCloud](https://github.com/loavy/MindFulCloud) is a lightweight browser extension that makes YouTube, YouTube Music, Reddit, Twitter/X, and Pinterest feel quieter, cleaner, and easier to use.
 
 It does not block the web. It softens it: fewer distractions, calmer layouts, local settings, and simple controls that stay out of your way.
 
@@ -24,21 +24,22 @@ It does not block the web. It softens it: fewer distractions, calmer layouts, lo
 
 MindFulCloud adds site-specific calm modes to websites that are usually built to keep pulling your attention around.
 
-- YouTube gets cleaner watching controls, less recommendation pressure, optional comment hiding, Shorts hiding, and focus mode.
+- YouTube gets cleaner watching controls, configurable home-grid columns, less recommendation pressure, optional comment hiding, Shorts hiding, and focus mode.
+- YouTube Music gets Minimal and Focus modes, playlist-song visibility controls, a transparent floating sidebar, immersive player styling, and custom player colors.
 - Reddit gets Minimal, Compact, and Focus modes.
 - Twitter/X gets Minimal, Focus, and Zen modes.
 - Pinterest gets Minimal and Dark modes with separated theme CSS.
-- A Focus Timer can temporarily apply stronger calm settings for 15, 30, or 60 minutes.
 - Settings are saved locally in your browser.
 
 ## Supported Sites
 
-| Site      | Modes / Controls                                                                                         |
-| --------- | -------------------------------------------------------------------------------------------------------- |
-| YouTube   | Hide recommendations, hide comments, hide Shorts, focus mode, floating sidebar, progress/scrubber colors |
-| Reddit    | Minimal, Compact, Focus                                                                                  |
-| Twitter/X | Minimal, Focus, Zen                                                                                      |
-| Pinterest | Minimal, Dark                                                                                            |
+| Site          | Modes / Controls                                                                                           |
+| ------------- | ---------------------------------------------------------------------------------------------------------- |
+| YouTube       | Hide recommendations/comments/Shorts, 2-8 home videos per row, focus mode, floating sidebar, player colors |
+| YouTube Music | Minimal, Focus, playlist-song visibility, transparent floating sidebar, immersive player, player colors    |
+| Reddit        | Minimal, Compact, Focus                                                                                    |
+| Twitter/X     | Minimal, Focus, Zen                                                                                        |
+| Pinterest     | Minimal, Dark                                                                                              |
 
 Host permissions are limited to these supported sites only.
 
@@ -49,7 +50,6 @@ Host permissions are limited to these supported sites only.
 - Current-site highlighting in the popup.
 - Calm, Focus, and Deep Focus presets.
 - Optional Hide promoted/ad content toggle.
-- Focus Timer with automatic restore.
 - Import, export, and reset settings.
 - Separate Chrome and Firefox manifests.
 - Clean release folders in `dist/chrome/` and `dist/firefox/`.
@@ -66,26 +66,6 @@ Host permissions are limited to these supported sites only.
 
 Changing any individual setting automatically returns the preset to `custom`.
 
-## Focus Timer
-
-The popup includes a small focus session tool:
-
-- Start a 15, 30, or 60 minute session.
-- MindFulCloud temporarily applies stronger calm settings.
-- The popup shows the remaining time.
-- You can cancel the session anytime.
-- When the timer ends, your previous settings are restored.
-- Timer state is stored in `chrome.storage.local` / `browser.storage.local`, so it survives closing the popup.
-
-During a focus session:
-
-| Site      | Temporary Focus Behavior                                                           |
-| --------- | ---------------------------------------------------------------------------------- |
-| YouTube   | Hide recommendations, comments, Shorts, enable focus mode, enable floating sidebar |
-| Reddit    | Focus mode                                                                         |
-| Twitter/X | Zen mode                                                                           |
-| Pinterest | Dark mode                                                                          |
-
 ## Privacy
 
 MindFulCloud is intentionally local-first.
@@ -97,13 +77,13 @@ MindFulCloud is intentionally local-first.
 - No account.
 - No background data collection.
 - Settings are stored locally in your browser.
-- Host permissions are limited to YouTube, Reddit, Twitter/X, and Pinterest.
+- Host permissions are limited to YouTube, YouTube Music, Reddit, Twitter/X, and Pinterest.
 
 ## Permissions
 
 | Permission         | Why It Is Used                                                                  |
 | ------------------ | ------------------------------------------------------------------------------- |
-| `storage`          | Saves settings, pause state, import/export data, and Focus Timer state locally. |
+| `storage`          | Saves settings, pause state, and import/export data locally.                    |
 | `activeTab`        | Lets the popup detect and message the current tab after you open the extension. |
 | `host_permissions` | Allows content scripts and CSS to run only on the supported sites.              |
 
@@ -142,6 +122,10 @@ MindFulCloud/
 |   |   `-- promoted-content.css
 |   `-- youtube/
 |       `-- youtube-clean.css
+|   `-- youtube-music/
+|       |-- base.css
+|       |-- minimal.css
+|       `-- focus.css
 |-- content.js
 |-- manifest.json
 |-- manifest.chrome.json
@@ -233,7 +217,6 @@ Firefox:
 - Test pause for the current site.
 - Test every site mode.
 - Test Calm, Focus, and Deep Focus presets.
-- Test the Focus Timer.
 - Test import/export/reset.
 - Upload `dist/MindFulCloud-chrome.zip` to the Chrome Web Store.
 - Upload `dist/MindFulCloud-firefox.zip` to Firefox Add-ons.
@@ -243,14 +226,12 @@ Firefox:
 Chrome:
 
 - Load `dist/chrome` in `chrome://extensions`.
-- Open YouTube, Reddit, X/Twitter, and Pinterest.
+- Open YouTube, YouTube Music, Reddit, X/Twitter, and Pinterest.
 - Toggle global on/off.
 - Toggle pause for the current site.
 - Change every site mode.
 - Test presets.
 - Test Hide promoted/ad content.
-- Start and cancel the Focus Timer.
-- Let a short Focus Timer expire and confirm settings restore.
 - Export settings, reset settings, then import the exported JSON.
 
 Firefox:

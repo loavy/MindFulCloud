@@ -298,26 +298,15 @@ html.mindful-youtube #contents.ytd-rich-grid-renderer {
   width: 100% !important;
 }
 
-/* default → 3 columns */
-@media (min-width: 0px) {
-  html.mindful-youtube #contents.ytd-rich-grid-renderer {
-    grid-template-columns: repeat(3, 1fr) !important;
-  }
+html.mindful-youtube ytd-browse[page-subtype="home"] #contents.ytd-rich-grid-renderer {
+  grid-template-columns: repeat(var(--yt-videos-per-row, 4), minmax(0, 1fr)) !important;
 }
+
+/* default → 3 columns */
 
 /* medium → 4 columns */
-@media (min-width: 1100px) {
-  html.mindful-youtube #contents.ytd-rich-grid-renderer {
-    grid-template-columns: repeat(4, 1fr) !important;
-  }
-}
 
 /* large → 5 columns */
-@media (min-width: 1600px) {
-  html.mindful-youtube #contents.ytd-rich-grid-renderer {
-    grid-template-columns: repeat(5, 1fr) !important;
-  }
-}
 
 html.mindful-youtube ytd-rich-item-renderer {
   width: 100% !important;

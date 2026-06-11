@@ -49,19 +49,6 @@
         </label>
       </section>
 
-      <section class="panel focus-timer">
-        <div class="section-title">
-          <span>Focus Timer</span>
-          <strong id="timerRemaining">Inactive</strong>
-        </div>
-        <div class="timer-actions">
-          <button class="button secondary" data-timer-minutes="15">15m</button>
-          <button class="button secondary" data-timer-minutes="30">30m</button>
-          <button class="button secondary" data-timer-minutes="60">60m</button>
-          <button class="button danger ghost" id="cancelTimer">Cancel</button>
-        </div>
-      </section>
-
       <section class="site-grid">
         <article class="site-card" data-site="youtube">
           <div class="site-card-header">
@@ -101,6 +88,17 @@
               <span class="slider"></span>
             </span>
           </label>
+          <label class="row">
+            <span>Videos in a row</span>
+            <input
+              class="number-input"
+              type="number"
+              id="ytVideosPerRow"
+              min="2"
+              max="8"
+              step="1"
+            />
+          </label>
           <div class="color-row">
             <label for="ytProgressColor">Progress</label>
             <input type="color" id="ytProgressColor" />
@@ -117,6 +115,50 @@
             <input
               class="hex-input"
               id="ytScrubberHex"
+              maxlength="7"
+              spellcheck="false"
+            />
+          </div>
+        </article>
+
+        <article class="site-card" data-site="youtubeMusic">
+          <div class="site-card-header">
+            <h2>YouTube Music</h2>
+            <select id="ytmMode" aria-label="YouTube Music mode">
+              <option value="minimal">Minimal</option>
+              <option value="focus">Focus</option>
+            </select>
+          </div>
+          <label class="row">
+            <span>Floating sidebar</span>
+            <span class="switch">
+              <input type="checkbox" id="ytmFloatingSidebar" />
+              <span class="slider"></span>
+            </span>
+          </label>
+          <label class="row">
+            <span>Show playlist songs</span>
+            <span class="switch">
+              <input type="checkbox" id="ytmShowPlaylistSongs" />
+              <span class="slider"></span>
+            </span>
+          </label>
+          <div class="color-row">
+            <label for="ytmProgressColor">Progress</label>
+            <input type="color" id="ytmProgressColor" />
+            <input
+              class="hex-input"
+              id="ytmProgressHex"
+              maxlength="7"
+              spellcheck="false"
+            />
+          </div>
+          <div class="color-row">
+            <label for="ytmScrubberColor">Scrubber</label>
+            <input type="color" id="ytmScrubberColor" />
+            <input
+              class="hex-input"
+              id="ytmScrubberHex"
               maxlength="7"
               spellcheck="false"
             />

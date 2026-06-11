@@ -1,0 +1,21 @@
+html.mindful-youtube-music.ytm-minimal ytmusic-nav-bar a[href*="/paid_memberships"],
+html.mindful-youtube-music.ytm-minimal ytmusic-nav-bar a[href*="/premium"],
+html.mindful-youtube-music.ytm-minimal ytmusic-cast-button,
+html.mindful-youtube-music.ytm-minimal ytmusic-mealbar-promo-renderer {
+  display: none !important;
+}
+
+html.mindful-youtube-music.ytm-minimal ytmusic-chip-cloud-renderer {
+  margin-block: 8px 20px !important;
+}
+
+html.mindful-youtube-music.ytm-minimal ytmusic-chip-cloud-chip-renderer {
+  background: var(--mf-ytm-chip) !important;
+  border-radius: 8px !important;
+}
+
+html.mindful-youtube-music.ytm-minimal ytmusic-chip-cloud-chip-renderer:hover,
+html.mindful-youtube-music.ytm-minimal
+  ytmusic-chip-cloud-chip-renderer[aria-selected="true"] {
+  background: var(--mf-ytm-chip-hover) !important;
+}

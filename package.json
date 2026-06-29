@@ -1,11 +1,12 @@
 {
   "name": "mindfulcloud",
-  "version": "4.7.0",
+  "version": "5.3.1",
   "private": true,
   "description": "A lightweight browser extension for calmer YouTube, YouTube Music, Reddit, Twitter/X, and Pinterest pages.",
   "scripts": {
     "format": "prettier --write .",
-    "check": "prettier --check ."
+    "check": "prettier --check .",
+    "test": "node --test"
   },
   "devDependencies": {
     "prettier": "^3.5.3"

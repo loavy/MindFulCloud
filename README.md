@@ -153,6 +153,7 @@ Format and check the project:
 ```bash
 npm run format
 npm run check
+npm test
 ```
 
 ## Build Release Packages
@@ -216,6 +217,8 @@ Firefox:
 - Test global enable/disable.
 - Test pause for the current site.
 - Test every site mode.
+- Open several YouTube channel layouts and confirm their headers, tabs, and videos render.
+- Enable Hide Shorts and confirm only Shorts tabs, shelves, and cards disappear.
 - Test Calm, Focus, and Deep Focus presets.
 - Test import/export/reset.
 - Upload `dist/MindFulCloud-chrome.zip` to the Chrome Web Store.

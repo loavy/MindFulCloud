@@ -10,28 +10,13 @@ html.mindful-youtube {
   --mf-header-height: 52px;
   --mf-accent: #d4a373;
 
-  --mf-surface: rgba(255, 255, 255, 0.88);
-  --mf-surface-strong: rgba(255, 255, 255, 0.96);
-  --mf-border: rgba(0, 0, 0, 0.12);
-  --mf-chip: rgba(0, 0, 0, 0.06);
-  --mf-chip-hover: rgba(0, 0, 0, 0.12);
-  --mf-text: #111;
-  --mf-muted: #575757;
-
-  color-scheme: light dark;
-}
-
-html.mindful-youtube.dark,
-html.mindful-youtube[data-theme="dark"],
-html.mindful-youtube[theme="dark"],
-html.mindful-youtube[dark] {
-  --mf-surface: rgba(22, 21, 20, 0.85);
-  --mf-surface-strong: rgba(22, 21, 20, 0.95);
-  --mf-border: rgba(255, 255, 255, 0.05);
-  --mf-chip: rgba(255, 255, 255, 0.06);
-  --mf-chip-hover: rgba(255, 255, 255, 0.12);
-  --mf-text: #f0e4d6;
-  --mf-muted: #a89f94;
+  --mf-surface: color-mix(in srgb, var(--yt-spec-base-background, #fff) 88%, transparent);
+  --mf-surface-strong: var(--yt-spec-base-background, #fff);
+  --mf-border: color-mix(in srgb, var(--yt-spec-text-primary, #111) 12%, transparent);
+  --mf-chip: var(--yt-spec-badge-chip-background, rgba(0, 0, 0, 0.06));
+  --mf-chip-hover: var(--yt-spec-button-chip-background-hover, rgba(0, 0, 0, 0.12));
+  --mf-text: var(--yt-spec-text-primary, #111);
+  --mf-muted: var(--yt-spec-text-secondary, #575757);
 }
 
 /* =======================
@@ -56,55 +41,7 @@ html.mindful-youtube body {
 WATCH PAGE
 ======================= */
 
-/* main channel header wrapper */
-html.mindful-youtube ytd-browse[page-subtype="channels"] #header,
-html.mindful-youtube ytd-browse[page-subtype="channels"] #tabs-container,
-html.mindful-youtube ytd-browse[page-subtype="channels"] yt-tab-group-shape {
-  position: static !important;
-  top: auto !important;
-}
-
-/* remove 2-column layout constraint */
-html.mindful-youtube ytd-two-column-browse-results-renderer[page-subtype="channels"] {
-  max-width: 100% !important;
-  width: 100% !important;
-  margin: 0 !important;
-  padding: 0 !important;
-}
-
-/* make primary fill everything */
-html.mindful-youtube ytd-browse[page-subtype="channels"] #primary {
-  width: 100% !important;
-  max-width: 100% !important;
-  margin: 0 !important;
-  padding: 0 24px !important; /* keep some side breathing */
-}
-
-/* sometimes YouTube uses this */
-html.mindful-youtube ytd-browse[page-subtype="channels"] #page-header {
-  position: static !important;
-}
-
-/* extra safety (new layouts) */
-html.mindful-youtube ytd-page-header-renderer,
-html.mindful-youtube ytd-c4-tabbed-header-renderer {
-  position: static !important;
-  top: auto !important;
-}
-
-html.mindful-youtube ytd-browse[page-subtype="channels"] #contentContainer {
-  padding-top: 0 !important;
-}
-
-html.mindful-youtube ytd-browse[page-subtype="channels"] ytd-rich-grid-renderer,
-html.mindful-youtube ytd-browse[page-subtype="channels"] {
-  padding-top: 0 !important;
-  margin-top: 0 !important;
-}
-
-html.mindful-youtube .ytSpecButtonViewModelHost.you-chat-entrypoint-button,
-html.mindful-youtube #flexible-item-buttons yt-button-view-model:nth-child(1),
-html.mindful-youtube yt-tab-group-shape yt-tab-shape:nth-child(3) {
+html.mindful-youtube .ytSpecButtonViewModelHost.you-chat-entrypoint-button {
   display: none !important;
 }
 
@@ -125,13 +62,6 @@ html.mindful-youtube ytd-watch-flexy[flexy] #primary {
 LAYOUT CLEANUP
 ======================= */
 
-html.mindful-youtube #i1 {
-  background: var(--mf-surface) !important;
-  backdrop-filter: blur(12px) !important;
-  border: 1px solid var(--mf-border) !important;
-  border-radius: 12px !important;
-}
-
 html.mindful-youtube ytd-popup-container tp-yt-paper-dialog,
 html.mindful-youtube ytd-notification-renderer,
 html.mindful-youtube ytd-multi-page-menu-renderer,
@@ -143,22 +73,11 @@ html.mindful-youtube tp-yt-paper-listbox {
   box-shadow: none !important;
 }
 
-html.mindful-youtube #flexible > ytd-menu-renderer:first-child {
-  display: none !important;
-}
-
-html.mindful-youtube .ytd-app,
-html.mindful-youtube #content,
-html.mindful-youtube .ytd-browse {
-  margin: 0 !important;
-  max-width: none !important;
-}
-
 /* =======================
 SIDEBAR (FINAL CLEAN VERSION)
 ======================= */
 
-html.mindful-youtube:not(.yt-float-menu) #contentContainer {
+html.mindful-youtube:not(.yt-float-menu) tp-yt-app-drawer #contentContainer {
   max-height: none !important;
 }
 
@@ -168,7 +87,6 @@ html.mindful-youtube:not(.yt-float-menu) tp-yt-app-drawer {
   transform: translateX(-100%) !important;
 }
 
-html.mindful-youtube #guide-content #sections ytd-guide-section-renderer:nth-child(1),
 html.mindful-youtube #guide-content #footer,
 html.mindful-youtube #scrim.visible.tp-yt-app-drawer,
 html.mindful-youtube #guide-content #header {
@@ -248,7 +166,7 @@ html.mindful-youtube.yt-float-menu ytd-guide-entry-renderer:hover {
 /* section titles */
 html.mindful-youtube.yt-float-menu #header.ytd-guide-section-renderer {
   font-size: 12px !important;
-  color: rgba(255, 255, 255, 0.6) !important;
+  color: var(--mf-muted) !important;
   padding: 6px 12px !important;
 }
 
@@ -286,175 +204,72 @@ html.mindful-youtube #center {
 GRID
 ====================== */
 
-html.mindful-youtube ytd-rich-grid-renderer {
+html.mindful-youtube ytd-browse[page-subtype="home"] ytd-rich-grid-renderer {
   max-width: 100% !important;
   margin: 0 auto !important;
   padding: 16px 24px !important;
 }
 
-html.mindful-youtube #contents.ytd-rich-grid-renderer {
+html.mindful-youtube ytd-browse[page-subtype="home"] #contents.ytd-rich-grid-renderer {
   display: grid !important;
   gap: 24px !important;
   width: 100% !important;
-}
-
-html.mindful-youtube ytd-browse[page-subtype="home"] #contents.ytd-rich-grid-renderer {
   grid-template-columns: repeat(var(--yt-videos-per-row, 4), minmax(0, 1fr)) !important;
 }
 
-/* default → 3 columns */
-
-/* medium → 4 columns */
-
-/* large → 5 columns */
-
-html.mindful-youtube ytd-rich-item-renderer {
+html.mindful-youtube
+  ytd-browse[page-subtype="home"]
+  #contents.ytd-rich-grid-renderer
+  > ytd-rich-item-renderer {
   width: 100% !important;
   min-width: 0 !important;
 }
 
 /* arrows / chip overflow cleanup */
-html.mindful-youtube ytd-rich-grid-renderer #right-arrow,
-html.mindful-youtube ytd-rich-grid-renderer #left-arrow {
-  display: none !important;
-}
-
 html.mindful-youtube .yt-chip-cloud-renderer-next,
-html.mindful-youtube .yt-chip-cloud-renderer-prev,
-html.mindful-youtube .with-chipbar.style-scope.ytd-app {
+html.mindful-youtube .yt-chip-cloud-renderer-prev {
   display: none !important;
 }
 
 /* =======================
-SHORTS REMOVAL - COMPREHENSIVE
+SHORTS REMOVAL
 ======================= */
 
-/* Hide the Shorts tab and any navigation items */
-html.mindful-youtube.yt-hide-shorts ytd-toggle-item-renderer[aria-label*="Short"],
-html.mindful-youtube.yt-hide-shorts ytd-toggle-item-renderer[title*="Short"],
-html.mindful-youtube.yt-hide-shorts a[aria-label*="Short"],
-html.mindful-youtube.yt-hide-shorts a[title*="Short"],
-html.mindful-youtube.yt-hide-shorts ytd-chip-cloud-chip-renderer[aria-label*="Short"],
-html.mindful-youtube.yt-hide-shorts ytd-chip-cloud-chip-renderer[title*="Short"] {
+/* URL selectors are stable across YouTube's translated labels. */
+html.mindful-youtube.yt-hide-shorts ytd-guide-entry-renderer:has(a[href^="/shorts"]),
+html.mindful-youtube.yt-hide-shorts ytd-mini-guide-entry-renderer:has(a[href^="/shorts"]),
+html.mindful-youtube.yt-hide-shorts ytd-tab-renderer:has(a[href*="/shorts"]),
+html.mindful-youtube.yt-hide-shorts yt-tab-shape:has(a[href*="/shorts"]),
+html.mindful-youtube.yt-hide-shorts yt-tab-shape[tab-title="Shorts"],
+html.mindful-youtube.yt-hide-shorts ytd-chip-cloud-chip-renderer:has(a[href*="/shorts"]) {
   display: none !important;
-  visibility: hidden !important;
-  height: 0 !important;
-  overflow: hidden !important;
-  margin: 0 !important;
-  padding: 0 !important;
 }
 
-/* Hide reel shelf (main shorts container) */
+/* Dedicated Shorts shelves. Never hide a page-level grid because it has Shorts. */
 html.mindful-youtube.yt-hide-shorts ytd-reel-shelf-renderer,
 html.mindful-youtube.yt-hide-shorts
   ytd-rich-section-renderer:has(ytd-reel-shelf-renderer),
-html.mindful-youtube.yt-hide-shorts ytd-rich-section-renderer:has(a[href*="/shorts/"]) {
+html.mindful-youtube.yt-hide-shorts
+  ytd-rich-section-renderer:has(grid-shelf-view-model a[href*="/shorts/"]),
+html.mindful-youtube.yt-hide-shorts ytd-rich-shelf-renderer:has(a[href*="/shorts/"]),
+html.mindful-youtube.yt-hide-shorts ytd-shelf-renderer:has(a[href*="/shorts/"]) {
   display: none !important;
-  visibility: hidden !important;
-  height: 0 !important;
-  overflow: hidden !important;
-  margin: 0 !important;
-  padding: 0 !important;
 }
 
-/* Hide any video item/card linking to shorts */
-html.mindful-youtube.yt-hide-shorts
-  ytd-rich-item-renderer:has(a[href*="/shorts/"], a[href*="youtube.com/shorts/"]),
-html.mindful-youtube.yt-hide-shorts
-  ytd-video-renderer:has(a[href*="/shorts/"], a[href*="youtube.com/shorts/"]),
-html.mindful-youtube.yt-hide-shorts
-  ytd-compact-video-renderer:has(a[href*="/shorts/"], a[href*="youtube.com/shorts/"]),
-html.mindful-youtube.yt-hide-shorts ytd-rich-grid-media:has(a[href*="/shorts/"]) {
+/* Individual cards in mixed feeds and search results. */
+html.mindful-youtube.yt-hide-shorts ytd-rich-item-renderer:has(a[href*="/shorts/"]),
+html.mindful-youtube.yt-hide-shorts ytd-video-renderer:has(a[href*="/shorts/"]),
+html.mindful-youtube.yt-hide-shorts ytd-grid-video-renderer:has(a[href*="/shorts/"]),
+html.mindful-youtube.yt-hide-shorts ytd-compact-video-renderer:has(a[href*="/shorts/"]),
+html.mindful-youtube.yt-hide-shorts yt-lockup-view-model:has(a[href*="/shorts/"]) {
   display: none !important;
-  visibility: hidden !important;
-  height: 0 !important;
-  overflow: hidden !important;
-  margin: 0 !important;
-  padding: 0 !important;
-}
-
-/* Hide shorts in search results by aria-label */
-html.mindful-youtube.yt-hide-shorts ytd-rich-item-renderer[aria-label*="Short"],
-html.mindful-youtube.yt-hide-shorts ytd-video-renderer[aria-label*="Short"] {
-  display: none !important;
-  visibility: hidden !important;
-  height: 0 !important;
-  overflow: hidden !important;
-  margin: 0 !important;
-  padding: 0 !important;
-}
-
-/* Hide reel containers in different positions */
-html.mindful-youtube.yt-hide-shorts .ytd-reel-shelf-renderer,
-html.mindful-youtube.yt-hide-shorts [data-test-id*="reel"],
-html.mindful-youtube.yt-hide-shorts [data-test-id*="shorts"],
-html.mindful-youtube.yt-hide-shorts ytd-reels-player-header-renderer {
-  display: none !important;
-  visibility: hidden !important;
-  height: 0 !important;
-  overflow: hidden !important;
-  margin: 0 !important;
-  padding: 0 !important;
-}
-
-/* Hide whole Shorts section/shelf renderers */
-html.mindful-youtube.yt-hide-shorts
-  ytd-rich-shelf-renderer:has(a[href*="/shorts/"], a[href*="youtube.com/shorts/"]),
-html.mindful-youtube.yt-hide-shorts
-  ytd-shelf-renderer:has(a[href*="/shorts/"], a[href*="youtube.com/shorts/"]),
-html.mindful-youtube.yt-hide-shorts
-  ytd-rich-section-renderer:has(
-    ytd-rich-shelf-renderer:has(a[href*="/shorts/"], a[href*="youtube.com/shorts/"])
-  ),
-html.mindful-youtube.yt-hide-shorts
-  ytd-rich-section-renderer:has(
-    ytd-shelf-renderer:has(a[href*="/shorts/"], a[href*="youtube.com/shorts/"])
-  ),
-html.mindful-youtube.yt-hide-shorts
-  ytd-item-section-renderer:has(a[href*="/shorts/"], a[href*="youtube.com/shorts/"]),
-html.mindful-youtube.yt-hide-shorts ytd-item-section-renderer:has(grid-shelf-view-model),
-html.mindful-youtube.yt-hide-shorts ytd-rich-grid-renderer:has(a[href*="/shorts/"]) {
-  display: none !important;
-  visibility: hidden !important;
-  height: 0 !important;
-  overflow: hidden !important;
-  margin: 0 !important;
-  padding: 0 !important;
-}
-
-/* Hide by class if YouTube uses it */
-html.mindful-youtube.yt-hide-shorts [class*="shorts"],
-html.mindful-youtube.yt-hide-shorts [class*="Shorts"],
-html.mindful-youtube.yt-hide-shorts [class*="reel"],
-html.mindful-youtube.yt-hide-shorts [class*="Reel"],
-html.mindful-youtube.yt-hide-shorts .ytGridShelfViewModelHost,
-html.mindful-youtube.yt-hide-shorts .ytGridShelfViewModelHostHasBottomButton,
-html.mindful-youtube.yt-hide-shorts grid-shelf-view-model {
-  display: none !important;
-  visibility: hidden !important;
-  height: 0 !important;
-  overflow: hidden !important;
-  margin: 0 !important;
-  padding: 0 !important;
-}
-
-/* Emergency fallback: hide all links containing /shorts/ anywhere */
-html.mindful-youtube.yt-hide-shorts [href*="/shorts"],
-html.mindful-youtube.yt-hide-shorts [data-href*="/shorts"],
-html.mindful-youtube.yt-hide-shorts [onclick*="/shorts"] {
-  display: none !important;
-  visibility: hidden !important;
-  height: 0 !important;
-  overflow: hidden !important;
-  margin: 0 !important;
-  padding: 0 !important;
 }
 
 /* =======================
 CONTENT CLEANUP
 ================== */
 
-html.mindful-youtube .ytd-merch-shelf-renderer {
+html.mindful-youtube.hide-promoted-content ytd-merch-shelf-renderer {
   display: none !important;
 }
 
@@ -564,28 +379,28 @@ html.mindful-youtube .ytd-comment-action-buttons-renderer:hover {
 }
 
 /* =======================
-AD
+PROMOTED CONTENT
 ======================= */
 
-html.mindful-youtube ytd-rich-section-renderer,
-html.mindful-youtube ytd-in-feed-ad-layout-renderer,
-html.mindful-youtube ytd-ad-slot-renderer,
-html.mindful-youtube ytd-display-ad-renderer,
-html.mindful-youtube ytd-promoted-sparkles-web-renderer {
+html.mindful-youtube.hide-promoted-content ytd-in-feed-ad-layout-renderer,
+html.mindful-youtube.hide-promoted-content ytd-ad-slot-renderer,
+html.mindful-youtube.hide-promoted-content ytd-display-ad-renderer,
+html.mindful-youtube.hide-promoted-content ytd-promoted-sparkles-web-renderer,
+html.mindful-youtube.hide-promoted-content ytd-banner-promo-renderer,
+html.mindful-youtube.hide-promoted-content ytd-mealbar-promo-renderer {
   display: none !important;
 }
 
-html.mindful-youtube ytp-ad-module,
-html.mindful-youtube ytp-ad-player-overlay {
+html.mindful-youtube.hide-promoted-content ytp-ad-module,
+html.mindful-youtube.hide-promoted-content ytp-ad-player-overlay {
   display: none !important;
   opacity: 0 !important;
   visibility: hidden !important;
 }
 
-html.mindful-youtube
+html.mindful-youtube.hide-promoted-content
   ytd-engagement-panel-section-list-renderer[target-id="engagement-panel-ads"],
-html.mindful-youtube #panels.ytd-watch-flexy,
-html.mindful-youtube ytd-player-legacy-desktop-watch-ads-renderer {
+html.mindful-youtube.hide-promoted-content ytd-player-legacy-desktop-watch-ads-renderer {
   display: none !important;
 }
 

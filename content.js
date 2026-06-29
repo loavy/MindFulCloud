@@ -9,6 +9,7 @@ const extensionApi =
       : null;
 
 const storage = extensionApi?.storage?.local;
+const storageChanges = extensionApi?.storage?.onChanged;
 const runtime = extensionApi?.runtime;
 
 function storageGet(keys = null) {
@@ -148,27 +149,9 @@ runtime?.onMessage?.addListener((msg) => {
   }
 });
 
-function watchUrl() {
-  let last = location.href;
+storageChanges?.addListener((_changes, areaName) => {
+  if (areaName === "local") init();
+});
 
-  const observer = new MutationObserver(() => {
-    if (location.href === last) return;
-    last = location.href;
-    init();
-  });
-
-  observer.observe(document, {
-    childList: true,
-    subtree: true,
-  });
-}
-
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", init);
-} else {
-  init();
-}
-
-window.addEventListener("load", init);
-watchUrl();
+init();
 watchYouTubeMusicMenu();

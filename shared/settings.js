@@ -151,12 +151,21 @@
     return settings;
   }
 
+  function isDomain(hostname, domain) {
+    const normalized = String(hostname).toLowerCase().replace(/\.$/, "");
+    return normalized === domain || normalized.endsWith(`.${domain}`);
+  }
+
   function getCurrentSite(hostname = "") {
-    if (hostname === "music.youtube.com") return "youtubeMusic";
-    if (hostname.includes("youtube.com")) return "youtube";
-    if (hostname.includes("reddit.com")) return "reddit";
-    if (hostname.includes("twitter.com") || hostname.includes("x.com")) return "twitter";
-    if (hostname.includes("pinterest.com")) return "pinterest";
+    if (String(hostname).toLowerCase() === "music.youtube.com") {
+      return "youtubeMusic";
+    }
+    if (isDomain(hostname, "youtube.com")) return "youtube";
+    if (isDomain(hostname, "reddit.com")) return "reddit";
+    if (isDomain(hostname, "twitter.com") || isDomain(hostname, "x.com")) {
+      return "twitter";
+    }
+    if (isDomain(hostname, "pinterest.com")) return "pinterest";
     return null;
   }
 

@@ -32,3 +32,61 @@ test("YouTube grid size is normalized to its supported range", () => {
     4,
   );
 });
+
+test("YouTube URLs map to their page-specific rule groups", () => {
+  assert.equal(settings.getYouTubePageType("https://youtube.com/"), "home");
+  assert.equal(
+    settings.getYouTubePageType("https://youtube.com/feed/subscriptions"),
+    "home",
+  );
+  assert.equal(settings.getYouTubePageType("https://youtube.com/watch?v=abc"), "watch");
+  assert.equal(settings.getYouTubePageType("https://youtube.com/shorts/abc"), "watch");
+  assert.equal(
+    settings.getYouTubePageType("https://youtube.com/results?search_query=test"),
+    "search",
+  );
+  assert.equal(
+    settings.getYouTubePageType("https://youtube.com/@GoogleDevelopers"),
+    "channel",
+  );
+});
+
+test("legacy YouTube toggles migrate into page-specific rules", () => {
+  const migrated = settings.normalizeSettings({
+    youtube: {
+      hideRecommendations: false,
+      hideComments: true,
+      hideShorts: false,
+    },
+  });
+
+  assert.equal(migrated.youtube.pages.watch.hideRecommendations, false);
+  assert.equal(migrated.youtube.pages.watch.hideComments, true);
+  for (const page of settings.YOUTUBE_PAGE_TYPES) {
+    assert.equal(migrated.youtube.pages[page].hideShorts, false);
+  }
+  assert.equal(migrated.youtube.pages.home.hideRecommendations, false);
+});
+
+test("page-specific YouTube rules and compatibility mode are normalized", () => {
+  const normalized = settings.normalizeSettings({
+    youtube: {
+      safeMode: true,
+      pages: {
+        home: {
+          hideRecommendations: true,
+          hideShorts: false,
+        },
+        watch: {
+          hideComments: true,
+        },
+      },
+    },
+  });
+
+  assert.equal(normalized.youtube.safeMode, true);
+  assert.equal(normalized.youtube.pages.home.hideRecommendations, true);
+  assert.equal(normalized.youtube.pages.home.hideShorts, false);
+  assert.equal(normalized.youtube.pages.watch.hideComments, true);
+  assert.equal(normalized.youtube.pages.channel.hideShorts, true);
+});

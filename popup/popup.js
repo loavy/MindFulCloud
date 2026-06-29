@@ -29,13 +29,20 @@ document.addEventListener("DOMContentLoaded", async () => {
     twMode: document.getElementById("twMode"),
     ytHideComments: document.getElementById("ytHideComments"),
     ytHideRec: document.getElementById("ytHideRec"),
+    ytHideRecLabel: document.getElementById("ytHideRecLabel"),
     ytHideShorts: document.getElementById("ytHideShorts"),
     ytHamburger: document.getElementById("ytHamburger"),
     ytMode: document.getElementById("ytMode"),
+    ytPageHint: document.getElementById("ytPageHint"),
+    ytPageScope: document.getElementById("ytPageScope"),
     ytProgressColor: document.getElementById("ytProgressColor"),
     ytProgressHex: document.getElementById("ytProgressHex"),
+    ytSafeMode: document.getElementById("ytSafeMode"),
     ytScrubberColor: document.getElementById("ytScrubberColor"),
     ytScrubberHex: document.getElementById("ytScrubberHex"),
+    ytShowCommentsOnce: document.getElementById("ytShowCommentsOnce"),
+    ytShowRecommendationsOnce: document.getElementById("ytShowRecommendationsOnce"),
+    ytShowShortsOnce: document.getElementById("ytShowShortsOnce"),
     ytVideosPerRow: document.getElementById("ytVideosPerRow"),
     ytmFloatingSidebar: document.getElementById("ytmFloatingSidebar"),
     ytmMode: document.getElementById("ytmMode"),
@@ -47,8 +54,15 @@ document.addEventListener("DOMContentLoaded", async () => {
   };
 
   let currentHost = null;
+  let currentTabId = null;
+  let currentUrl = null;
   let currentSite = null;
+  let currentYouTubePage = null;
   let currentSettings = settingsHelper.getDefaultSettings();
+  let selectedYouTubePage = null;
+  let siteCardsInitialized = false;
+  let youtubePageDraft = settingsHelper.clone(currentSettings.youtube.pages);
+  const temporaryReveals = new Set();
 
   function callApi(method, args = []) {
     if (usingPromiseApi) {
@@ -84,15 +98,21 @@ document.addEventListener("DOMContentLoaded", async () => {
     }, 2600);
   }
 
-  async function getCurrentHost() {
+  async function getCurrentTabContext() {
     try {
       const tabs = await callApi(api.tabs.query.bind(api.tabs), [
         { active: true, currentWindow: true },
       ]);
-      const url = tabs?.[0]?.url;
-      return url ? new URL(url).hostname : null;
+      const tab = tabs?.[0];
+      if (!tab?.url) return { host: null, id: null, url: null };
+
+      return {
+        host: new URL(tab.url).hostname,
+        id: tab.id || null,
+        url: tab.url,
+      };
     } catch {
-      return null;
+      return { host: null, id: null, url: null };
     }
   }
 
@@ -120,6 +140,171 @@ document.addEventListener("DOMContentLoaded", async () => {
     showStatus(message);
   }
 
+  function setSiteCardExpanded(card, expanded) {
+    const toggle = card.querySelector(".site-card-toggle");
+    card.classList.toggle("collapsed", !expanded);
+    toggle?.setAttribute("aria-expanded", String(expanded));
+  }
+
+  function initializeSiteCards() {
+    if (siteCardsInitialized) return;
+
+    const initiallyExpanded = currentSite || "youtube";
+    document.querySelectorAll(".site-card").forEach((card) => {
+      setSiteCardExpanded(card, card.dataset.site === initiallyExpanded);
+    });
+    siteCardsInitialized = true;
+  }
+
+  const youtubePageUi = {
+    home: {
+      hint: "Control recommendations and Shorts on the Home feed.",
+      recommendationLabel: "Hide home feed",
+      visibleRules: ["recommendations", "shorts"],
+    },
+    watch: {
+      hint: "Control the watch page without changing other YouTube pages.",
+      recommendationLabel: "Hide recommendations",
+      visibleRules: ["recommendations", "comments", "shorts"],
+    },
+    search: {
+      hint: "Keep Shorts out of YouTube search results.",
+      recommendationLabel: "Hide recommendations",
+      visibleRules: ["shorts"],
+    },
+    channel: {
+      hint: "Choose whether Shorts appear on channel pages.",
+      recommendationLabel: "Hide recommendations",
+      visibleRules: ["shorts"],
+    },
+  };
+
+  function saveSelectedYouTubePage() {
+    if (!selectedYouTubePage) return;
+
+    youtubePageDraft[selectedYouTubePage] = {
+      ...youtubePageDraft[selectedYouTubePage],
+      hideRecommendations: elements.ytHideRec.checked,
+      hideComments: elements.ytHideComments.checked,
+      hideShorts: elements.ytHideShorts.checked,
+    };
+  }
+
+  function loadYouTubePage(page) {
+    const normalizedPage = settingsHelper.YOUTUBE_PAGE_TYPES.includes(page)
+      ? page
+      : "home";
+    const pageSettings = youtubePageDraft[normalizedPage];
+    const ui = youtubePageUi[normalizedPage];
+
+    selectedYouTubePage = normalizedPage;
+    elements.ytPageScope.value = normalizedPage;
+    elements.ytPageHint.textContent = ui.hint;
+    elements.ytHideRecLabel.textContent = ui.recommendationLabel;
+    elements.ytHideRec.checked = pageSettings.hideRecommendations;
+    elements.ytHideComments.checked = pageSettings.hideComments;
+    elements.ytHideShorts.checked = pageSettings.hideShorts;
+
+    document.querySelectorAll(".youtube-rule").forEach((row) => {
+      row.hidden = !ui.visibleRules.includes(row.dataset.youtubeRule);
+    });
+  }
+
+  function updateYouTubeLayoutControls() {
+    const safeMode = elements.ytSafeMode.checked;
+    const youtubeCard = document.querySelector('[data-site="youtube"]');
+    const layoutInputs = [
+      elements.ytHamburger,
+      elements.ytVideosPerRow,
+      elements.ytProgressColor,
+      elements.ytProgressHex,
+      elements.ytScrubberColor,
+      elements.ytScrubberHex,
+    ];
+
+    youtubeCard.classList.toggle("safe-mode", safeMode);
+    layoutInputs.forEach((input) => {
+      input.disabled = safeMode;
+    });
+  }
+
+  function updateShowOnceControls() {
+    const buttons = {
+      comments: elements.ytShowCommentsOnce,
+      recommendations: elements.ytShowRecommendationsOnce,
+      shorts: elements.ytShowShortsOnce,
+    };
+    const propertyNames = {
+      comments: "hideComments",
+      recommendations: "hideRecommendations",
+      shorts: "hideShorts",
+    };
+    const relevantFeatures = {
+      home: ["recommendations", "shorts"],
+      watch: ["recommendations", "comments", "shorts"],
+      search: ["shorts"],
+      channel: ["shorts"],
+    };
+    const pageSettings = currentYouTubePage
+      ? currentSettings.youtube.pages[currentYouTubePage]
+      : null;
+    const extensionActive =
+      currentSite === "youtube" &&
+      currentSettings.enabled &&
+      currentSettings.youtube.enabled &&
+      !currentSettings.pausedSites?.[currentHost];
+
+    for (const [feature, button] of Object.entries(buttons)) {
+      const relevant = relevantFeatures[currentYouTubePage]?.includes(feature);
+      const hidden = pageSettings?.[propertyNames[feature]];
+      const revealed = temporaryReveals.has(feature);
+
+      button.disabled = !extensionActive || !relevant || !hidden || revealed;
+      button.classList.toggle("revealed", revealed);
+      button.title = revealed
+        ? "Already revealed for this page"
+        : hidden && relevant
+          ? `Show ${feature} until this tab navigates or reloads`
+          : `${feature[0].toUpperCase()}${feature.slice(1)} are not hidden here`;
+    }
+
+    elements.ytShowRecommendationsOnce.textContent =
+      currentYouTubePage === "home" ? "Home feed" : "Recommendations";
+  }
+
+  async function showYouTubeFeatureOnce(feature) {
+    if (!currentTabId) return;
+
+    try {
+      await callApi(api.tabs.sendMessage.bind(api.tabs), [
+        currentTabId,
+        { type: "TEMPORARY_REVEAL", feature },
+      ]);
+      temporaryReveals.add(feature);
+      updateShowOnceControls();
+      showStatus(`${feature[0].toUpperCase()}${feature.slice(1)} shown once`);
+    } catch {
+      showStatus("Reload the YouTube tab and try again");
+    }
+  }
+
+  async function loadTemporaryRevealState() {
+    if (currentSite !== "youtube" || !currentTabId) return;
+
+    try {
+      const response = await callApi(api.tabs.sendMessage.bind(api.tabs), [
+        currentTabId,
+        { type: "GET_TEMPORARY_REVEALS" },
+      ]);
+      for (const feature of response?.features || []) {
+        temporaryReveals.add(feature);
+      }
+      updateShowOnceControls();
+    } catch {
+      // A newly installed or reloaded extension may need the YouTube tab refreshed.
+    }
+  }
+
   function updateCurrentSiteUi() {
     document
       .querySelectorAll(".site-card")
@@ -135,6 +320,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       elements.siteLabel.textContent = "No supported site";
       elements.sitePaused.checked = false;
       elements.sitePaused.disabled = true;
+      initializeSiteCards();
+      updateShowOnceControls();
       return;
     }
 
@@ -152,33 +339,27 @@ document.addEventListener("DOMContentLoaded", async () => {
     elements.siteLabel.textContent = `${siteNames[currentSite]} active`;
     elements.sitePaused.disabled = false;
     elements.sitePaused.checked = !!currentSettings.pausedSites?.[currentHost];
+    initializeSiteCards();
+    updateShowOnceControls();
   }
 
   function applyYouTubeMode(mode) {
     elements.ytMode.value = mode;
 
-    if (mode === "calm") {
-      elements.ytHideRec.checked = true;
-      elements.ytHideComments.checked = false;
-      elements.ytHideShorts.checked = true;
-      elements.ytHamburger.checked = false;
-      return;
+    if (!["calm", "focus", "deep-focus"].includes(mode)) return;
+
+    const focused = mode !== "calm";
+    for (const page of settingsHelper.YOUTUBE_PAGE_TYPES) {
+      youtubePageDraft[page] = {
+        ...youtubePageDraft[page],
+        hideRecommendations: page === "watch" || (page === "home" && focused),
+        hideComments: page === "watch" && focused,
+        hideShorts: true,
+      };
     }
 
-    if (mode === "focus") {
-      elements.ytHideRec.checked = true;
-      elements.ytHideComments.checked = true;
-      elements.ytHideShorts.checked = true;
-      elements.ytHamburger.checked = false;
-      return;
-    }
-
-    if (mode === "deep-focus") {
-      elements.ytHideRec.checked = true;
-      elements.ytHideComments.checked = true;
-      elements.ytHideShorts.checked = true;
-      elements.ytHamburger.checked = true;
-    }
+    elements.ytHamburger.checked = mode === "deep-focus";
+    loadYouTubePage(selectedYouTubePage || currentYouTubePage || "home");
   }
 
   function applyYouTubeMusicMode(mode) {
@@ -222,6 +403,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   function buildSettings() {
+    saveSelectedYouTubePage();
+    const watchPage = youtubePageDraft.watch;
+
     return settingsHelper.normalizeSettings({
       enabled: elements.masterEnabled.checked,
       preset: elements.globalPreset.value,
@@ -229,9 +413,11 @@ document.addEventListener("DOMContentLoaded", async () => {
       youtube: {
         enabled: true,
         mode: elements.ytMode.value,
-        hideRecommendations: elements.ytHideRec.checked,
-        hideComments: elements.ytHideComments.checked,
-        hideShorts: elements.ytHideShorts.checked,
+        hideRecommendations: watchPage.hideRecommendations,
+        hideComments: watchPage.hideComments,
+        hideShorts: watchPage.hideShorts,
+        safeMode: elements.ytSafeMode.checked,
+        pages: settingsHelper.clone(youtubePageDraft),
         floatingSidebar: elements.ytHamburger.checked,
         videosPerRow: Number(elements.ytVideosPerRow.value),
         progressColor: elements.ytProgressHex.value,
@@ -275,9 +461,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     elements.globalPreset.value = visibleSettings.preset;
     elements.hidePromotedContent.checked = visibleSettings.hidePromotedContent;
     elements.ytMode.value = visibleSettings.youtube.mode;
-    elements.ytHideRec.checked = visibleSettings.youtube.hideRecommendations;
-    elements.ytHideComments.checked = visibleSettings.youtube.hideComments;
-    elements.ytHideShorts.checked = visibleSettings.youtube.hideShorts;
+    elements.ytSafeMode.checked = visibleSettings.youtube.safeMode;
+    youtubePageDraft = settingsHelper.clone(visibleSettings.youtube.pages);
+    loadYouTubePage(
+      selectedYouTubePage || currentYouTubePage || elements.ytPageScope.value,
+    );
     elements.ytHamburger.checked = visibleSettings.youtube.floatingSidebar;
     elements.ytVideosPerRow.value = visibleSettings.youtube.videosPerRow;
     elements.ytmMode.value = visibleSettings.youtubeMusic.mode;
@@ -308,6 +496,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       visibleSettings.youtubeMusic.scrubberColor,
     );
 
+    updateYouTubeLayoutControls();
     updateCurrentSiteUi();
   }
 
@@ -351,6 +540,13 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   function wireEvents() {
+    document.querySelectorAll(".site-card-toggle").forEach((toggle) => {
+      toggle.addEventListener("click", () => {
+        const card = toggle.closest(".site-card");
+        setSiteCardExpanded(card, card.classList.contains("collapsed"));
+      });
+    });
+
     elements.globalPreset.addEventListener("change", async () => {
       applyPreset(elements.globalPreset.value);
       await saveFromUi("Preset applied");
@@ -375,6 +571,11 @@ document.addEventListener("DOMContentLoaded", async () => {
       await saveFromUi();
     });
 
+    elements.ytPageScope.addEventListener("change", () => {
+      saveSelectedYouTubePage();
+      loadYouTubePage(elements.ytPageScope.value);
+    });
+
     [
       elements.hidePromotedContent,
       elements.masterEnabled,
@@ -382,9 +583,11 @@ document.addEventListener("DOMContentLoaded", async () => {
       elements.ytHideRec,
       elements.ytHideShorts,
       elements.ytHamburger,
+      elements.ytSafeMode,
       elements.ytVideosPerRow,
     ].forEach((input) => {
       input.addEventListener("change", async () => {
+        if (input === elements.ytSafeMode) updateYouTubeLayoutControls();
         if (input !== elements.masterEnabled && input !== elements.hidePromotedContent) {
           elements.ytMode.value = "custom";
         }
@@ -392,6 +595,16 @@ document.addEventListener("DOMContentLoaded", async () => {
         await saveFromUi();
       });
     });
+
+    elements.ytShowRecommendationsOnce.addEventListener("click", () =>
+      showYouTubeFeatureOnce("recommendations"),
+    );
+    elements.ytShowCommentsOnce.addEventListener("click", () =>
+      showYouTubeFeatureOnce("comments"),
+    );
+    elements.ytShowShortsOnce.addEventListener("click", () =>
+      showYouTubeFeatureOnce("shorts"),
+    );
 
     [elements.ytmFloatingSidebar, elements.ytmShowPlaylistSongs].forEach((input) => {
       input.addEventListener("change", async () => {
@@ -448,8 +661,16 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
-  currentHost = await getCurrentHost();
+  const tabContext = await getCurrentTabContext();
+  currentHost = tabContext.host;
+  currentTabId = tabContext.id;
+  currentUrl = tabContext.url;
   currentSite = settingsHelper.getCurrentSite(currentHost || "");
+  currentYouTubePage =
+    currentSite === "youtube"
+      ? settingsHelper.getYouTubePageType(currentUrl || "/")
+      : null;
   wireEvents();
   await loadSettings();
+  await loadTemporaryRevealState();
 });

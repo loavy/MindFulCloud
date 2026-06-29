@@ -2,260 +2,257 @@
 
 > A calmer cloud for loud websites.
 
-[MindFulCloud](https://github.com/loavy/MindFulCloud) is a lightweight browser extension that makes YouTube, YouTube Music, Reddit, Twitter/X, and Pinterest feel quieter, cleaner, and easier to use.
-
-It does not block the web. It softens it: fewer distractions, calmer layouts, local settings, and simple controls that stay out of your way.
+MindFulCloud is a lightweight, privacy-friendly browser extension that makes
+YouTube, YouTube Music, Reddit, Twitter/X, and Pinterest feel quieter and easier
+to use. It removes visual pressure without blocking the sites themselves.
 
 <p>
-  <img alt="Chrome" src="https://img.shields.io/badge/Chrome-ready-4285F4?style=for-the-badge&logo=googlechrome&logoColor=white">
-  <img alt="Firefox" src="https://img.shields.io/badge/Firefox-ready-FF7139?style=for-the-badge&logo=firefoxbrowser&logoColor=white">
-  <img alt="Vanilla JS" src="https://img.shields.io/badge/Vanilla_JS-lightweight-F7DF1E?style=for-the-badge&logo=javascript&logoColor=111">
-  <img alt="Privacy" src="https://img.shields.io/badge/Privacy-local_only-18A058?style=for-the-badge">
+  <img alt="Version 5.5.0" src="https://img.shields.io/badge/version-5.5.0-6C63FF?style=for-the-badge">
+  <img alt="Chrome ready" src="https://img.shields.io/badge/Chrome-ready-4285F4?style=for-the-badge&logo=googlechrome&logoColor=white">
+  <img alt="Firefox ready" src="https://img.shields.io/badge/Firefox-ready-FF7139?style=for-the-badge&logo=firefoxbrowser&logoColor=white">
+  <img alt="Manifest V3" src="https://img.shields.io/badge/Manifest-V3-34A853?style=for-the-badge">
+  <img alt="Local-only privacy" src="https://img.shields.io/badge/Privacy-local_only-18A058?style=for-the-badge">
 </p>
 
 ## Install
 
-| Browser                                          | Link                                                                                                                        |
-| ------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------- |
-| Chrome, Brave, Edge, and other Chromium browsers | [Install from the Chrome Web Store](https://chromewebstore.google.com/detail/mindfulcloud/glcdileonafegdigonahhcffifkoggkp) |
-| Firefox                                          | [Install from Firefox Add-ons](https://addons.mozilla.org/en-GB/firefox/addon/mindfulcloud/)                                |
+| Browser                                          | Store                                                                                                      |
+| ------------------------------------------------ | ---------------------------------------------------------------------------------------------------------- |
+| Chrome, Brave, Edge, and other Chromium browsers | [Chrome Web Store](https://chromewebstore.google.com/detail/mindfulcloud/glcdileonafegdigonahhcffifkoggkp) |
+| Firefox                                          | [Firefox Add-ons](https://addons.mozilla.org/en-GB/firefox/addon/mindfulcloud/)                            |
 
-## What It Does
+After installing, reload any supported tab that was already open. Click the
+MindFulCloud icon, choose a preset, and fine-tune the current platform. Changes
+are saved automatically.
 
-MindFulCloud adds site-specific calm modes to websites that are usually built to keep pulling your attention around.
+## Why MindFulCloud?
 
-- YouTube gets cleaner watching controls, configurable home-grid columns, less recommendation pressure, optional comment hiding, Shorts hiding, and focus mode.
-- YouTube Music gets Minimal and Focus modes, playlist-song visibility controls, a transparent floating sidebar, immersive player styling, and custom player colors.
-- Reddit gets Minimal, Compact, and Focus modes.
-- Twitter/X gets Minimal, Focus, and Zen modes.
-- Pinterest gets Minimal and Dark modes with separated theme CSS.
-- Settings are saved locally in your browser.
+- Calm distracting pages without replacing the sites you already use.
+- Apply different YouTube rules to Home, Watch, Search, and Channel pages.
+- Temporarily reveal hidden content without changing saved preferences.
+- Recover from YouTube layout changes with Compatibility Mode.
+- Pause the extension for one site or turn it off globally.
+- Keep every setting in your browser—no account, analytics, or remote service.
 
-## Supported Sites
+## YouTube Controls
 
-| Site          | Modes / Controls                                                                                           |
-| ------------- | ---------------------------------------------------------------------------------------------------------- |
-| YouTube       | Hide recommendations/comments/Shorts, 2-8 home videos per row, focus mode, floating sidebar, player colors |
-| YouTube Music | Minimal, Focus, playlist-song visibility, transparent floating sidebar, immersive player, player colors    |
-| Reddit        | Minimal, Compact, Focus                                                                                    |
-| Twitter/X     | Minimal, Focus, Zen                                                                                        |
-| Pinterest     | Minimal, Dark                                                                                              |
+YouTube gets the most detailed controls. Rules are stored independently for
+each page type, so hiding recommendations beside a video does not empty the
+Home page or alter search results.
 
-Host permissions are limited to these supported sites only.
+| Page     | Available rules                            |
+| -------- | ------------------------------------------ |
+| Home     | Hide the home feed and Shorts              |
+| Watch    | Hide recommendations, comments, and Shorts |
+| Search   | Hide Shorts from search results            |
+| Channels | Hide Shorts from channel pages             |
 
-## Highlights
+Additional controls include:
 
-- Global on/off switch.
-- Pause control for the current site.
-- Current-site highlighting in the popup.
-- Calm, Focus, and Deep Focus presets.
-- Optional Hide promoted/ad content toggle.
-- Import, export, and reset settings.
-- Separate Chrome and Firefox manifests.
-- Clean release folders in `dist/chrome/` and `dist/firefox/`.
-- No React, no Vite, no analytics, no remote code.
+- **Show once** — reveals a hidden feed, recommendation panel, comment section,
+  or Shorts section in the current tab. The reveal ends when the tab navigates
+  or reloads, and the saved rule stays unchanged.
+- **Compatibility Mode** — keeps hiding rules active while restoring YouTube's
+  native layout. Use it if a YouTube update causes blank space, clipped
+  thumbnails, header overlap, or an unusual page arrangement.
+- **Layout controls** — choose 2–8 videos per Home row, use a floating sidebar,
+  and customize player progress and scrubber colors.
+- **SPA-aware navigation** — page rules update as YouTube moves between Home,
+  Watch, Search, and Channel views without a full reload.
+
+## Supported Platforms
+
+| Platform      | Modes and controls                                                                                 |
+| ------------- | -------------------------------------------------------------------------------------------------- |
+| YouTube       | Calm, Focus, Deep Focus, per-page rules, Show once, Compatibility Mode, layout and player controls |
+| YouTube Music | Minimal, Focus, playlist-song visibility, floating sidebar, immersive player, and player colors    |
+| Reddit        | Minimal, Compact, and Focus                                                                        |
+| Twitter/X     | Minimal, Focus, and Zen                                                                            |
+| Pinterest     | Minimal and Dark                                                                                   |
+
+The popup keeps platform controls in collapsible cards and automatically opens
+the card for the current site.
 
 ## Presets
 
-| Preset     | YouTube                                                            | Reddit            | Twitter/X         | Pinterest         |
-| ---------- | ------------------------------------------------------------------ | ----------------- | ----------------- | ----------------- |
-| Calm       | Hide recommendations and Shorts, keep comments visible             | Minimal           | Zen               | Minimal           |
-| Focus      | Hide recommendations, comments, and Shorts                         | Compact           | Focus             | Dark              |
-| Deep Focus | Focus mode, floating sidebar, hide recommendations/comments/Shorts | Focus             | Zen               | Dark              |
-| Custom     | Your own settings                                                  | Your own settings | Your own settings | Your own settings |
+Presets configure all supported platforms together. Changing an individual
+setting switches the preset to **Custom**.
 
-Changing any individual setting automatically returns the preset to `custom`.
+| Preset     | YouTube                                                  | YouTube Music                 | Reddit        | Twitter/X     | Pinterest     |
+| ---------- | -------------------------------------------------------- | ----------------------------- | ------------- | ------------- | ------------- |
+| Calm       | Keep Home visible; hide Watch recommendations and Shorts | Minimal                       | Minimal       | Zen           | Minimal       |
+| Focus      | Hide Home, Watch recommendations, comments, and Shorts   | Focus                         | Compact       | Focus         | Dark          |
+| Deep Focus | Focus rules plus a floating sidebar                      | Focus plus a floating sidebar | Focus         | Zen           | Dark          |
+| Custom     | Your settings                                            | Your settings                 | Your settings | Your settings | Your settings |
 
-## Privacy
+The global **Hide promoted/ad content** option applies to supported site
+themes where a stable promoted-content selector is available.
 
-MindFulCloud is intentionally local-first.
+## Popup Guide
 
-- No analytics.
-- No tracking.
-- No remote code.
-- No external APIs.
-- No account.
-- No background data collection.
-- Settings are stored locally in your browser.
-- Host permissions are limited to YouTube, YouTube Music, Reddit, Twitter/X, and Pinterest.
+1. Use **Power** to enable or disable MindFulCloud everywhere.
+2. Use **Pause** to stop it only on the current site.
+3. Pick a global preset for a quick starting point.
+4. Expand a platform card to adjust its individual controls.
+5. On YouTube, choose a page under **Rules for** before changing its toggles.
+6. Use **Export**, **Import**, or **Reset** to manage your local settings.
 
-## Permissions
+## Privacy and Permissions
 
-| Permission         | Why It Is Used                                                                  |
-| ------------------ | ------------------------------------------------------------------------------- |
-| `storage`          | Saves settings, pause state, and import/export data locally.                    |
-| `activeTab`        | Lets the popup detect and message the current tab after you open the extension. |
-| `host_permissions` | Allows content scripts and CSS to run only on the supported sites.              |
+MindFulCloud is local-first:
 
-MindFulCloud does not use the broader `tabs` permission.
+- No analytics or tracking.
+- No account or background data collection.
+- No remote code or external API calls.
+- Settings are stored locally in the browser.
+- Host access is limited to supported sites.
 
-## Project Structure
+| Permission         | Purpose                                                                      |
+| ------------------ | ---------------------------------------------------------------------------- |
+| `storage`          | Saves settings, presets, and pause state locally.                            |
+| `activeTab`        | Detects and updates the current tab after the popup is opened.               |
+| `host_permissions` | Runs MindFulCloud only on YouTube, Reddit, Twitter/X, and Pinterest domains. |
 
-```text
-MindFulCloud/
-|-- icons/
-|-- popup/
-|   |-- popup.html
-|   |-- popup.js
-|   `-- popup.css
-|-- scripts/
-|   `-- build-extension.ps1
-|-- shared/
-|   `-- settings.js
-|-- styles/
-|   |-- pinterest/
-|   |   |-- base.css
-|   |   |-- minimal.css
-|   |   |-- dark.css
-|   |   `-- promoted-content.css
-|   |-- reddit/
-|   |   |-- base.css
-|   |   |-- minimal.css
-|   |   |-- compact.css
-|   |   |-- focus.css
-|   |   `-- promoted-content.css
-|   |-- twitter/
-|   |   |-- base.css
-|   |   |-- minimal.css
-|   |   |-- focus.css
-|   |   |-- zen.css
-|   |   `-- promoted-content.css
-|   `-- youtube/
-|       `-- youtube-clean.css
-|   `-- youtube-music/
-|       |-- base.css
-|       |-- minimal.css
-|       `-- focus.css
-|-- content.js
-|-- manifest.json
-|-- manifest.chrome.json
-|-- manifest.firefox.json
-`-- README.md
-```
+The extension does not request the broader `tabs` permission.
 
-## Local Development
+## Install a Local Build
 
-Clone the repository:
+First build the extension using the instructions in
+[Build Release Packages](#build-release-packages).
+
+### Chrome, Brave, or Edge
+
+1. Open `chrome://extensions/` (or the browser's equivalent).
+2. Enable **Developer mode**.
+3. Select **Load unpacked**.
+4. Choose `dist/chrome`.
+
+### Firefox
+
+1. Open `about:debugging`.
+2. Select **This Firefox**.
+3. Select **Load Temporary Add-on**.
+4. Choose `dist/firefox/manifest.json`.
+
+Temporary Firefox add-ons are removed when Firefox closes.
+
+## Development
+
+### Requirements
+
+- Node.js 18 or newer
+- npm
+- PowerShell 5.1 or newer
+
+### Setup
 
 ```bash
 git clone https://github.com/loavy/MindFulCloud.git
 cd MindFulCloud
-```
-
-Install dependencies:
-
-```bash
 npm install
 ```
 
-Format and check the project:
+### Quality Checks
 
 ```bash
-npm run format
 npm run check
 npm test
 ```
 
+Format changed files with:
+
+```bash
+npm run format
+```
+
 ## Build Release Packages
 
-Build both browser packages:
+Build Chrome and Firefox together:
 
 ```powershell
 .\scripts\build-extension.ps1 all
 ```
 
-Build one target:
+If Windows blocks local PowerShell scripts, use:
 
 ```powershell
-.\scripts\build-extension.ps1 chrome
-.\scripts\build-extension.ps1 firefox
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\build-extension.ps1 all
 ```
 
-The build creates:
+Build only one browser with `chrome` or `firefox` in place of `all`.
+
+The build creates clean unpacked folders and store-ready ZIP archives:
+
+| Output                          | Purpose                            |
+| ------------------------------- | ---------------------------------- |
+| `dist/chrome/`                  | Load unpacked in Chromium browsers |
+| `dist/firefox/`                 | Load temporarily in Firefox        |
+| `dist/MindFulCloud-chrome.zip`  | Chrome Web Store release archive   |
+| `dist/MindFulCloud-firefox.zip` | Firefox Add-ons release archive    |
+
+Each ZIP contains its target manifest as `manifest.json` at the archive root.
+Only extension runtime files are packaged.
+
+## Project Structure
 
 ```text
-dist/chrome/
-dist/firefox/
-dist/MindFulCloud-chrome.zip
-dist/MindFulCloud-firefox.zip
+MindFulCloud/
+|-- icons/                  Extension icons
+|-- popup/                  Popup markup, styles, and behavior
+|-- scripts/
+|   `-- build-extension.ps1 Release builder
+|-- shared/
+|   `-- settings.js         Defaults, validation, and migration
+|-- styles/
+|   |-- pinterest/
+|   |-- reddit/
+|   |-- twitter/
+|   |-- youtube/
+|   `-- youtube-music/
+|-- test/                   Node test suite
+|-- content.js              Site detection and class application
+|-- manifest.json           Local default manifest
+|-- manifest.chrome.json    Chromium release manifest
+|-- manifest.firefox.json   Firefox release manifest
+`-- package.json
 ```
-
-Only extension files are copied into release folders: icons, popup files, shared settings, content scripts, site styles, and the target manifest.
-
-## Install From Source
-
-Chrome / Chromium:
-
-1. Run `.\scripts\build-extension.ps1 chrome`.
-2. Open `chrome://extensions/`.
-3. Enable Developer Mode.
-4. Click **Load unpacked**.
-5. Select `dist/chrome`.
-
-Firefox:
-
-1. Run `.\scripts\build-extension.ps1 firefox`.
-2. Open `about:debugging`.
-3. Click **This Firefox**.
-4. Click **Load Temporary Add-on**.
-5. Select `dist/firefox/manifest.json`.
 
 ## Manifest Strategy
 
-- `manifest.chrome.json` is used for Chrome Web Store and Chromium builds.
-- `manifest.firefox.json` includes `browser_specific_settings.gecko.id` for Firefox Add-ons.
+- `manifest.chrome.json` is used for Chromium builds and the Chrome Web Store.
+- `manifest.firefox.json` adds the Gecko extension ID required by Firefox.
 - `manifest.json` is the local default manifest.
-- The build script copies the target manifest to `dist/<target>/manifest.json`.
+- The build script installs the selected manifest as
+  `dist/<browser>/manifest.json`.
 
-## Store Publishing Checklist
+## Release Checklist
 
-- Run `npm run check`.
-- Run `.\scripts\build-extension.ps1 all`.
-- Load `dist/chrome` as an unpacked extension in Chrome/Chromium.
-- Load `dist/firefox/manifest.json` as a temporary add-on in Firefox.
-- Confirm the popup opens and detects supported sites.
-- Test global enable/disable.
-- Test pause for the current site.
-- Test every site mode.
-- Open several YouTube channel layouts and confirm their headers, tabs, and videos render.
-- Enable Hide Shorts and confirm only Shorts tabs, shelves, and cards disappear.
-- Test Calm, Focus, and Deep Focus presets.
-- Test import/export/reset.
-- Upload `dist/MindFulCloud-chrome.zip` to the Chrome Web Store.
-- Upload `dist/MindFulCloud-firefox.zip` to Firefox Add-ons.
+1. Run `npm run check` and `npm test`.
+2. Build both packages.
+3. Load and test both unpacked builds.
+4. Confirm global power, site pause, presets, import/export, and reset.
+5. Confirm all four YouTube page scopes remain independent.
+6. Test Compatibility Mode and Show once.
+7. Upload the matching ZIP from `dist/` to each browser store.
 
-## Manual Test Checklist
+## Troubleshooting
 
-Chrome:
-
-- Load `dist/chrome` in `chrome://extensions`.
-- Open YouTube, YouTube Music, Reddit, X/Twitter, and Pinterest.
-- Toggle global on/off.
-- Toggle pause for the current site.
-- Change every site mode.
-- Test presets.
-- Test Hide promoted/ad content.
-- Export settings, reset settings, then import the exported JSON.
-
-Firefox:
-
-- Load `dist/firefox/manifest.json` from `about:debugging`.
-- Repeat the Chrome checklist.
+| Problem                                                   | Fix                                                                           |
+| --------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| An already-open page does not change                      | Reload the tab once after installing or updating the extension.               |
+| YouTube has blank space, clipped cards, or header overlap | Enable **YouTube → Compatibility Mode**.                                      |
+| A Show once button is unavailable                         | Open a supported YouTube page and make sure that content is currently hidden. |
+| You want revealed content to remain visible               | Turn off its rule for the relevant YouTube page instead of using Show once.   |
+| A site redesign breaks a theme                            | Open an issue with the page URL, browser, and a screenshot.                   |
 
 ## Theme Maintenance
 
-MindFulCloud works by applying CSS classes to supported pages. Large platforms change their markup often, so selectors may need maintenance.
+MindFulCloud works by applying scoped CSS classes to supported pages. Large
+platforms change their markup regularly, so selectors occasionally need
+maintenance. Keep fixes narrow, avoid hiding main content containers, rebuild
+both packages, and retest every affected page type.
 
-When updating a site theme:
-
-1. Reproduce the issue on the live site.
-2. Edit only the relevant file in `styles/<site>/`.
-3. Keep selectors narrow.
-4. Avoid hiding main content containers.
-5. Rebuild the target package.
-6. Retest the popup toggles and presets.
-
-Pinterest dark mode lives in `styles/pinterest/dark.css` and is scoped to:
+Pinterest dark mode is scoped to:
 
 ```css
 html.mindful-pinterest.pt-dark
@@ -263,4 +260,6 @@ html.mindful-pinterest.pt-dark
 
 ## License
 
-No license file is currently included in this repository. Add one before reusing, redistributing, or publishing derivative work outside the project owner's intended release channels.
+No license file is currently included. Add one before reusing, redistributing,
+or publishing derivative work outside the project owner's intended release
+channels.

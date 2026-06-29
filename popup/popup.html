@@ -9,28 +9,46 @@
   <body>
     <main class="container">
       <header class="app-header">
-        <div>
-          <p class="eyebrow" id="siteLabel">Current site</p>
-          <h1>MindFulCloud</h1>
+        <div class="brand-lockup">
+          <img class="brand-icon" src="../icons/icon48.png" alt="" />
+          <div>
+            <p class="eyebrow">Calmer browsing</p>
+            <h1>MindFulCloud</h1>
+          </div>
         </div>
-        <label class="switch large" title="Enable MindFulCloud">
-          <input type="checkbox" id="masterEnabled" />
-          <span class="slider"></span>
-        </label>
+        <div class="master-control">
+          <span>Power</span>
+          <label class="switch large" title="Enable MindFulCloud">
+            <input type="checkbox" id="masterEnabled" />
+            <span class="slider"></span>
+          </label>
+        </div>
       </header>
 
-      <section class="panel current-site" id="currentSitePanel">
-        <div>
+      <section class="panel current-site unsupported" id="currentSitePanel">
+        <span class="site-status-dot" aria-hidden="true"></span>
+        <div class="current-site-copy">
+          <p class="panel-kicker" id="siteLabel">Current site</p>
           <strong id="currentSiteName">Unsupported page</strong>
           <span id="currentSiteHint">Open a supported site to use site controls.</span>
         </div>
-        <label class="switch" title="Pause this site">
-          <input type="checkbox" id="sitePaused" />
-          <span class="slider"></span>
-        </label>
+        <div class="pause-control">
+          <span>Pause</span>
+          <label class="switch" title="Pause this site">
+            <input type="checkbox" id="sitePaused" />
+            <span class="slider"></span>
+          </label>
+        </div>
       </section>
 
-      <section class="panel">
+      <section class="panel general-panel">
+        <div class="section-heading">
+          <div>
+            <p class="section-kicker">Quick setup</p>
+            <h2>Browsing preset</h2>
+          </div>
+          <span class="section-badge">Global</span>
+        </div>
         <div class="row">
           <label for="globalPreset">Preset</label>
           <select id="globalPreset">
@@ -49,10 +67,23 @@
         </label>
       </section>
 
+      <div class="section-heading platform-heading">
+        <div>
+          <p class="section-kicker">Fine tuning</p>
+          <h2>Platforms</h2>
+        </div>
+        <span class="section-note">Saved locally</span>
+      </div>
+
       <section class="site-grid">
         <article class="site-card" data-site="youtube">
           <div class="site-card-header">
-            <h2>YouTube</h2>
+            <h2>
+              <button class="site-card-toggle" type="button" aria-expanded="true">
+                <span>YouTube</span>
+                <span class="card-chevron" aria-hidden="true"></span>
+              </button>
+            </h2>
             <select id="ytMode" aria-label="YouTube mode">
               <option value="custom">Custom</option>
               <option value="calm">Calm</option>
@@ -60,35 +91,78 @@
               <option value="deep-focus">Deep Focus</option>
             </select>
           </div>
-          <label class="row">
-            <span>Hide recommendations</span>
+          <label class="row compatibility-row">
+            <span class="setting-copy">
+              <strong>Compatibility mode</strong>
+              <small>Keep hiding rules, restore YouTube's layout</small>
+            </span>
+            <span class="switch">
+              <input type="checkbox" id="ytSafeMode" />
+              <span class="slider"></span>
+            </span>
+          </label>
+          <div class="page-rule-picker">
+            <div>
+              <label for="ytPageScope">Rules for</label>
+              <select id="ytPageScope">
+                <option value="home">Home</option>
+                <option value="watch">Watch</option>
+                <option value="search">Search</option>
+                <option value="channel">Channels</option>
+              </select>
+            </div>
+            <p id="ytPageHint">Tune the YouTube home feed.</p>
+          </div>
+          <label class="row youtube-rule" data-youtube-rule="recommendations">
+            <span id="ytHideRecLabel">Hide home feed</span>
             <span class="switch">
               <input type="checkbox" id="ytHideRec" />
               <span class="slider"></span>
             </span>
           </label>
-          <label class="row">
+          <label class="row youtube-rule" data-youtube-rule="comments">
             <span>Hide comments</span>
             <span class="switch">
               <input type="checkbox" id="ytHideComments" />
               <span class="slider"></span>
             </span>
           </label>
-          <label class="row">
+          <label class="row youtube-rule" data-youtube-rule="shorts">
             <span>Hide Shorts</span>
             <span class="switch">
               <input type="checkbox" id="ytHideShorts" />
               <span class="slider"></span>
             </span>
           </label>
-          <label class="row">
+          <div class="show-once-panel">
+            <div class="show-once-heading">
+              <strong>Show once</strong>
+              <span>Current tab only</span>
+            </div>
+            <div class="show-once-actions">
+              <button
+                class="show-once-button"
+                id="ytShowRecommendationsOnce"
+                type="button"
+              >
+                Recommendations
+              </button>
+              <button class="show-once-button" id="ytShowCommentsOnce" type="button">
+                Comments
+              </button>
+              <button class="show-once-button" id="ytShowShortsOnce" type="button">
+                Shorts
+              </button>
+            </div>
+          </div>
+          <label class="row yt-layout-control">
             <span>Floating sidebar</span>
             <span class="switch">
               <input type="checkbox" id="ytHamburger" />
               <span class="slider"></span>
             </span>
           </label>
-          <label class="row">
+          <label class="row yt-layout-control">
             <span>Videos in a row</span>
             <input
               class="number-input"
@@ -99,7 +173,7 @@
               step="1"
             />
           </label>
-          <div class="color-row">
+          <div class="color-row yt-layout-control">
             <label for="ytProgressColor">Progress</label>
             <input type="color" id="ytProgressColor" />
             <input
@@ -109,7 +183,7 @@
               spellcheck="false"
             />
           </div>
-          <div class="color-row">
+          <div class="color-row yt-layout-control">
             <label for="ytScrubberColor">Scrubber</label>
             <input type="color" id="ytScrubberColor" />
             <input
@@ -123,7 +197,12 @@
 
         <article class="site-card" data-site="youtubeMusic">
           <div class="site-card-header">
-            <h2>YouTube Music</h2>
+            <h2>
+              <button class="site-card-toggle" type="button" aria-expanded="true">
+                <span>YouTube Music</span>
+                <span class="card-chevron" aria-hidden="true"></span>
+              </button>
+            </h2>
             <select id="ytmMode" aria-label="YouTube Music mode">
               <option value="minimal">Minimal</option>
               <option value="focus">Focus</option>
@@ -167,7 +246,12 @@
 
         <article class="site-card" data-site="reddit">
           <div class="site-card-header">
-            <h2>Reddit</h2>
+            <h2>
+              <button class="site-card-toggle" type="button" aria-expanded="true">
+                <span>Reddit</span>
+                <span class="card-chevron" aria-hidden="true"></span>
+              </button>
+            </h2>
             <select id="rdMode" aria-label="Reddit mode">
               <option value="custom">Custom</option>
               <option value="minimal">Minimal</option>
@@ -179,7 +263,12 @@
 
         <article class="site-card" data-site="twitter">
           <div class="site-card-header">
-            <h2>Twitter / X</h2>
+            <h2>
+              <button class="site-card-toggle" type="button" aria-expanded="true">
+                <span>Twitter / X</span>
+                <span class="card-chevron" aria-hidden="true"></span>
+              </button>
+            </h2>
             <select id="twMode" aria-label="Twitter/X mode">
               <option value="custom">Custom</option>
               <option value="focus">Focus</option>
@@ -191,7 +280,12 @@
 
         <article class="site-card" data-site="pinterest">
           <div class="site-card-header">
-            <h2>Pinterest</h2>
+            <h2>
+              <button class="site-card-toggle" type="button" aria-expanded="true">
+                <span>Pinterest</span>
+                <span class="card-chevron" aria-hidden="true"></span>
+              </button>
+            </h2>
             <select id="ptMode" aria-label="Pinterest mode">
               <option value="minimal">Minimal</option>
               <option value="dark">Dark</option>
@@ -208,6 +302,7 @@
       </section>
 
       <p class="status-message" id="statusMessage" role="status"></p>
+      <p class="privacy-note">Private by design · No analytics</p>
     </main>
 
     <script src="../shared/settings.js"></script>

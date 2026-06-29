@@ -45,14 +45,6 @@ html.mindful-youtube .ytSpecButtonViewModelHost.you-chat-entrypoint-button {
   display: none !important;
 }
 
-html.mindful-youtube ytd-watch-flexy {
-  margin-top: 70px !important;
-}
-
-html.mindful-youtube ytd-watch-flexy[fullscreen] {
-  margin-top: 0px !important;
-}
-
 html.mindful-youtube ytd-watch-flexy[flexy] #primary {
   max-width: 1000px;
   margin: 0 auto;
@@ -76,6 +68,10 @@ html.mindful-youtube tp-yt-paper-listbox {
 /* =======================
 SIDEBAR (FINAL CLEAN VERSION)
 ======================= */
+
+html.mindful-youtube #page-manager {
+  margin-left: 0 !important;
+}
 
 html.mindful-youtube:not(.yt-float-menu) tp-yt-app-drawer #contentContainer {
   max-height: none !important;
@@ -182,6 +178,18 @@ html.mindful-youtube ytd-masthead {
   box-shadow: none !important;
 }
 
+html.mindful-youtube #masthead-container #background {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+
+html.mindful-youtube #frosted-glass {
+  display: none !important;
+  height: 0 !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+
 html.mindful-youtube #masthead-container {
   position: fixed !important;
   top: var(--mf-gap) !important;
@@ -205,24 +213,18 @@ GRID
 ====================== */
 
 html.mindful-youtube ytd-browse[page-subtype="home"] ytd-rich-grid-renderer {
+  --ytd-rich-grid-items-per-row: var(--yt-videos-per-row, 4) !important;
+
   max-width: 100% !important;
   margin: 0 auto !important;
   padding: 16px 24px !important;
 }
 
-html.mindful-youtube ytd-browse[page-subtype="home"] #contents.ytd-rich-grid-renderer {
-  display: grid !important;
-  gap: 24px !important;
-  width: 100% !important;
-  grid-template-columns: repeat(var(--yt-videos-per-row, 4), minmax(0, 1fr)) !important;
-}
-
-html.mindful-youtube
-  ytd-browse[page-subtype="home"]
-  #contents.ytd-rich-grid-renderer
-  > ytd-rich-item-renderer {
-  width: 100% !important;
-  min-width: 0 !important;
+html.mindful-youtube ytd-browse[page-subtype="home"] #header.ytd-rich-grid-renderer,
+html.mindful-youtube ytd-browse[page-subtype="home"] ytd-feed-filter-chip-bar-renderer {
+  display: none !important;
+  min-height: 0 !important;
+  height: 0 !important;
 }
 
 /* arrows / chip overflow cleanup */
@@ -236,32 +238,34 @@ SHORTS REMOVAL
 ======================= */
 
 /* URL selectors are stable across YouTube's translated labels. */
-html.mindful-youtube.yt-hide-shorts ytd-guide-entry-renderer:has(a[href^="/shorts"]),
-html.mindful-youtube.yt-hide-shorts ytd-mini-guide-entry-renderer:has(a[href^="/shorts"]),
-html.mindful-youtube.yt-hide-shorts ytd-tab-renderer:has(a[href*="/shorts"]),
-html.mindful-youtube.yt-hide-shorts yt-tab-shape:has(a[href*="/shorts"]),
-html.mindful-youtube.yt-hide-shorts yt-tab-shape[tab-title="Shorts"],
-html.mindful-youtube.yt-hide-shorts ytd-chip-cloud-chip-renderer:has(a[href*="/shorts"]) {
+html.yt-hide-shorts ytd-guide-entry-renderer:has(a[href^="/shorts"]),
+html.yt-hide-shorts ytd-mini-guide-entry-renderer:has(a[href^="/shorts"]),
+html.yt-hide-shorts ytd-tab-renderer:has(a[href*="/shorts"]),
+html.yt-hide-shorts yt-tab-shape:has(a[href*="/shorts"]),
+html.yt-hide-shorts yt-tab-shape[tab-title="Shorts"],
+html.yt-hide-shorts ytd-chip-cloud-chip-renderer:has(a[href*="/shorts"]) {
   display: none !important;
 }
 
 /* Dedicated Shorts shelves. Never hide a page-level grid because it has Shorts. */
-html.mindful-youtube.yt-hide-shorts ytd-reel-shelf-renderer,
-html.mindful-youtube.yt-hide-shorts
-  ytd-rich-section-renderer:has(ytd-reel-shelf-renderer),
-html.mindful-youtube.yt-hide-shorts
+html.yt-hide-shorts ytd-reel-shelf-renderer,
+html.yt-hide-shorts ytd-rich-section-renderer:has(ytd-reel-shelf-renderer),
+html.yt-hide-shorts ytd-rich-section-renderer:has(ytd-rich-shelf-renderer[is-shorts]),
+html.yt-hide-shorts ytd-rich-section-renderer:has(grid-shelf-view-model),
+html.yt-hide-shorts ytd-rich-section-renderer:has(.ytGridShelfViewModelHost),
+html.yt-hide-shorts
   ytd-rich-section-renderer:has(grid-shelf-view-model a[href*="/shorts/"]),
-html.mindful-youtube.yt-hide-shorts ytd-rich-shelf-renderer:has(a[href*="/shorts/"]),
-html.mindful-youtube.yt-hide-shorts ytd-shelf-renderer:has(a[href*="/shorts/"]) {
+html.yt-hide-shorts ytd-rich-shelf-renderer:has(a[href*="/shorts/"]),
+html.yt-hide-shorts ytd-shelf-renderer:has(a[href*="/shorts/"]) {
   display: none !important;
 }
 
 /* Individual cards in mixed feeds and search results. */
-html.mindful-youtube.yt-hide-shorts ytd-rich-item-renderer:has(a[href*="/shorts/"]),
-html.mindful-youtube.yt-hide-shorts ytd-video-renderer:has(a[href*="/shorts/"]),
-html.mindful-youtube.yt-hide-shorts ytd-grid-video-renderer:has(a[href*="/shorts/"]),
-html.mindful-youtube.yt-hide-shorts ytd-compact-video-renderer:has(a[href*="/shorts/"]),
-html.mindful-youtube.yt-hide-shorts yt-lockup-view-model:has(a[href*="/shorts/"]) {
+html.yt-hide-shorts ytd-rich-item-renderer:has(a[href*="/shorts/"]),
+html.yt-hide-shorts ytd-video-renderer:has(a[href*="/shorts/"]),
+html.yt-hide-shorts ytd-grid-video-renderer:has(a[href*="/shorts/"]),
+html.yt-hide-shorts ytd-compact-video-renderer:has(a[href*="/shorts/"]),
+html.yt-hide-shorts yt-lockup-view-model:has(a[href*="/shorts/"]) {
   display: none !important;
 }
 
@@ -269,7 +273,8 @@ html.mindful-youtube.yt-hide-shorts yt-lockup-view-model:has(a[href*="/shorts/"]
 CONTENT CLEANUP
 ================== */
 
-html.mindful-youtube.hide-promoted-content ytd-merch-shelf-renderer {
+html:is(.mindful-youtube, .mindful-youtube-safe).hide-promoted-content
+  ytd-merch-shelf-renderer {
   display: none !important;
 }
 
@@ -294,10 +299,6 @@ html.mindful-youtube .ytd-searchbox {
 /* =======================
 CHIPS
 ======================= */
-
-html.mindful-youtube .ytd-feed-filter-chip-bar-renderer {
-  display: none;
-}
 
 html.mindful-youtube .yt-chip-cloud-chip-renderer {
   background: var(--mf-chip) !important;
@@ -382,25 +383,33 @@ html.mindful-youtube .ytd-comment-action-buttons-renderer:hover {
 PROMOTED CONTENT
 ======================= */
 
-html.mindful-youtube.hide-promoted-content ytd-in-feed-ad-layout-renderer,
-html.mindful-youtube.hide-promoted-content ytd-ad-slot-renderer,
-html.mindful-youtube.hide-promoted-content ytd-display-ad-renderer,
-html.mindful-youtube.hide-promoted-content ytd-promoted-sparkles-web-renderer,
-html.mindful-youtube.hide-promoted-content ytd-banner-promo-renderer,
-html.mindful-youtube.hide-promoted-content ytd-mealbar-promo-renderer {
+html:is(.mindful-youtube, .mindful-youtube-safe).hide-promoted-content
+  ytd-in-feed-ad-layout-renderer,
+html:is(.mindful-youtube, .mindful-youtube-safe).hide-promoted-content
+  ytd-ad-slot-renderer,
+html:is(.mindful-youtube, .mindful-youtube-safe).hide-promoted-content
+  ytd-display-ad-renderer,
+html:is(.mindful-youtube, .mindful-youtube-safe).hide-promoted-content
+  ytd-promoted-sparkles-web-renderer,
+html:is(.mindful-youtube, .mindful-youtube-safe).hide-promoted-content
+  ytd-banner-promo-renderer,
+html:is(.mindful-youtube, .mindful-youtube-safe).hide-promoted-content
+  ytd-mealbar-promo-renderer {
   display: none !important;
 }
 
-html.mindful-youtube.hide-promoted-content ytp-ad-module,
-html.mindful-youtube.hide-promoted-content ytp-ad-player-overlay {
+html:is(.mindful-youtube, .mindful-youtube-safe).hide-promoted-content ytp-ad-module,
+html:is(.mindful-youtube, .mindful-youtube-safe).hide-promoted-content
+  ytp-ad-player-overlay {
   display: none !important;
   opacity: 0 !important;
   visibility: hidden !important;
 }
 
-html.mindful-youtube.hide-promoted-content
+html:is(.mindful-youtube, .mindful-youtube-safe).hide-promoted-content
   ytd-engagement-panel-section-list-renderer[target-id="engagement-panel-ads"],
-html.mindful-youtube.hide-promoted-content ytd-player-legacy-desktop-watch-ads-renderer {
+html:is(.mindful-youtube, .mindful-youtube-safe).hide-promoted-content
+  ytd-player-legacy-desktop-watch-ads-renderer {
   display: none !important;
 }
 
@@ -417,11 +426,25 @@ html.mindful-youtube .ytp-scrubber-button {
   box-shadow: 0 0 5px var(--yt-scrubber-color) !important;
 }
 
-html.mindful-youtube.yt-hide-rec #related,
-html.mindful-youtube.yt-hide-rec #secondary {
+html.yt-page-home.yt-hide-rec ytd-browse[page-subtype="home"] #contents,
+html.yt-page-watch.yt-hide-rec #related,
+html.yt-page-watch.yt-hide-rec #secondary {
   display: none !important;
 }
 
-html.mindful-youtube.yt-hide-comments #comments {
+html.yt-page-home.yt-hide-rec
+  ytd-browse[page-subtype="home"]
+  ytd-rich-grid-renderer::after {
+  content: "Home recommendations are hidden by MindFulCloud.";
+  display: grid;
+  min-height: 240px;
+  place-items: center;
+  padding: 24px;
+  color: var(--yt-spec-text-secondary, #606060);
+  font-size: 14px;
+  text-align: center;
+}
+
+html.yt-page-watch.yt-hide-comments #comments {
   display: none !important;
 }

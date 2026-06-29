@@ -11,6 +11,10 @@ const extensionApi =
 const storage = extensionApi?.storage?.local;
 const storageChanges = extensionApi?.storage?.onChanged;
 const runtime = extensionApi?.runtime;
+const temporaryReveals = new Set();
+
+let activeSettings = settingsHelper.getDefaultSettings();
+let activeUrl = location.href;
 
 function storageGet(keys = null) {
   if (!storage) return Promise.resolve({});
@@ -51,6 +55,7 @@ function applySettings(settings = {}) {
   const site = settingsHelper.getCurrentSite(location.hostname);
   const paused = normalized.pausedSites?.[location.hostname];
 
+  activeSettings = normalized;
   clearSiteClasses();
 
   if (!normalized.enabled || !site || paused) {
@@ -63,12 +68,31 @@ function applySettings(settings = {}) {
   }
 
   if (site === "youtube" && normalized.youtube.enabled) {
-    html.classList.add("mindful-youtube");
-    addClassWhen(normalized.youtube.hideRecommendations, "yt-hide-rec");
-    addClassWhen(normalized.youtube.hideComments, "yt-hide-comments");
-    addClassWhen(normalized.youtube.hideShorts, "yt-hide-shorts");
-    addClassWhen(normalized.youtube.floatingSidebar, "yt-float-menu");
-    applyYouTubeColors(normalized.youtube);
+    const page = settingsHelper.getYouTubePageType(location.href);
+    const pageSettings = normalized.youtube.pages[page];
+    const safeMode = normalized.youtube.safeMode;
+
+    html.classList.add(
+      safeMode ? "mindful-youtube-safe" : "mindful-youtube",
+      `yt-page-${page}`,
+    );
+    addClassWhen(
+      pageSettings.hideRecommendations && !temporaryReveals.has("recommendations"),
+      "yt-hide-rec",
+    );
+    addClassWhen(
+      pageSettings.hideComments && !temporaryReveals.has("comments"),
+      "yt-hide-comments",
+    );
+    addClassWhen(
+      pageSettings.hideShorts && !temporaryReveals.has("shorts"),
+      "yt-hide-shorts",
+    );
+
+    if (!safeMode) {
+      addClassWhen(normalized.youtube.floatingSidebar, "yt-float-menu");
+      applyYouTubeColors(normalized.youtube);
+    }
   }
 
   if (site === "youtubeMusic" && normalized.youtubeMusic.enabled) {
@@ -143,9 +167,26 @@ async function init() {
   requestAnimationFrame(() => applySettings(settings));
 }
 
-runtime?.onMessage?.addListener((msg) => {
+runtime?.onMessage?.addListener((msg, _sender, sendResponse) => {
   if (msg?.type === "UPDATE_SETTINGS") {
     applySettings(msg.settings || {});
+  }
+
+  if (
+    msg?.type === "TEMPORARY_REVEAL" &&
+    ["recommendations", "comments", "shorts"].includes(msg.feature) &&
+    settingsHelper.getCurrentSite(location.hostname) === "youtube"
+  ) {
+    temporaryReveals.add(msg.feature);
+    applySettings(activeSettings);
+    sendResponse?.({ ok: true });
+  }
+
+  if (
+    msg?.type === "GET_TEMPORARY_REVEALS" &&
+    settingsHelper.getCurrentSite(location.hostname) === "youtube"
+  ) {
+    sendResponse?.({ features: [...temporaryReveals] });
   }
 });
 
@@ -153,5 +194,19 @@ storageChanges?.addListener((_changes, areaName) => {
   if (areaName === "local") init();
 });
 
+function watchYouTubeNavigation() {
+  const handleNavigation = () => {
+    if (location.href === activeUrl) return;
+    activeUrl = location.href;
+    temporaryReveals.clear();
+    applySettings(activeSettings);
+  };
+
+  document.addEventListener("yt-navigate-finish", handleNavigation);
+  window.addEventListener("popstate", handleNavigation);
+  window.addEventListener("hashchange", handleNavigation);
+}
+
 init();
 watchYouTubeMusicMenu();
+watchYouTubeNavigation();

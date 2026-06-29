@@ -1,4 +1,28 @@
 (function () {
+  const YOUTUBE_PAGE_TYPES = ["home", "watch", "search", "channel"];
+  const YOUTUBE_PAGE_DEFAULTS = {
+    home: {
+      hideRecommendations: false,
+      hideComments: false,
+      hideShorts: true,
+    },
+    watch: {
+      hideRecommendations: true,
+      hideComments: false,
+      hideShorts: true,
+    },
+    search: {
+      hideRecommendations: false,
+      hideComments: false,
+      hideShorts: true,
+    },
+    channel: {
+      hideRecommendations: false,
+      hideComments: false,
+      hideShorts: true,
+    },
+  };
+
   const DEFAULT_SETTINGS = {
     enabled: true,
     preset: "custom",
@@ -9,6 +33,8 @@
       hideRecommendations: true,
       hideComments: false,
       hideShorts: true,
+      safeMode: false,
+      pages: YOUTUBE_PAGE_DEFAULTS,
       floatingSidebar: false,
       videosPerRow: 4,
       progressColor: "#4cafef",
@@ -52,10 +78,15 @@
 
   const SITE_CLASSES = [
     "mindful-youtube",
+    "mindful-youtube-safe",
     "yt-hide-rec",
     "yt-hide-comments",
     "yt-hide-shorts",
     "yt-float-menu",
+    "yt-page-home",
+    "yt-page-watch",
+    "yt-page-search",
+    "yt-page-channel",
     "mindful-youtube-music",
     "ytm-minimal",
     "ytm-focus",
@@ -91,6 +122,20 @@
     }
 
     return { ...base, ...value };
+  }
+
+  function normalizeYouTubePage(page, value) {
+    const normalized = { ...YOUTUBE_PAGE_DEFAULTS[page] };
+
+    if (!value || typeof value !== "object" || Array.isArray(value)) {
+      return normalized;
+    }
+
+    for (const key of ["hideRecommendations", "hideComments", "hideShorts"]) {
+      if (typeof value[key] === "boolean") normalized[key] = value[key];
+    }
+
+    return normalized;
   }
 
   function normalizeSettings(data = {}) {
@@ -148,6 +193,32 @@
       settings.pinterest.mode = data.ptDark ? "dark" : "minimal";
     }
 
+    settings.youtube.safeMode = data.youtube?.safeMode === true;
+
+    const suppliedPages = data.youtube?.pages;
+    const hasPageSettings =
+      suppliedPages &&
+      typeof suppliedPages === "object" &&
+      !Array.isArray(suppliedPages) &&
+      YOUTUBE_PAGE_TYPES.some((page) => suppliedPages[page]);
+
+    settings.youtube.pages = {};
+    for (const page of YOUTUBE_PAGE_TYPES) {
+      settings.youtube.pages[page] = normalizeYouTubePage(
+        page,
+        hasPageSettings ? suppliedPages[page] : null,
+      );
+    }
+
+    if (!hasPageSettings) {
+      for (const page of YOUTUBE_PAGE_TYPES) {
+        settings.youtube.pages[page].hideShorts = settings.youtube.hideShorts;
+      }
+      settings.youtube.pages.watch.hideRecommendations =
+        settings.youtube.hideRecommendations;
+      settings.youtube.pages.watch.hideComments = settings.youtube.hideComments;
+    }
+
     return settings;
   }
 
@@ -169,12 +240,37 @@
     return null;
   }
 
+  function getYouTubePageType(urlOrPath = "/") {
+    let pathname = String(urlOrPath || "/");
+
+    try {
+      pathname = new URL(pathname, "https://www.youtube.com").pathname;
+    } catch {
+      pathname = "/";
+    }
+
+    if (
+      pathname === "/watch" ||
+      pathname.startsWith("/shorts/") ||
+      pathname.startsWith("/live/")
+    ) {
+      return "watch";
+    }
+    if (pathname === "/results") return "search";
+    if (pathname.startsWith("/@") || /^\/(?:channel|c|user)\//u.test(pathname)) {
+      return "channel";
+    }
+    return "home";
+  }
+
   globalThis.MindFulCloudSettings = {
     LEGACY_KEYS,
     SITE_CLASSES,
+    YOUTUBE_PAGE_TYPES,
     clone,
     getCurrentSite,
     getDefaultSettings,
+    getYouTubePageType,
     normalizeSettings,
   };
 })();

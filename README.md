@@ -7,7 +7,7 @@ YouTube, YouTube Music, Reddit, Twitter/X, and Pinterest feel quieter and easier
 to use. It removes visual pressure without blocking the sites themselves.
 
 <p>
-  <img alt="Version 5.5.0" src="https://img.shields.io/badge/version-5.5.0-6C63FF?style=for-the-badge">
+  <img alt="Version 6.0.0" src="https://img.shields.io/badge/version-6.0.0-6C63FF?style=for-the-badge">
   <img alt="Chrome ready" src="https://img.shields.io/badge/Chrome-ready-4285F4?style=for-the-badge&logo=googlechrome&logoColor=white">
   <img alt="Firefox ready" src="https://img.shields.io/badge/Firefox-ready-FF7139?style=for-the-badge&logo=firefoxbrowser&logoColor=white">
   <img alt="Manifest V3" src="https://img.shields.io/badge/Manifest-V3-34A853?style=for-the-badge">
@@ -40,18 +40,21 @@ YouTube gets the most detailed controls. Rules are stored independently for
 each page type, so hiding recommendations beside a video does not empty the
 Home page or alter search results.
 
-| Page     | Available rules                            |
-| -------- | ------------------------------------------ |
-| Home     | Hide the home feed and Shorts              |
-| Watch    | Hide recommendations, comments, and Shorts |
-| Search   | Hide Shorts from search results            |
-| Channels | Hide Shorts from channel pages             |
+| Page     | Available rules                                       |
+| -------- | ----------------------------------------------------- |
+| Home     | Hide the home feed and Shorts                         |
+| Watch    | Hide recommendations, playlists, comments, and Shorts |
+| Search   | Hide Shorts from search results                       |
+| Channels | Hide Shorts from channel pages                        |
 
 Additional controls include:
 
-- **Show once** — reveals a hidden feed, recommendation panel, comment section,
-  or Shorts section in the current tab. The reveal ends when the tab navigates
-  or reloads, and the saved rule stays unchanged.
+- **Independent Watch controls** — hide suggested videos while keeping an active
+  playlist queue directly beneath the player at any window width, or hide playlists
+  separately when you do not need them.
+- **Show once** — reveals a hidden feed, recommendation panel, playlist, comment
+  section, or Shorts section in the current tab. The reveal ends when the tab
+  navigates or reloads, and the saved rule stays unchanged.
 - **Compatibility Mode** — keeps hiding rules active while restoring YouTube's
   native layout. Use it if a YouTube update causes blank space, clipped
   thumbnails, header overlap, or an unusual page arrangement.
@@ -62,13 +65,13 @@ Additional controls include:
 
 ## Supported Platforms
 
-| Platform      | Modes and controls                                                                                 |
-| ------------- | -------------------------------------------------------------------------------------------------- |
-| YouTube       | Calm, Focus, Deep Focus, per-page rules, Show once, Compatibility Mode, layout and player controls |
-| YouTube Music | Minimal, Focus, playlist-song visibility, floating sidebar, immersive player, and player colors    |
-| Reddit        | Minimal, Compact, and Focus                                                                        |
-| Twitter/X     | Minimal, Focus, and Zen                                                                            |
-| Pinterest     | Minimal and Dark                                                                                   |
+| Platform      | Modes and controls                                                                                                            |
+| ------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| YouTube       | Calm, Focus, Deep Focus, independent recommendation/playlist rules, Show once, Compatibility Mode, layout and player controls |
+| YouTube Music | Minimal, Focus, playlist-song visibility, floating sidebar, immersive player, and player colors                               |
+| Reddit        | Minimal, Compact, and Focus                                                                                                   |
+| Twitter/X     | Minimal, Focus, and Zen                                                                                                       |
+| Pinterest     | Minimal and Dark                                                                                                              |
 
 The popup keeps platform controls in collapsible cards and automatically opens
 the card for the current site.
@@ -78,12 +81,12 @@ the card for the current site.
 Presets configure all supported platforms together. Changing an individual
 setting switches the preset to **Custom**.
 
-| Preset     | YouTube                                                  | YouTube Music                 | Reddit        | Twitter/X     | Pinterest     |
-| ---------- | -------------------------------------------------------- | ----------------------------- | ------------- | ------------- | ------------- |
-| Calm       | Keep Home visible; hide Watch recommendations and Shorts | Minimal                       | Minimal       | Zen           | Minimal       |
-| Focus      | Hide Home, Watch recommendations, comments, and Shorts   | Focus                         | Compact       | Focus         | Dark          |
-| Deep Focus | Focus rules plus a floating sidebar                      | Focus plus a floating sidebar | Focus         | Zen           | Dark          |
-| Custom     | Your settings                                            | Your settings                 | Your settings | Your settings | Your settings |
+| Preset     | YouTube                                                                | YouTube Music                 | Reddit        | Twitter/X     | Pinterest     |
+| ---------- | ---------------------------------------------------------------------- | ----------------------------- | ------------- | ------------- | ------------- |
+| Calm       | Keep Home and playlists visible; hide Watch recommendations and Shorts | Minimal                       | Minimal       | Zen           | Minimal       |
+| Focus      | Hide Home, Watch recommendations, comments, and Shorts; keep playlists | Focus                         | Compact       | Focus         | Dark          |
+| Deep Focus | Focus rules plus a floating sidebar                                    | Focus plus a floating sidebar | Focus         | Zen           | Dark          |
+| Custom     | Your settings                                                          | Your settings                 | Your settings | Your settings | Your settings |
 
 The global **Hide promoted/ad content** option applies to supported site
 themes where a stable promoted-content selector is available.
@@ -95,7 +98,7 @@ themes where a stable promoted-content selector is available.
 3. Pick a global preset for a quick starting point.
 4. Expand a platform card to adjust its individual controls.
 5. On YouTube, choose a page under **Rules for** before changing its toggles.
-6. Use **Export**, **Import**, or **Reset** to manage your local settings.
+6. Use **Reset** to restore every setting to its default.
 
 ## Privacy and Permissions
 
@@ -230,8 +233,9 @@ MindFulCloud/
 1. Run `npm run check` and `npm test`.
 2. Build both packages.
 3. Load and test both unpacked builds.
-4. Confirm global power, site pause, presets, import/export, and reset.
-5. Confirm all four YouTube page scopes remain independent.
+4. Confirm global power, site pause, presets, and reset.
+5. Confirm all four YouTube page scopes remain independent, including the Watch
+   recommendation/playlist combinations.
 6. Test Compatibility Mode and Show once.
 7. Upload the matching ZIP from `dist/` to each browser store.
 

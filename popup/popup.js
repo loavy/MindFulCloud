@@ -14,11 +14,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     currentSiteHint: document.getElementById("currentSiteHint"),
     currentSiteName: document.getElementById("currentSiteName"),
     currentSitePanel: document.getElementById("currentSitePanel"),
-    exportSettings: document.getElementById("exportSettings"),
     globalPreset: document.getElementById("globalPreset"),
     hidePromotedContent: document.getElementById("hidePromotedContent"),
-    importFile: document.getElementById("importFile"),
-    importSettings: document.getElementById("importSettings"),
     masterEnabled: document.getElementById("masterEnabled"),
     ptMode: document.getElementById("ptMode"),
     rdMode: document.getElementById("rdMode"),
@@ -28,7 +25,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     statusMessage: document.getElementById("statusMessage"),
     twMode: document.getElementById("twMode"),
     ytHideComments: document.getElementById("ytHideComments"),
+    ytHidePlaylists: document.getElementById("ytHidePlaylists"),
     ytHideRec: document.getElementById("ytHideRec"),
+    ytHideRecHint: document.getElementById("ytHideRecHint"),
     ytHideRecLabel: document.getElementById("ytHideRecLabel"),
     ytHideShorts: document.getElementById("ytHideShorts"),
     ytHamburger: document.getElementById("ytHamburger"),
@@ -41,6 +40,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     ytScrubberColor: document.getElementById("ytScrubberColor"),
     ytScrubberHex: document.getElementById("ytScrubberHex"),
     ytShowCommentsOnce: document.getElementById("ytShowCommentsOnce"),
+    ytShowPlaylistsOnce: document.getElementById("ytShowPlaylistsOnce"),
     ytShowRecommendationsOnce: document.getElementById("ytShowRecommendationsOnce"),
     ytShowShortsOnce: document.getElementById("ytShowShortsOnce"),
     ytVideosPerRow: document.getElementById("ytVideosPerRow"),
@@ -160,21 +160,25 @@ document.addEventListener("DOMContentLoaded", async () => {
     home: {
       hint: "Control recommendations and Shorts on the Home feed.",
       recommendationLabel: "Hide home feed",
+      recommendationHint: "Remove recommended videos from Home",
       visibleRules: ["recommendations", "shorts"],
     },
     watch: {
-      hint: "Control the watch page without changing other YouTube pages.",
+      hint: "Tune suggestions and playlists independently on the watch page.",
       recommendationLabel: "Hide recommendations",
-      visibleRules: ["recommendations", "comments", "shorts"],
+      recommendationHint: "Suggested videos only — playlists stay available",
+      visibleRules: ["recommendations", "playlists", "comments", "shorts"],
     },
     search: {
       hint: "Keep Shorts out of YouTube search results.",
       recommendationLabel: "Hide recommendations",
+      recommendationHint: "Suggested videos in search",
       visibleRules: ["shorts"],
     },
     channel: {
       hint: "Choose whether Shorts appear on channel pages.",
       recommendationLabel: "Hide recommendations",
+      recommendationHint: "Suggested videos on channels",
       visibleRules: ["shorts"],
     },
   };
@@ -185,6 +189,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     youtubePageDraft[selectedYouTubePage] = {
       ...youtubePageDraft[selectedYouTubePage],
       hideRecommendations: elements.ytHideRec.checked,
+      hidePlaylists: elements.ytHidePlaylists.checked,
       hideComments: elements.ytHideComments.checked,
       hideShorts: elements.ytHideShorts.checked,
     };
@@ -201,7 +206,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     elements.ytPageScope.value = normalizedPage;
     elements.ytPageHint.textContent = ui.hint;
     elements.ytHideRecLabel.textContent = ui.recommendationLabel;
+    elements.ytHideRecHint.textContent = ui.recommendationHint;
     elements.ytHideRec.checked = pageSettings.hideRecommendations;
+    elements.ytHidePlaylists.checked = pageSettings.hidePlaylists;
     elements.ytHideComments.checked = pageSettings.hideComments;
     elements.ytHideShorts.checked = pageSettings.hideShorts;
 
@@ -231,17 +238,19 @@ document.addEventListener("DOMContentLoaded", async () => {
   function updateShowOnceControls() {
     const buttons = {
       comments: elements.ytShowCommentsOnce,
+      playlists: elements.ytShowPlaylistsOnce,
       recommendations: elements.ytShowRecommendationsOnce,
       shorts: elements.ytShowShortsOnce,
     };
     const propertyNames = {
       comments: "hideComments",
+      playlists: "hidePlaylists",
       recommendations: "hideRecommendations",
       shorts: "hideShorts",
     };
     const relevantFeatures = {
       home: ["recommendations", "shorts"],
-      watch: ["recommendations", "comments", "shorts"],
+      watch: ["recommendations", "playlists", "comments", "shorts"],
       search: ["shorts"],
       channel: ["shorts"],
     };
@@ -353,6 +362,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       youtubePageDraft[page] = {
         ...youtubePageDraft[page],
         hideRecommendations: page === "watch" || (page === "home" && focused),
+        hidePlaylists: false,
         hideComments: page === "watch" && focused,
         hideShorts: true,
       };
@@ -414,6 +424,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         enabled: true,
         mode: elements.ytMode.value,
         hideRecommendations: watchPage.hideRecommendations,
+        hidePlaylists: watchPage.hidePlaylists,
         hideComments: watchPage.hideComments,
         hideShorts: watchPage.hideShorts,
         safeMode: elements.ytSafeMode.checked,
@@ -510,35 +521,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     await persistSettings(buildSettings(), message);
   }
 
-  function downloadSettings() {
-    const exportData = settingsHelper.normalizeSettings(currentSettings);
-    const blob = new Blob([JSON.stringify(exportData, null, 2)], {
-      type: "application/json",
-    });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = "mindfulcloud-settings.json";
-    link.click();
-    URL.revokeObjectURL(url);
-    showStatus("Settings exported");
-  }
-
-  async function importSettings(file) {
-    if (!file) return;
-
-    try {
-      const text = await file.text();
-      const data = JSON.parse(text);
-      const imported = settingsHelper.normalizeSettings(data);
-      await persistSettings(imported, "Imported successfully");
-    } catch {
-      showStatus("Import failed: choose a valid JSON settings file");
-    } finally {
-      elements.importFile.value = "";
-    }
-  }
-
   function wireEvents() {
     document.querySelectorAll(".site-card-toggle").forEach((toggle) => {
       toggle.addEventListener("click", () => {
@@ -580,6 +562,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       elements.hidePromotedContent,
       elements.masterEnabled,
       elements.ytHideComments,
+      elements.ytHidePlaylists,
       elements.ytHideRec,
       elements.ytHideShorts,
       elements.ytHamburger,
@@ -598,6 +581,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     elements.ytShowRecommendationsOnce.addEventListener("click", () =>
       showYouTubeFeatureOnce("recommendations"),
+    );
+    elements.ytShowPlaylistsOnce.addEventListener("click", () =>
+      showYouTubeFeatureOnce("playlists"),
     );
     elements.ytShowCommentsOnce.addEventListener("click", () =>
       showYouTubeFeatureOnce("comments"),
@@ -648,12 +634,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         await saveFromUi();
       });
     });
-
-    elements.exportSettings.addEventListener("click", downloadSettings);
-    elements.importSettings.addEventListener("click", () => elements.importFile.click());
-    elements.importFile.addEventListener("change", () =>
-      importSettings(elements.importFile.files?.[0]),
-    );
 
     elements.resetSettings.addEventListener("click", async () => {
       if (!confirm("Reset MindFulCloud settings to defaults?")) return;

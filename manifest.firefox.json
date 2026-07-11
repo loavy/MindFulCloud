@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "MindFulCloud",
-  "version": "5.5.0",
+  "version": "6.0.0",
   "description": "De-clutter your digital space across multiple platforms.",
   "permissions": ["storage", "activeTab"],
   "host_permissions": [

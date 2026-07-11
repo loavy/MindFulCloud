@@ -12,12 +12,12 @@
         <div class="brand-lockup">
           <img class="brand-icon" src="../icons/icon48.png" alt="" />
           <div>
-            <p class="eyebrow">Calmer browsing</p>
+            <p class="eyebrow">A quieter web</p>
             <h1>MindFulCloud</h1>
           </div>
         </div>
         <div class="master-control">
-          <span>Power</span>
+          <span>Extension</span>
           <label class="switch large" title="Enable MindFulCloud">
             <input type="checkbox" id="masterEnabled" />
             <span class="slider"></span>
@@ -72,7 +72,7 @@
           <p class="section-kicker">Fine tuning</p>
           <h2>Platforms</h2>
         </div>
-        <span class="section-note">Saved locally</span>
+        <span class="section-note">Auto-saved</span>
       </div>
 
       <section class="site-grid">
@@ -113,27 +113,48 @@
             </div>
             <p id="ytPageHint">Tune the YouTube home feed.</p>
           </div>
-          <label class="row youtube-rule" data-youtube-rule="recommendations">
-            <span id="ytHideRecLabel">Hide home feed</span>
-            <span class="switch">
-              <input type="checkbox" id="ytHideRec" />
-              <span class="slider"></span>
-            </span>
-          </label>
-          <label class="row youtube-rule" data-youtube-rule="comments">
-            <span>Hide comments</span>
-            <span class="switch">
-              <input type="checkbox" id="ytHideComments" />
-              <span class="slider"></span>
-            </span>
-          </label>
-          <label class="row youtube-rule" data-youtube-rule="shorts">
-            <span>Hide Shorts</span>
-            <span class="switch">
-              <input type="checkbox" id="ytHideShorts" />
-              <span class="slider"></span>
-            </span>
-          </label>
+          <div class="rule-list">
+            <label class="row youtube-rule" data-youtube-rule="recommendations">
+              <span class="setting-copy">
+                <strong id="ytHideRecLabel">Hide home feed</strong>
+                <small id="ytHideRecHint">Remove recommended videos from Home</small>
+              </span>
+              <span class="switch">
+                <input type="checkbox" id="ytHideRec" />
+                <span class="slider"></span>
+              </span>
+            </label>
+            <label class="row youtube-rule" data-youtube-rule="playlists">
+              <span class="setting-copy">
+                <strong>Hide playlists</strong>
+                <small>Playlist queues beside the player</small>
+              </span>
+              <span class="switch">
+                <input type="checkbox" id="ytHidePlaylists" />
+                <span class="slider"></span>
+              </span>
+            </label>
+            <label class="row youtube-rule" data-youtube-rule="comments">
+              <span class="setting-copy">
+                <strong>Hide comments</strong>
+                <small>Conversation below the video</small>
+              </span>
+              <span class="switch">
+                <input type="checkbox" id="ytHideComments" />
+                <span class="slider"></span>
+              </span>
+            </label>
+            <label class="row youtube-rule" data-youtube-rule="shorts">
+              <span class="setting-copy">
+                <strong>Hide Shorts</strong>
+                <small>Short-form shelves and cards</small>
+              </span>
+              <span class="switch">
+                <input type="checkbox" id="ytHideShorts" />
+                <span class="slider"></span>
+              </span>
+            </label>
+          </div>
           <div class="show-once-panel">
             <div class="show-once-heading">
               <strong>Show once</strong>
@@ -146,6 +167,9 @@
                 type="button"
               >
                 Recommendations
+              </button>
+              <button class="show-once-button" id="ytShowPlaylistsOnce" type="button">
+                Playlists
               </button>
               <button class="show-once-button" id="ytShowCommentsOnce" type="button">
                 Comments
@@ -294,15 +318,15 @@
         </article>
       </section>
 
-      <section class="panel tools">
-        <button class="button secondary" id="exportSettings">Export</button>
-        <button class="button secondary" id="importSettings">Import</button>
+      <section class="panel tools" aria-label="Settings tools">
+        <div class="tools-copy">
+          <strong>Reset settings</strong>
+          <span>Restore defaults for every platform</span>
+        </div>
         <button class="button danger" id="resetSettings">Reset</button>
-        <input type="file" id="importFile" accept="application/json,.json" hidden />
       </section>
 
       <p class="status-message" id="statusMessage" role="status"></p>
-      <p class="privacy-note">Private by design · No analytics</p>
     </main>
 
     <script src="../shared/settings.js"></script>

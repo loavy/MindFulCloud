@@ -3,21 +3,25 @@
   const YOUTUBE_PAGE_DEFAULTS = {
     home: {
       hideRecommendations: false,
+      hidePlaylists: false,
       hideComments: false,
       hideShorts: true,
     },
     watch: {
       hideRecommendations: true,
+      hidePlaylists: false,
       hideComments: false,
       hideShorts: true,
     },
     search: {
       hideRecommendations: false,
+      hidePlaylists: false,
       hideComments: false,
       hideShorts: true,
     },
     channel: {
       hideRecommendations: false,
+      hidePlaylists: false,
       hideComments: false,
       hideShorts: true,
     },
@@ -31,6 +35,7 @@
       enabled: true,
       mode: "custom",
       hideRecommendations: true,
+      hidePlaylists: false,
       hideComments: false,
       hideShorts: true,
       safeMode: false,
@@ -80,6 +85,7 @@
     "mindful-youtube",
     "mindful-youtube-safe",
     "yt-hide-rec",
+    "yt-hide-playlists",
     "yt-hide-comments",
     "yt-hide-shorts",
     "yt-float-menu",
@@ -131,7 +137,12 @@
       return normalized;
     }
 
-    for (const key of ["hideRecommendations", "hideComments", "hideShorts"]) {
+    for (const key of [
+      "hideRecommendations",
+      "hidePlaylists",
+      "hideComments",
+      "hideShorts",
+    ]) {
       if (typeof value[key] === "boolean") normalized[key] = value[key];
     }
 
@@ -216,6 +227,7 @@
       }
       settings.youtube.pages.watch.hideRecommendations =
         settings.youtube.hideRecommendations;
+      settings.youtube.pages.watch.hidePlaylists = settings.youtube.hidePlaylists;
       settings.youtube.pages.watch.hideComments = settings.youtube.hideComments;
     }
 

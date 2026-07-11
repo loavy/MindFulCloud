@@ -41,10 +41,19 @@ test("YouTube exposes page rules, compatibility mode, and temporary reveals", ()
   for (const id of [
     "ytPageScope",
     "ytSafeMode",
+    "ytHidePlaylists",
+    "ytShowPlaylistsOnce",
     "ytShowRecommendationsOnce",
     "ytShowCommentsOnce",
     "ytShowShortsOnce",
   ]) {
     assert.match(popupHtml, new RegExp(`id="${id}"`, "u"));
   }
+});
+
+test("popup keeps reset without import, export, or the privacy tagline", () => {
+  assert.match(popupHtml, /id="resetSettings"/u);
+  assert.doesNotMatch(popupHtml, /id="(?:exportSettings|importSettings|importFile)"/u);
+  assert.doesNotMatch(popupHtml, /Private by design|No analytics/u);
+  assert.doesNotMatch(popupScript, /downloadSettings|importSettings/u);
 });

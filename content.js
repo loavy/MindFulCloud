@@ -15,6 +15,9 @@ const temporaryReveals = new Set();
 
 let activeSettings = settingsHelper.getDefaultSettings();
 let activeUrl = location.href;
+let observedWatchFlexy = null;
+let playlistLayoutObserver = null;
+let playlistLayoutTimer = null;
 
 function storageGet(keys = null) {
   if (!storage) return Promise.resolve({});
@@ -50,6 +53,106 @@ function addClassWhen(condition, className) {
   if (condition) html.classList.add(className);
 }
 
+function containsYouTubePlaylistPanel(node) {
+  if (!(node instanceof Element)) return false;
+
+  return (
+    node.matches("ytd-playlist-panel-renderer, yt-playlist-panel-renderer, #playlist") ||
+    !!node.querySelector(
+      "ytd-playlist-panel-renderer, yt-playlist-panel-renderer, #playlist",
+    )
+  );
+}
+
+function observeYouTubePlaylistLayout(watchFlexy) {
+  if (observedWatchFlexy === watchFlexy) return;
+
+  playlistLayoutObserver?.disconnect();
+  playlistLayoutObserver = null;
+  observedWatchFlexy = watchFlexy;
+
+  if (!watchFlexy || typeof MutationObserver === "undefined") return;
+
+  playlistLayoutObserver = new MutationObserver((mutations) => {
+    const playlistChanged = mutations.some((mutation) =>
+      [...mutation.addedNodes, ...mutation.removedNodes].some(
+        containsYouTubePlaylistPanel,
+      ),
+    );
+
+    if (playlistChanged) scheduleYouTubePlaylistPlacement(3);
+  });
+  playlistLayoutObserver.observe(watchFlexy, {
+    childList: true,
+    subtree: true,
+  });
+}
+
+function syncYouTubePlaylistPlacement() {
+  if (settingsHelper.getCurrentSite(location.hostname) !== "youtube") return true;
+
+  const shouldStackPlaylist =
+    html.classList.contains("mindful-youtube") &&
+    html.classList.contains("yt-page-watch") &&
+    html.classList.contains("yt-hide-rec") &&
+    !html.classList.contains("yt-hide-playlists");
+  const watchFlexy =
+    document.querySelector("ytd-watch-flexy[video-id]") ||
+    document.querySelector("ytd-watch-flexy");
+  observeYouTubePlaylistLayout(shouldStackPlaylist ? watchFlexy : null);
+  if (!watchFlexy) return false;
+
+  const playlistRenderer = watchFlexy.querySelector(
+    "ytd-playlist-panel-renderer, yt-playlist-panel-renderer",
+  );
+  const playlistPanel = playlistRenderer?.closest("#playlist") || playlistRenderer;
+  if (!playlistPanel) return false;
+
+  const below = watchFlexy.querySelector("#below");
+  const secondaryInner = watchFlexy.querySelector("#secondary-inner");
+
+  if (shouldStackPlaylist) {
+    if (!below) return false;
+
+    playlistPanel.setAttribute("data-mindful-playlist-stacked", "");
+    if (playlistPanel.parentElement !== below) below.prepend(playlistPanel);
+    return true;
+  }
+
+  if (!playlistPanel.hasAttribute("data-mindful-playlist-stacked")) return true;
+
+  if (watchFlexy.hasAttribute("is-two-columns_")) {
+    if (!secondaryInner) return false;
+    if (playlistPanel.parentElement !== secondaryInner) {
+      secondaryInner.prepend(playlistPanel);
+    }
+    playlistPanel.removeAttribute("data-mindful-playlist-stacked");
+    return true;
+  }
+
+  if (watchFlexy.hasAttribute("is-single-column")) {
+    playlistPanel.removeAttribute("data-mindful-playlist-stacked");
+    return true;
+  }
+
+  return false;
+}
+
+function scheduleYouTubePlaylistPlacement(attempts = 20) {
+  if (settingsHelper.getCurrentSite(location.hostname) !== "youtube") return;
+
+  clearTimeout(playlistLayoutTimer);
+  let remaining = Math.max(1, attempts);
+
+  const run = () => {
+    const settled = syncYouTubePlaylistPlacement();
+    remaining -= 1;
+    playlistLayoutTimer = !settled && remaining > 0 ? setTimeout(run, 100) : null;
+  };
+
+  playlistLayoutTimer = setTimeout(run, 0);
+}
+
 function applySettings(settings = {}) {
   const normalized = settingsHelper.normalizeSettings(settings);
   const site = settingsHelper.getCurrentSite(location.hostname);
@@ -60,6 +163,7 @@ function applySettings(settings = {}) {
 
   if (!normalized.enabled || !site || paused) {
     html.classList.remove("ytm-menu-open");
+    scheduleYouTubePlaylistPlacement();
     return;
   }
 
@@ -79,6 +183,10 @@ function applySettings(settings = {}) {
     addClassWhen(
       pageSettings.hideRecommendations && !temporaryReveals.has("recommendations"),
       "yt-hide-rec",
+    );
+    addClassWhen(
+      pageSettings.hidePlaylists && !temporaryReveals.has("playlists"),
+      "yt-hide-playlists",
     );
     addClassWhen(
       pageSettings.hideComments && !temporaryReveals.has("comments"),
@@ -131,6 +239,8 @@ function applySettings(settings = {}) {
     addClassWhen(normalized.pinterest.mode === "minimal", "pt-minimal");
     addClassWhen(normalized.pinterest.mode === "dark", "pt-dark");
   }
+
+  scheduleYouTubePlaylistPlacement();
 }
 
 function watchYouTubeMusicMenu() {
@@ -174,7 +284,7 @@ runtime?.onMessage?.addListener((msg, _sender, sendResponse) => {
 
   if (
     msg?.type === "TEMPORARY_REVEAL" &&
-    ["recommendations", "comments", "shorts"].includes(msg.feature) &&
+    ["recommendations", "playlists", "comments", "shorts"].includes(msg.feature) &&
     settingsHelper.getCurrentSite(location.hostname) === "youtube"
   ) {
     temporaryReveals.add(msg.feature);
@@ -203,8 +313,12 @@ function watchYouTubeNavigation() {
   };
 
   document.addEventListener("yt-navigate-finish", handleNavigation);
+  document.addEventListener("yt-page-data-updated", () =>
+    scheduleYouTubePlaylistPlacement(),
+  );
   window.addEventListener("popstate", handleNavigation);
   window.addEventListener("hashchange", handleNavigation);
+  window.addEventListener("resize", () => scheduleYouTubePlaylistPlacement(10));
 }
 
 init();

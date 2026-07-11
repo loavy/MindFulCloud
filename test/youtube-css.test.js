@@ -65,8 +65,49 @@ test("the masthead blur cannot bleed over the first video row", () => {
   assert.match(css, /#frosted-glass\s*\{[^}]*display:\s*none/iu);
 });
 
+test("the masthead uses the theme-aware surface", () => {
+  const rule = css.match(/html\.mindful-youtube #masthead-container\s*\{([^}]*)\}/u);
+
+  assert.ok(rule, "the styled masthead rule must exist");
+  assert.match(rule[1], /background:\s*var\(--mf-surface\)/u);
+});
+
 test("theme colors follow YouTube's active light or dark palette", () => {
-  assert.match(css, /--mf-text:\s*var\(--yt-spec-text-primary/u);
-  assert.match(css, /--mf-surface-strong:\s*var\(--yt-spec-base-background/u);
+  assert.match(
+    css,
+    /--mf-base:[^;]*--yt-sys-color-baseline--base-background[^;]*--yt-spec-base-background/su,
+  );
+  assert.match(
+    css,
+    /--mf-text:[^;]*--yt-sys-color-baseline--text-primary[^;]*--yt-spec-text-primary/su,
+  );
+  assert.match(
+    css,
+    /--mf-muted:[^;]*--yt-sys-color-baseline--text-secondary[^;]*--yt-spec-text-secondary/su,
+  );
+  assert.match(
+    css,
+    /html\.mindful-youtube\[dark\][^{]*\{[^}]*--mf-base-fallback:\s*#0f0f0f/isu,
+  );
+  assert.doesNotMatch(css, /html\.mindful-youtube\[darker-dark-theme\]/u);
   assert.doesNotMatch(css, /color-scheme:\s*light dark/u);
+});
+
+test("watch recommendations and playlists can be hidden independently", () => {
+  assert.match(css, /html\.yt-page-watch\.yt-hide-rec #related/u);
+  assert.doesNotMatch(css, /html\.yt-page-watch\.yt-hide-rec\s+#secondary\s*\{/u);
+  assert.match(
+    css,
+    /html\.yt-page-watch\.yt-hide-playlists ytd-playlist-panel-renderer/u,
+  );
+  assert.match(css, /html\.yt-page-watch\.yt-hide-rec\.yt-hide-playlists #secondary/u);
+  assert.match(css, /#secondary:not\(:has\(ytd-playlist-panel-renderer/u);
+});
+
+test("wide watch layouts place the enabled playlist below the player", () => {
+  assert.match(
+    css,
+    /ytd-watch-flexy\[is-two-columns_\][^{]*#below\s*>\s*\[data-mindful-playlist-stacked\]/isu,
+  );
+  assert.match(css, /data-mindful-playlist-stacked[^}]*width:\s*100%/isu);
 });

@@ -61,6 +61,7 @@ test("legacy YouTube toggles migrate into page-specific rules", () => {
   });
 
   assert.equal(migrated.youtube.pages.watch.hideRecommendations, false);
+  assert.equal(migrated.youtube.pages.watch.hidePlaylists, false);
   assert.equal(migrated.youtube.pages.watch.hideComments, true);
   for (const page of settings.YOUTUBE_PAGE_TYPES) {
     assert.equal(migrated.youtube.pages[page].hideShorts, false);
@@ -78,6 +79,7 @@ test("page-specific YouTube rules and compatibility mode are normalized", () => 
           hideShorts: false,
         },
         watch: {
+          hidePlaylists: true,
           hideComments: true,
         },
       },
@@ -87,6 +89,41 @@ test("page-specific YouTube rules and compatibility mode are normalized", () => 
   assert.equal(normalized.youtube.safeMode, true);
   assert.equal(normalized.youtube.pages.home.hideRecommendations, true);
   assert.equal(normalized.youtube.pages.home.hideShorts, false);
+  assert.equal(normalized.youtube.pages.watch.hidePlaylists, true);
   assert.equal(normalized.youtube.pages.watch.hideComments, true);
   assert.equal(normalized.youtube.pages.channel.hideShorts, true);
+});
+
+test("YouTube playlist visibility stays independent from recommendations", () => {
+  const defaults = settings.getDefaultSettings();
+  assert.equal(defaults.youtube.pages.watch.hideRecommendations, true);
+  assert.equal(defaults.youtube.pages.watch.hidePlaylists, false);
+
+  const normalized = settings.normalizeSettings({
+    youtube: {
+      pages: {
+        watch: {
+          hideRecommendations: false,
+          hidePlaylists: true,
+        },
+      },
+    },
+  });
+
+  assert.equal(normalized.youtube.pages.watch.hideRecommendations, false);
+  assert.equal(normalized.youtube.pages.watch.hidePlaylists, true);
+  assert.equal(normalized.youtube.pages.home.hidePlaylists, false);
+  assert.ok(settings.SITE_CLASSES.includes("yt-hide-playlists"));
+});
+
+test("invalid YouTube playlist values fall back to visible", () => {
+  const normalized = settings.normalizeSettings({
+    youtube: {
+      pages: {
+        watch: { hidePlaylists: "yes" },
+      },
+    },
+  });
+
+  assert.equal(normalized.youtube.pages.watch.hidePlaylists, false);
 });
